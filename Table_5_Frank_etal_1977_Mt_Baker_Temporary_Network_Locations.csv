@@ -1,0 +1,9 @@
+symbol,longitude,latitude,elevation,description,start_date,reliability_notes_c1976
+MBW,48.7847,-121.9008,,Grouse Ridge,1972-06-01,operational with 25% wind-dominated data
+SCW,48.7677,-121.8155,,South Rim Sherman Crater,1975-03-30,operational with 5% loss to telemetry
+BBB,48.8035,-121.7837,,Landes Cleaver,1975-09-20,never operational
+AAB,48.7367,-121.8112,,Crag View,1975-09-30,operational with 5% data loss to unknown cause
+WRB,48.7685,-121.8187,,West Rim Sherman Crater,1975-09-19,Failed 1976-01-05 due to antenna destruction (ice)
+LLB,48.7718,-121.8115,,Top of Lahar Lookout,1975,almost no down time - start date listed as "do"
+MLB,48.6889,-121.6867,,Near Marten Lake,1975-09-30,Intermittent until 1976-01. 25% data loss
+LYW,48.5353,-122.1017,,Western Washington Regional Network Member Station,1975-04,operational with 5% data loss
