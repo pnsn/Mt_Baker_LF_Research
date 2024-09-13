@@ -1,4 +1,4 @@
-# DLP_Mt_Baker: Deep Long Period Earthquake Analysis at Mt. Baker Seismicity  
+# DLP_Mt_Baker: Distinguishing Long-Period Seismic Sources at Mt. Baker Volcano
 This repository hosts code and metadata for analyzing seismicity at Mt. Baker volcano in Washington state, USA,
 focusing on detection and source-characterization of long-period earthquakes.
 
