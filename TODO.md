@@ -5,7 +5,7 @@
 FIXME: Make repository public  
 
 ### Collaboration Tools / Setup  
-DEBUG: `conda env create -f ./environment.yml` generation
+FIXME: `conda env create -f ./environment.yml` generation
 
 ### Code Examples  
 TODO: Create template generation example from Stevens SGGS SSA repository  
