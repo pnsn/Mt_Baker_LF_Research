@@ -49,6 +49,8 @@ Alex Hutko (PNSN Research Seismologist)
  - ESS Researchers, [University of Washington Department of Earth and Space Sciences](https://ess.uw.edu)    
  - Research Staff, [USGS Cascade Volcano Observatory](https://www.usgs.gov/observatories/cvo)
 
+## Collaborator Documents Repository  
+A repository of written documents and references for permissioned collaborators is available on the PNSN GoogleDrive.  
 
 ## Works Cited
  - [Allstadt, K., and Malone, S.D. (2014) Swarms of repeating stick-slip ice-quakes triggered by snow loading at Mt. Rainier volcano. JGR-Earth Surface, 119, 1180-1203](https://doi.org/10.1002/2014JF003086).
