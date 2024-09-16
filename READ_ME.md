@@ -2,9 +2,10 @@
 This repository hosts code and metadata for analyzing long-period seismic events at Mt. Baker volcano in Washington state, USA.
 
 ## Motivation  
-Mt. Baker has been seismically monitored since 1972, but has produced relatively few observable volcano-tectonic earthquakes, even during its period of unrest in 1975 (Crider et al., 2011). However, Mt. Baker produces Deep Long Period seismicity (DLP)--which are defined as earthquakes with source solutions deeper than 10 km b.s.l. and dominant periods in the 0.2 - 1 second band--with a relative abundance, accounting for 31 of 60 DLPs catalogged between 1980 and 2009 (Nichols et al., 2011). These events are associated with magma and/or volatile migration at depth and have been characterized at many of the Cascade volcanoes and other volcanoes globally (Nichols et al., 2011; and references therein). Subsequent monitoring by the PNSN adds 21 further DLPs to the Baker catalog between 2010 and 2024 (Figure 1). This percieved rise in DLP occurrence may be an observational artifact, likely arising from a combination of improvements to instrumentation, increased station density around Mt. Baker (3 stations added in 2009, 2019, and 2023), the nature of PNSN automated detection algorithms, and revised analyst practice motivated by findings from temporary deployments on Mt. Baker in 1975-76 (Malone, 1977; Weaver & Malone, 1979) and 2009 (Caplan-Auerbach et al., 2009) and detailed observation at other Cascades volcanoes (e.g., Nichols et al., 2011).
+Mt. Baker has been seismically monitored since 1972, but has produced relatively few observable volcano-tectonic earthquakes, even during its period of unrest in 1975 (Crider et al., 2011). However, Mt. Baker produces Deep Long Period seismicity (DLP)--which are defined as earthquakes with source solutions deeper than 10 km b.s.l. and dominant periods in the 0.2 - 1 second band--with a relative abundance, accounting for 31 of 60 DLPs catalogged between 1980 and 2009 (Nichols et al., 2011). These events are associated with magma and/or volatile migration at depth and have been characterized at many of the Cascade volcanoes and other volcanoes globally (Nichols et al., 2011; and references therein). Subsequent monitoring by the PNSN adds 21 further DLPs to the Baker catalog between 2010 and 2024 (Figure 1). This percieved rise in DLP occurrence may be an observational artifact, likely arising from a combination of improvements to instrumentation, increased station density around Mt. Baker, the nature of PNSN automated detection algorithms, and revised analyst practice motivated by findings from temporary deployments on Mt. Baker in 1975-76 (Malone, 1977; Weaver & Malone, 1979) and 2009 (Caplan-Auerbach et al., 2009), and detailed observation at other Cascades volcanoes (e.g., Nichols et al., 2011).
 
-FIGURE 1 NEAR HERE (time-series of DLPs at Mt. Baker from PNSN catalog, with DLPs between 1980 and 2009 in blue, and those post 2009 in forest green).
+![image](./results/figures/motivations_fig_1_120dpi.png)  
+*Figure 1: Origin times and depths (left axis) of PNSN catalog 'lf' events within 20 km of Mt. Baker that satisfy the DLP depth-based definition. Catalog events presented in Nichols et al. (2011) are shown in blue and subsequent events are shown in orange. Active station counts within 30 km of the Mt. Baker summit (red line) and annual DLP event counts (black bars) are shown for comparison (shared scaling on right axis). Station counts based on IRIS Data Management Center metadata.*
 
 The glaciers cladding Mt. Baker (and other Cascades volcanoes) also produce long period seismic events in the same band band as DLPs, and are primarily distinguised by source constraints near land-surface (Weaver and Malone, 1979; Caplain-Auerbach et al., 2009; Thelen et al., 2013; Allstadt & Malone, 2014). The relatively sparse seismic network around Mt. Baker results in only the largest LP events are sufficient to generate an event trigger in the PNSN's automated detection pipeline, meaning that smaller events are likely missed, or may be indistinguishable from glacier-sourced LPs (as discussed in Thelen et al., 2013). Moreover, surface events have only recently been retained in the PNSN catalog as standard practice, meaning that smaller DLPs may have been missed due to prior analyst policies.
 
@@ -33,21 +34,23 @@ Advances in seismic analysis tools and computing power give us the opportunity t
 4) Interpretation: review the enhanced catalog to determine if meaningful patterns exist that better inform our understanding of magmatic processes at Mt. Baker.
 
 ## License  
-This open-source repository is licensed under the attached GNUv3 license.
+![image](./docs/figures/gplv3-with-text-136x68.png)  
+Contents of this repository are distributed under the attached GNU General Public License v3.
+
 
 ## Originating Author  
 Nathan T. Stevens (PNSN Seismologist/Developer) - Research Mentor  
 
 ## Project Collaborators
-Benz Poobua (ESS Undergraduate Researcher) - Research Mentee 
-Renate Hartog (PNSN Network Manager) - Research Supervisor
+Benz Poobua (ESS Undergraduate Researcher) - Research Mentee  
+Renate Hartog (PNSN Network Manager) - Research Supervisor  
 Steve Malone (PNSN Director Emeritus)  
-Alex Hutko (PNSN Research Seismologist)
+Alex Hutko (PNSN Research Seismologist)  
 
 ## Collaborating Organizations  
- - Scientific Products Team, [Pacific Northwest Seismic Network](https://pnsn.org)  
- - ESS Researchers, [University of Washington Department of Earth and Space Sciences](https://ess.uw.edu)    
- - Research Staff, [USGS Cascade Volcano Observatory](https://www.usgs.gov/observatories/cvo)
+ - [PNSN Scientific Products Team](https://pnsn.org)  
+ - [UW ESS Department Researchers](https://ess.uw.edu)    
+ - [USGS Cascade Volcano Observatory Researchers](https://www.usgs.gov/observatories/cvo)  
 
 ## Collaborator Documents Repository  
 A repository of written documents and references for permissioned collaborators is available on the PNSN GoogleDrive.  
