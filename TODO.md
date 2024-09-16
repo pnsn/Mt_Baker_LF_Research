@@ -2,18 +2,14 @@
 
 ## Tasks for Nate
 ### Git Repository Setup
-TODO: Add `LICENSE`  
-TODO: Populate `READ_ME.md` file  
-TODO: Include link to Project Overview documnet in `READ_ME.md`  
 FIXME: Make repository public  
 
 ### Collaboration Tools / Setup  
-TODO: Populate `environment.yml` file  
-TODO: Create light-weight QGIS project that fits in this repository  
+DEBUG: `conda env create -f ./environment.yml` generation
 
 ### Code Examples  
-TODO: Create template generation example from SSA repository  
-TODO: Create template matching exaple from SSA repository  
+TODO: Create template generation example from Stevens SGGS SSA repository  
+TODO: Create template matching exaple from Stevens SGGS SSA repository  
 
 ## Tasks for Benz  
 ### Collaboration Tools Setup
