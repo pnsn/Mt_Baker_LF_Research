@@ -63,7 +63,7 @@ Advances in seismic analysis tools and computing power give us the opportunity t
 
 ## License  
 ![image](./docs/gplv3-with-text-136x68.png)  
-Original works contained in this repository are distributed under the attached GNU General Public License v3. Figures from cited works must follow the individual licenses of the cited works (i.e., Figures 1 and 3 in the Motivation section)  
+Original works contained in this repository are distributed under the attached GNU General Public License v3. Figures from cited works must follow the individual licenses of the cited works (i.e., Figures 1 and 3 in the Motivation section).  
 
 
 ## Originating Author  
