@@ -1,4 +1,4 @@
-name: baker_dlp
+name: mt_baker_dlp
 channels:
  - defaults
  - conda-forge
