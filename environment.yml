@@ -1,0 +1,36 @@
+name: baker_dlp
+channels:
+ - defaults
+ - conda-forge
+ - pytorch
+ - anaconda
+dependencies:
+# Python environment
+ - python=3.10
+ - cython
+ - numpy #=1.9 May be needed for seisbench
+# Dependency managers
+ - pip
+ - git
+# ObsPy Install Recommendations
+ - pytest
+ - pytest-json
+ - pytest-json-report
+ - obspy
+# EQcorrscan + ObsPlus for local catalog
+ - eqcorrscan
+ - obsplus
+# Run PIP installs of major tools
+ - pip:
+    - setuptools
+    - seisbench
+    - pyrocko
+# IDE
+ - ipython
+ - jupyterlab
+# Visualization
+ - matplotlib
+ - plotly
+# Support for Pyrocko
+ - pyqt
+ - pyqtwebengine
