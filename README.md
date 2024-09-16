@@ -1,6 +1,26 @@
 # DLP_Mt_Baker: Distinguishing Long-Period Seismic Sources at Mt. Baker Volcano
 This repository hosts code and metadata for analyzing long-period seismic events at Mt. Baker volcano in Washington state, USA.
 
+## Repository Structure  
+ - data - unprocessed or minimally processed data files  
+    - Events - Data files for seismic catalog metadata  
+    - Sensors - Data files for geophysical instrument metadata  
+ - docs - supporting files for repository documentation  
+ - GIS - Geographic Information Systems files  
+    - Mt_Baker_LP_Maps.qgz - QGIS project file  
+ - results - output files from codes in this repository  
+    - figures - Rendered figure files  
+ - src - source code  
+    - notebooks - Jupyter Notebook files  
+    - PostgreSQL - SQL database query scripts  
+    - python - python scripts  
+ - environment.yml - conda environment definition (TESTING IN PROGRESS)  
+ - LICENSE - distribution terms  
+ - README.md - you are here!  
+ - TODO.md - General ToDo list for this repository (formatted for "Todo Tree" VSCode plugin)  
+
+
+
 ## Motivation  
 Mt. Baker has been seismically monitored since 1972, but has produced relatively few observable volcano-tectonic earthquakes, even during its period of unrest in 1975 (Crider et al., 2011). However, Mt. Baker produces Deep Long Period seismicity (DLP)--which are defined as earthquakes with source solutions deeper than 10 km b.s.l. and dominant periods in the 0.2 - 1 second band--with a relative abundance, accounting for 31 of 60 DLPs catalogged between 1980 and 2009 (Nichols et al., 2011). These events are associated with magma and/or volatile migration at depth and have been characterized at many of the Cascade volcanoes and other volcanoes globally (Nichols et al., 2011; and references therein). Subsequent monitoring by the PNSN adds 21 further DLPs to the Baker catalog between 2010 and 2024 (Figure 1). This percieved rise in DLP occurrence may be an observational artifact, likely arising from a combination of improvements to instrumentation, increased station density around Mt. Baker, the nature of PNSN automated detection algorithms, and revised analyst practice motivated by findings from temporary deployments on Mt. Baker in 1975-76 (Malone, 1977; Weaver & Malone, 1979) and 2009 (Caplan-Auerbach et al., 2009), and detailed observation at other Cascades volcanoes (e.g., Nichols et al., 2011).
 
@@ -34,7 +54,7 @@ Advances in seismic analysis tools and computing power give us the opportunity t
 4) Interpretation: review the enhanced catalog to determine if meaningful patterns exist that better inform our understanding of magmatic processes at Mt. Baker.
 
 ## License  
-![image](./docs/figures/gplv3-with-text-136x68.png)  
+![image](./docs/gplv3-with-text-136x68.png)  
 Contents of this repository are distributed under the attached GNU General Public License v3.
 
 
