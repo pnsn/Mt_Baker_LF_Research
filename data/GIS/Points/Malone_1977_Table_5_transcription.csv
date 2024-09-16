@@ -1,4 +1,4 @@
-symbol,longitude,latitude,elevation,description,start_date,reliability_notes_c1976
+symbol,latitude,longitude,elevation,description,start_date,reliability_notes_c1976
 MBW,48.7847,-121.9008,,Grouse Ridge,1972-06-01,operational with 25% wind-dominated data
 SCW,48.7677,-121.8155,,South Rim Sherman Crater,1975-03-30,operational with 5% loss to telemetry
 BBB,48.8035,-121.7837,,Landes Cleaver,1975-09-20,never operational
