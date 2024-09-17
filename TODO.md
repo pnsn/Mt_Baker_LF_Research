@@ -1,8 +1,8 @@
 # General To-Do/De-Bug/Fix-Me Items for this repository (Triggers TodoTree)
 
 ## Tasks for Nate
-### Git Repository Setup
-FIXME: Make repository public  
+### Initial Data
+FIXME: Radius search is missing a lot of events the search box grabbed. This needs to be reconciled  
 
 ### Collaboration Tools / Setup  
 TODO: add note on command-line compile needed for `conda env create -f environment.yml` to README
