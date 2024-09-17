@@ -1,4 +1,4 @@
--- script: PNNS_catalog_MB_main_query.sql
+-- script: PNNS_catalog_MB_origin_query.sql
 -- author: Nathan T. Stevens (ntsteven@uw.edu) + ChatGPT (see attribution)
 -- org: Pacific Northwest Seismic Network
 -- license: GPLv3
@@ -11,14 +11,16 @@
 -- input lat/lon points from a PostgreSQL table and a reference lat/lon
 -- (the summit of Mt. Baker in this example) and filter by a reference distance
 -- (20 km from Mt. Baker's summit in this example) and then provide the following
--- information for all EVID s selected
---      (e) Event - ID and Classification (etype)
---      (o) Origin - ID, hypocentral parameters, fix status on solution parameters, author
---      (oe) Origin_Error - covariance matrix upper triangle for hypocentral parameters
---      (n) NetMag - ID, magnitude value, type, uncertainty, and contributing observations
---      (r) remark - ID, comment
+--      (e) Event ID and metadata
+--      (r) Comment from analyst/import
+--      (o) Origin best-fit solution
+--     (oe) Origin Error statistics
+--   (calc) Calculated distance in km from Mt. Baker summit
+--      (n) Network Magnitude
 -- Assumes a spherical earth with radius of 6371 km, which is reasonable for local
 -- earthquake/reference point scales (a few degrees)
+
+-- NOTE: To output to CSV this needs to be wrapped with \copy (<sql command>) TO <output_file_name> WITH CSV HEADER;
 
 SELECT 
     e.evid, e.etype, r.remark, o.auth,
