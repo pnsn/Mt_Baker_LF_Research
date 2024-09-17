@@ -18,8 +18,8 @@ from obspy.geodetics.base import gps2dist_azimuth
 # Relative Root Directory Path
 rrpath = os.path.join('..','..','..')
 # PNSN Catalog Events for Mt. Baker Area of Observation
-pnsn_events = os.path.join(rrpath,'data','GIS','Points','PNSN_CAT_Mount_Baker_Region_Full_Catalog_Event_Summary.csv')
-local_stations = os.path.join(rrpath,'data','GIS','Points','Mt_Baker_AO_MDA_Stations.csv')
+pnsn_events = os.path.join(rrpath,'data','Events','PNSN_CAT_Mount_Baker_Region_Full_Catalog_Event_Summary.csv')
+local_stations = os.path.join(rrpath,'data','Sensors','Mt_Baker_AO_MDA_Stations.csv')
 # OUTPUT CONTROL
 issave = True
 isshow = False
@@ -29,7 +29,7 @@ FMT = 'PNG'
 sfpath = os.path.join(rrpath,'results','figures')
 if not os.path.exists(sfpath):
     os.makedirs(sfpath)
-savename = os.path.join(sfpath, 'motivations_fig_1_%ddpi.%s'%(int(DPI), FMT.lower()))
+savename = os.path.join(sfpath, 'MtBaker_DLP_stats_and_station_counts_%ddpi.%s'%(int(DPI), FMT.lower()))
 
 # SEARCH CONTROL
 # Catalog Subset SearchParameters
