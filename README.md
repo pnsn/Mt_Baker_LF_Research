@@ -41,7 +41,7 @@ The glaciers cladding Mt. Baker (and other Cascades volcanoes) also produce long
 ![image](./docs/Thelen_etal_2013_Figure%202.gif)
 *Figure 4: Figure 2 in [Thelen et al. (2013)](https://doi.org/10.3189/2013Jog12J111): "Example of various types of waveforms (a) and their spectra (b) recorded on Mount Rainier at short-period vertical station RCS. The amplitude scale is normalized for each waveform, with the maximum amplitudes for each waveform given in counts on the left. Gray triangles indicate time windows for spectra. In order from the top of the plot: glacial earthquake, multiplet 5 of this sequence; inferred icequake; M1.2 tectonic earthquake located ∼20 km east of Mount Rainier; M0.6 volcano-tectonic earthquake located 2.5 km below the mountain from a September 2009 swarm; M2.3 deep long-period earthquake 13.6 km below Mount Rainier; avalanche on 5 June 2010; inferred rockfall near Willis Wall 7 June 2010."*
 
-Advances in seismic analysis tools and computing power give us the ability to quickly re-analyze large volumes of wavefrom data, overcoming a substantial hurdle to earlier researchers (e.g., Mousavi & Beroza, 2023). These include efficient template matching workflows (e.g,. Hotovec-Ellis and Jefferies, 2016; Chamberlain et al., 2017), machine-learning models specifically trained to detect and classify DLP earthquakes (Münchmeyer et al., 2024) and deep learning models trained to descriminate between various source types (Kharita et al., 2024). All of which can be deployed on data from individual seismometers. In this study we will conduct a review of LP events localized to Mt. Baker in the PNSN catalog and used reviewed event classifications to inform a systematic search across the entirety of digitally available waveform data for stations proximal to Mt. Baker to enhance the current catalog. Through this analysis we hope to address the following questions:
+Advances in seismic analysis tools and computing power give us the ability to quickly re-analyze large volumes of wavefrom data (e.g., Mousavi & Beroza, 2023), overcoming a substantial hurdle faced by earlier researchers. These include efficient template matching workflows (e.g,. Hotovec-Ellis and Jefferies, 2016; Chamberlain et al., 2017), deep-learning models specifically trained to detect and classify DLP earthquakes (Münchmeyer et al., 2024), and deep-learning models trained to descriminate between various source types (Kharita et al., 2024). All of which can be deployed on data from individual seismometers, which relaxes some constraints imposed by subnet triggering for event detection. In this study we will conduct a review of LP events localized to Mt. Baker in the PNSN catalog and used reviewed event classifications to inform a systematic search across the entirety of digitally available waveform data for stations proximal to Mt. Baker to enhance the current catalog. Through this analysis we hope to address the following questions:
 
 ## Research Questions  
 1) Does the PNSN catalog represent a comprehensive set of DLPs for Mt. Baker?  
@@ -73,17 +73,23 @@ Original works contained in this repository are distributed under the attached G
 
 ## Originating Author  
 Nathan T. Stevens (PNSN Seismologist/Developer) - Research Mentor  
+(ntsteven@uw.edu)  
 
 ## Project Collaborators
-Benz Poobua (ESS Undergraduate Researcher) - Research Mentee  
 Renate Hartog (PNSN Network Manager) - Research Supervisor  
+Benz Poobua (ESS Undergraduate Researcher) - Research Mentee  
 Steve Malone (PNSN Director Emeritus)  
 Alex Hutko (PNSN Research Seismologist)  
+Amy Wright (PNSN Lead Seismic Analyst)  
+Barrett Johnson (PNSN Seismic Analyst)  
+Wes Thelen (CVO Research Geophysicist)  
+...likely more to come   
+
 
 ## Collaborating Organizations  
  - [PNSN Scientific Products Team](https://pnsn.org)  
  - [UW ESS Department Researchers](https://ess.uw.edu)    
- - [USGS Cascade Volcano Observatory Researchers](https://www.usgs.gov/observatories/cvo)  
+ - [USGS Cascade Volcano Observatory Researchers](https://www.usgs.gov/observatories/cvo)   
 
 ## Collaborator Documents Repository  
 A repository of written documents and references for permissioned collaborators is available on the PNSN GoogleDrive.  
