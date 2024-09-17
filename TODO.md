@@ -2,7 +2,8 @@
 
 ## Tasks for Nate
 ### Initial Data
-FIXME: Radius search is missing a lot of events the search box grabbed. This needs to be reconciled  
+FIXME: Radius search is not returning the same population of events the search box grabbed. This needs to be reconciled.
+FIXME: FOR README - Remove the use of DLP in the motivation to the PNSN standard classification of LF, and clarify the 10 km threshold comes from Nichols et al. (2011) and we use it here for comparison purposes.
 
 ### Collaboration Tools / Setup  
 TODO: add note on command-line compile needed for `conda env create -f environment.yml` to README

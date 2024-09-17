@@ -19,10 +19,8 @@ This repository hosts code and metadata for analyzing long-period seismic events
  - README.md - you are here!  
  - TODO.md - General ToDo list for this repository (formatted for "Todo Tree" VSCode plugin)  
 
-
-
 ## Motivation  
-Mt. Baker has been seismically monitored since 1972, but produced relatively few observable volcano-tectonic earthquakes, even during its period of unrest in 1975 (Crider et al., 2011). However, Mt. Baker produces a notable amount of Deep Long Period earthquakes (DLP), which are defined as seismic events with source solutions deeper than 10 km b.s.l. and dominant periods in the 0.2 - 1 second band (1-5 Hz; see Figure 1; Nichols et al., 2011). Mt. Baker's DLP catalog accounts half of such events observed between 1980 and 2009 for all Cascades volcanoes and are attributed to magma and/or volatile migration at depth (Nichols et al., 2011; and references therein). 
+Mt. Baker has been seismically monitored since 1972, but produced relatively few observable volcano-tectonic earthquakes, even during its period of unrest in 1975 (Crider et al., 2011). However, Mt. Baker produces a notable amount of low-frequency seismicity (LF), which are defined as seismic events with source solutions deeper than 10 km b.s.l. and dominant periods in the 0.2 - 1 second band (1-5 Hz; see Figure 1; Nichols et al., 2011). Mt. Baker's DLP catalog accounts half of such events observed between 1980 and 2009 for all Cascades volcanoes and are attributed to magma and/or volatile migration at depth (Nichols et al., 2011; and references therein). 
 
 ![image](./docs/Nichols_etal_2011_Figure_1.jpeg)  
 *Figure 1: Figure 1 in [Nichols et al. (2011)](https://doi.org/10.1016/j.jvolgeores.2010.12.005): "Seismograms and spectrograms from two events recorded on station FMW near Mt. Rainier illustrate the difference in frequency content between a VT (top—1995/07/14 12:14) and a DLP (bottom—1996/03/05 14:09). The VT contains frequencies between 1 and 20 Hz, and the DLP contains energy mostly below 5 Hz. VT and DLP hypocentral distances are 23.2 km and 23.8 km, respectively. VT and DLP maximum amplitude counts are 1554 and 253, respectively. Spectrogram colors represent amplitude intensity and range from blue (low) to yellow (intermediate) to red (high)."*
