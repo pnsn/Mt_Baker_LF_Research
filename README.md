@@ -70,12 +70,9 @@ Advances in seismic analysis tools and computing power give us the ability to qu
 ![image](./docs/gplv3-with-text-136x68.png)  
 Original works contained in this repository are distributed under the attached GNU General Public License v3. Figures from cited works must follow the individual licenses of the cited works (i.e., Figures 1 and 4 in the Motivation section).  
 
-
-## Originating Author  
-Nathan T. Stevens (PNSN Seismologist/Developer) - Research Mentor  
-(ntsteven@uw.edu)  
-
 ## Project Collaborators
+### People
+Nathan T. Stevens (PNSN Seismologist/Developer) - Repository Manager / Research Mentor (ntsteven@uw.edu)  
 Renate Hartog (PNSN Network Manager) - Research Supervisor  
 Benz Poobua (ESS Undergraduate Researcher) - Research Mentee  
 Steve Malone (PNSN Director Emeritus)  
@@ -85,8 +82,7 @@ Barrett Johnson (PNSN Seismic Analyst)
 Wes Thelen (CVO Research Geophysicist)  
 ...likely more to come   
 
-
-## Collaborating Organizations  
+### Organizations  
  - [PNSN Scientific Products Team](https://pnsn.org)  
  - [UW ESS Department Researchers](https://ess.uw.edu)    
  - [USGS Cascade Volcano Observatory Researchers](https://www.usgs.gov/observatories/cvo)   
