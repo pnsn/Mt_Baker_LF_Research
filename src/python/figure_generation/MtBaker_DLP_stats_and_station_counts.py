@@ -90,8 +90,8 @@ ax = fig.add_subplot(111)
 eq_dff[n11_ind].plot.scatter(x='timestamp',y='depth',ax=ax,c='blue', zorder=10)
 eq_dff[~n11_ind].plot.scatter(x='timestamp',y='depth',ax=ax,c='orange', zorder=10)
 # Generate legend
-plt.legend(['1980-2009: %d DLP'%(sum(n11_ind)),
-            '2010-present: %d DLP'%(sum(~n11_ind))],
+plt.legend(['1980-2009: %d LF events below 10 km'%(sum(n11_ind)),
+            '2010-present: %d LF events below 10 km'%(sum(~n11_ind))],
             loc='upper left')
 # Format Axes
 ax.set_ylim([40, 5])
@@ -102,7 +102,7 @@ ax2 = ax.twinx()
 # Plot monthly station counts 
 ax2.plot(time_index[1:], sta_count,'r-', zorder=1, alpha=0.5)
 # Add second y-axis label
-ax2.set_ylabel(f'Active Stations within {int(sta_rad_m*1e-3)} km of Mt. Baker\nAnnual DLP Frequency',
+ax2.set_ylabel(f'Active Stations within {int(sta_rad_m*1e-3)} km of Mt. Baker\nAnnual Deep "lf" Frequency',
                rotation=270, labelpad=20)
 ax2.hist(eq_dff.timestamp,bins=pd.date_range(start=time_index[0], end=time_index[-1], freq='12M'),
          alpha=0.5, color='black')
