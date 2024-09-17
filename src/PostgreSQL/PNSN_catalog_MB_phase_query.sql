@@ -1,4 +1,4 @@
--- script: PNNS_catalog_MB_main_query.sql
+-- script: PNNS_catalog_MB_origin_query.sql
 -- author: Nathan T. Stevens (ntsteven@uw.edu) + ChatGPT (see attribution)
 -- org: Pacific Northwest Seismic Network
 -- license: GPLv3
@@ -11,42 +11,42 @@
 -- input lat/lon points from a PostgreSQL table and a reference lat/lon
 -- (the summit of Mt. Baker in this example) and filter by a reference distance
 -- (20 km from Mt. Baker's summit in this example) and then provide the following
--- information for all EVID s selected
---      (e) Event - ID and Classification (etype)
---      (o) Origin - ID, hypocentral parameters, fix-status on solutions, author, 
---      (oe) Origin_Error - covariance matrix upper triangle
---      (n) NetMag - ID, magnitude value, type, uncertainty, and contributing observations
---      (r) remark - ID, comment
+--      (e) Event ID and metadata
+--      (r) Comment from analyst/import
+--      (o) Origin best-fit solution
+--     (oe) Origin Error statistics
+--   (calc) Calculated distance in km from Mt. Baker summit
+--      (n) Network Magnitude
 -- Assumes a spherical earth with radius of 6371 km, which is reasonable for local
 -- earthquake/reference point scales (a few degrees)
 
-\copy (
-    SELECT 
-        e.evid, e.etype,
-        o.orid, to_timestamp(o.datetime), o.lat, o.lon, o.depth,
-            o.totalarr, o.ndef, o.nbs, o.quality, s.wrms,
-            o.rflag, o.fdepth, o.fepi, o.ftime,
-        n.magnitude, n.magtype, n.nsta, n.nobs, n.uncertainty,
-        oe.sxx, oe.sxy, oe.sxz, oe.sxt, 
-                oe.syy, oe.syz, oe.syt,
-                        oe.szz, oe.szt,
-                                oe.stt,
-        r.remark
+-- NOTE: To output to CSV this needs to be wrapped with \copy (<sql command>) TO <output_file_name> WITH CSV HEADER;
 
-    FROM event e
-        INNER JOIN origin o ON e.prefor = o.orid
-        INNER JOIN origin_error oe on o.orid = oe.orid
-        INNER JOIN netmag n on e.prefmag = n.magid
-        INNER JOIN remark_origin ro on o.orid = ro.orid
-        INNER JOIN remark r on ro.commid = r.commid
-    WHERE (
-        6371. * acos(
+SELECT 
+    e.evid, e.etype,
+    o.orid, to_timestamp(o.datetime), o.lat, o.lon, o.depth,
+        (6371. * acos(
             cos(radians(48.7745)) * cos(radians(o.lat)) *
             cos(radians(o.lon) - radians(-121.8172)) + 
             sin(radians(48.7745)) * sin(radians(o.lat))
-            )
-        ) <= 20.
-        AND e.selectflag= 1
+            )) AS MBS_distance_km,
+    a.arid, to_timestamp(a.datetime), a.iphase, a.quality, a.fm,
+        a.net, a.sta, a.location, a.seedchan, a.rflag, a.subsource,
+    ac.delta, ac.seaz, ac.ema, ac.timeres, ac.in_wgt, ac.wgt, ac.importance
 
-    ORDER BY o.datetime
-)
+    
+FROM event e
+    INNER JOIN origin o ON e.prefor = o.orid
+    INNER JOIN netmag n ON e.prefmag = n.magid
+    INNER JOIN remark r ON e.commid = r.commid
+    INNER JOIN assocaro ac ON o.orid = assocaro.orid
+    INNER JOIN arrival a on ac.arid = a.arid
+
+WHERE (
+    6371. * acos(
+        cos(radians(48.7745)) * cos(radians(o.lat)) *
+        cos(radians(o.lon) - radians(-121.8172)) + 
+        sin(radians(48.7745)) * sin(radians(o.lat))
+        )
+    ) <= 50.
+ORDER BY o.datetime
