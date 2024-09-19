@@ -1,6 +1,28 @@
 # DLP_Mt_Baker: Distinguishing Long-Period Seismic Sources at Mt. Baker Volcano
 This repository hosts code and metadata for analyzing long-period seismic events at Mt. Baker volcano in Washington state, USA.
 
+## Motivation  
+
+**FIGURE 1: Overview Map**
+
+The United States Geological Survey (USGS) identifies Mount Baker (48.7745°N, -121.8172°E) as a high threat potential volcano (Ewert et al., 2018), motivating its continuous seismic monitoring since 1972 by the Pacific Northwest Seismic Network (PNSN) in collaboration with the USGS Cascade Volcano Observatory (CVO). PNSN catalog indicates that only 5 earthquakes occurred within 20 km of Mt. Baker since 1980 (e.g., Fig. 2a), and little seismicity was observed during the 1975 period of unrest (Malone, 1977; review in Crider et al., 2011). In contrast, a noteworthy amount of low frequency events (LFs) emminating from Mt. Baker are recorded in the PNSN catalog, characterized as earthquake-like signals with dominant frequencies in the 1-5 Hz band (Fig. 2b-c). The retrospective study by Nichols et al. (2011) investigated LFs deeper than 10 km beneath the Cascades volcanoes between 1980 and 2009, finding that Mt. Baker hosted 31 of 60 total catalogged events for the entire region, and inferred a fluid migration source process for observed deep LFs. Monitoring from 2009 to present (Sept. 2024) resulted in an additional 21 LFs below 10 km at Mt. Baker in the PNSN catalog (Fig. 3).
+
+**FIGURE 2: Example waveforms and spectra from PNSN catalog events accurately located within 20 km of Mt. Baker. a) VT earthquake, b) 30+ km deep LF, c) land-surface LF. <TODO: provide definition for "accurately">**
+
+The glaciers cladding Mt. Baker also produce LFs that share many of the waveform characteristics as deep LFs and likely account for the majority of LFs at Mt. Baker (compare Figs. 2b, 2c, and 3b), as first reported in Malone (1977) and Weaver & Malone (1979). Subsequent studies strengthen this finding on Mt. Baker-and other glaciated volcanoes, using a combination of shallow hypocentral depths, waveform similarity, source clustering, and context of dynamic forcings important to glacier flow to motivate a glacier-source interpretation (Caplan-Auerbach et al., 2009; Thelen et al., 2013; Allstadt & Malone, 2014; and references therein). The similarity of deep and shallow LF waveforms presents a challenge to analysts in distinguishing the source-type of a given LF from it's signal characteristics alone, and by extension, hinders our ability to assess the state and evolution of magmatic processes at glaciated volcanoes (discussions in Crider et al., 2011; Thelen et al., 2013).
+
+Monitoring and discrimination of LF sources at Mt. Baker 
+Part of the PNSN automated event detection workflow uses subset groups of seismic stations to associate spatio-temporally clustered event detections into an event trigger (called a subnet trigger), which is then elevated to human review. As such, subnet trigger generation requires a minimum number of reporting stations (typically 4). Mt. Baker had one station (UW.MBW) within 30 km of the edifice, requiring a large enough event at Mt. Baker to be observable out to ~70 km to reach 4 stations. The permanent sub-network within 30 km of Mt. Baker was substantially enhanced in the last 15 years, with additions in 2009 (UW.SHUK), 2019 (UW.PUBD, UW.PLBD), and 2021 (UW.SAXON; UW.MULN; UW.DMNG) (Fig. 1). In 2023 UW.MBW2 was added near UW.MBW to provide overlapping coverage in advance of planned decomissioning of UW.MBW. These enhancements correlate with a substantal increase in the number of deep located LFs in the PNSN catalog between 2009 and late 2024 (Fig. 3a). Improved monitoring motivated greater analyst attention, resulting in a substantial increase in the frequency of LF reporting starting c.2022 (Fig. 2b). As such, the occurrence of LFs in the PNSN catalog is likely skewed by changing network sensitivity and deepening understanding of the diversity of potential LF sources at glaciated volcanoes. 
+
+**FIGURE 3: LF occurrence in the PNSN catalog & station density. a) Time-series of event depth, magnitude, and classification. b) Depth histogram of event classes. c) Frequency plot of event classifications**
+
+Using the seismic record at Mt. Baker to monitor magmatic processes over the past half-century has been hindered by the relative absence of VT events, evolving understanding of the diverse source processes that can produce LFs, and sparse network coverage. However, improved monitoring, observatory practice, and analytic methods allow us to ask old questions in a new light:
+
+   1) What are the sources of LFs at Mt. Baker?
+   2) What data can we use to reliably differentiate LF source processes?  
+   3) Can we identify and classify additional LFs in continuous waveform archives?  
+   4) With an updated catalog, what new insights might we gain about magmatic processes at Mt. Baker?
+
 ## Repository Structure  
  - data - unprocessed or minimally processed data files  
     - Events - Data files for seismic catalog metadata  
@@ -19,8 +41,21 @@ This repository hosts code and metadata for analyzing long-period seismic events
  - README.md - you are here!  
  - TODO.md - General ToDo list for this repository (formatted for "Todo Tree" VSCode plugin)  
 
-## Motivation  
-Mt. Baker has been seismically monitored since 1972, but produced relatively few observable volcano-tectonic earthquakes, even during its period of unrest in 1975 (Crider et al., 2011). However, Mt. Baker produces a notable amount of low-frequency seismicity (LF), which are defined as seismic events with source solutions deeper than 10 km b.s.l. and dominant periods in the 0.2 - 1 second band (1-5 Hz; see Figure 1; Nichols et al., 2011). Mt. Baker's DLP catalog accounts half of such events observed between 1980 and 2009 for all Cascades volcanoes and are attributed to magma and/or volatile migration at depth (Nichols et al., 2011; and references therein). 
+
+<!-- 
+The PNSN catalog for Mt. Baker contains 21 additional LFs matching this description for 2009 to present (Sept 2024), with a notable uptick in 
+
+ and subsequently by Caplan-Auerbach et al. (2009) from summer deployments in 2007 and 2008. Similar, shallow LFs are observed on other glacier-clad volcanoes
+
+Seismic monitoring of Mt. Baker  from 1972 to the present indicates that relatively few volcano-tectonic earthquakes occur in the vicinity of the volcano (~20 km radius), even during its period of unrest in 1975 (Crider et al., 2011). This glacier-clad stratovolcano regularly produces low frequency (1-5 Hz) seismic events (LF events) that are variably ascribed to magmatic processes (Nichols et al., 2011) or glacier motion (Weaver & Malone, 1979; Caplan-Auerbach et al., 2009; Thelen et al., 2013). Typically these events are differentiated by their hypocentral depths, with LFs below 10 km classified as "deep" (called deep long period events, or DLP, in the literature, e.g., Nichols et al., 2011) associated with deep magmatic processes. 
+
+ LFs localized at or near land-surface are attributed to glacier motion (W)
+
+ primary feature used to differentiate these sources is customarily the source depth for locatable events, wherein LFs with source-depths greater than 10 km below sea level (b.s.l.) were classified as "deep" events, or deep long period events (DLP) (e.g., Nichols et al., 2011), and those near the land surface attributed to glacier processes (variably labeled SU or LF in the PNSN catalog).
+
+ than any other volcano in the Cascades (Nichols et al., 2011).  (greater than 10 km below sea level), low-frequency (dominant frequencies in the 1-5 Hz band)
+
+Mt. Baker produces a notable amount of low-frequency seismicity (LF), which are defined as seismic events with source solutions deeper than 10 km b.s.l. and dominant periods in the 0.2 - 1 second band (1-5 Hz; see Figure 1; Nichols et al., 2011). Mt. Baker's DLP catalog accounts half of such events observed between 1980 and 2009 for all Cascades volcanoes and are attributed to magma and/or volatile migration at depth (Nichols et al., 2011; and references therein). 
 
 ![image](./docs/Nichols_etal_2011_Figure_1.jpeg)  
 *Figure 1: Figure 1 in [Nichols et al. (2011)](https://doi.org/10.1016/j.jvolgeores.2010.12.005): "Seismograms and spectrograms from two events recorded on station FMW near Mt. Rainier illustrate the difference in frequency content between a VT (top—1995/07/14 12:14) and a DLP (bottom—1996/03/05 14:09). The VT contains frequencies between 1 and 20 Hz, and the DLP contains energy mostly below 5 Hz. VT and DLP hypocentral distances are 23.2 km and 23.8 km, respectively. VT and DLP maximum amplitude counts are 1554 and 253, respectively. Spectrogram colors represent amplitude intensity and range from blue (low) to yellow (intermediate) to red (high)."*
@@ -63,7 +98,7 @@ Advances in seismic analysis tools and computing power give us the ability to qu
     - Detection/phase picking with the low-frequency earthquake detection model [LFEDetect](https://seisbench.readthedocs.io/en/stable/pages/documentation/models.html#seisbench.models.lfe_detect.LFEDetect) distributed with [SeisBench](https://seisbench.readthedocs.io).
     - Feature-driven detection/classification (e.g., Kharita et al., 2024). 
 
-4) Interpretation: review the enhanced catalog to determine if meaningful patterns exist that better inform our understanding of magmatic processes at Mt. Baker.
+4) Interpretation: review the enhanced catalog to determine if meaningful patterns exist that better inform our understanding of magmatic processes at Mt. Baker. -->
 
 ## License  
 ![image](./docs/gplv3-with-text-136x68.png)  
