@@ -2,14 +2,14 @@ import os
 import matplotlib.pyplot as plt
 import pandas as pd
 from obspy.core import UTCDateTime
-from obspy.geodetics import kilometer2degrees as km2deg
 from obspy.clients.fdsn import Client
 
 # Map Data Sources
 root = os.path.join('..','..','..')
 data = os.path.join(root,'data')
-events = os.path.join(data,'Events','PNSN_CAT_Mount_Baker_Full_Catalog_Event_Summary.csv')
-
+events = os.path.join(data,'Events','MtBaker_50km_radius_origins.csv')
+phases = os.path.join(data,'Events','MtBaker_20km_radius_phases.csv')
+stations = os.path.join(data,'Sensors','Mt_Baker_1deg_MDA_Stations.csv')
 # Mt. Baker Summit Position
 mbs_lat = 48.7745
 mbs_lon = -121.8172
@@ -21,10 +21,15 @@ eve_rad_m = 20e3        # [m]
 client = Client('IRIS')
 
 # Load event data
-eq_df = pd.read_csv()
+eq_df = pd.read_csv(events)
+# Rename a few headers
+eq_df = eq_df.rename(columns={'to_timestamp':'origin_time'})
 # Convert all origin times to UTCDateTime
-eq_df.origin_time = eq_df.origin_time.apply(lambda x: UTCDateTime(x))
+# eq_df.origin_time = eq_df.origin_time.apply(lambda x: UTCDateTime(x))
 
+# # Load Phase Data
+# ph_df = pd.read_csv(phases)
+# ph_df = ph_df.rename(columns={'to_timestamp':'origin_time','to_timestamp.1':'arrival_time'})
 
 select_evids = {'deep LF': [60493937, 10242483],
                 'vt EQ': [6168203, 61915302],
