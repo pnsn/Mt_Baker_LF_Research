@@ -21,7 +21,7 @@
 -- earthquake/reference point scales (a few degrees)
 
 -- NOTE: To output to CSV this needs to be wrapped with \copy (<sql command>) TO <output_file_name> WITH CSV HEADER;
-
+\copy (
 SELECT 
     e.evid, e.etype,
     o.orid, to_timestamp(o.datetime), o.lat, o.lon, o.depth,
@@ -29,7 +29,7 @@ SELECT
             cos(radians(48.7745)) * cos(radians(o.lat)) *
             cos(radians(o.lon) - radians(-121.8172)) + 
             sin(radians(48.7745)) * sin(radians(o.lat))
-            )) AS MBS_distance_km,
+            )) AS MBS_SRC_km,
     a.arid, to_timestamp(a.datetime), a.iphase, a.quality, a.fm,
         a.net, a.sta, a.location, a.seedchan, a.rflag, a.subsource,
     ac.delta, ac.seaz, ac.ema, ac.timeres, ac.in_wgt, ac.wgt, ac.importance
@@ -37,10 +37,8 @@ SELECT
     
 FROM event e
     INNER JOIN origin o ON e.prefor = o.orid
-    INNER JOIN netmag n ON e.prefmag = n.magid
-    INNER JOIN remark r ON e.commid = r.commid
-    INNER JOIN assocaro ac ON o.orid = assocaro.orid
-    INNER JOIN arrival a on ac.arid = a.arid
+    LEFT JOIN assocaro ac ON o.orid = ac.orid
+    LEFT JOIN arrival a ON ac.arid = a.arid
 
 WHERE (
     6371. * acos(
@@ -48,5 +46,6 @@ WHERE (
         cos(radians(o.lon) - radians(-121.8172)) + 
         sin(radians(48.7745)) * sin(radians(o.lat))
         )
-    ) <= 50.
-ORDER BY o.datetime
+    ) <= 20.
+    AND e.selectflag = 1
+ORDER BY o.datetime) TO 'MtBaker_20km_radius_phases.csv' WITH CSV HEADER;
