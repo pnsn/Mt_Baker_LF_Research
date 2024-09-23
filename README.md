@@ -23,6 +23,25 @@ Using the seismic record at Mt. Baker to monitor magmatic processes over the pas
    3) Can we identify and classify additional LFs in continuous waveform archives?  
    4) With an updated catalog, what new insights might we gain about magmatic processes at Mt. Baker?
 
+
+## Research Stages
+1) Catalog Survey:
+    - as a working group, assess classifications of 'LF', 'EQ', and 'SU' events for the whole PNSN catalog at Mt. Baker.
+    - assess if DLPs and glacier LPs are triggering clusters in the repeating earthquake catalog.  
+
+2) Catalog Classification Refinement: review long period events using features identified in the literature and new features that arise from observations in step 1. Refined classes might be:  
+    - deep long-period (DLP)  
+    - shallow long-period (SLP) or glacier long-period (GLP)
+    - under-constrained long-period (LP)   
+
+3) Catalog Enhancement: enhance the PNSN long-period seismicity catalog at Mt. Baker using observations from steps 1-2 and one or more of the following analytic approaches:   
+    - Waveform cross correlation / template matching using [EQcorrscan](https://eqcorrscan.readthedocs.io/en/latest/) (after Thelen et al., 2013). 
+    - Detection/phase picking with the low-frequency earthquake detection model [LFEDetect](https://seisbench.readthedocs.io/en/stable/pages/documentation/models.html#seisbench.models.lfe_detect.LFEDetect) distributed with [SeisBench](https://seisbench.readthedocs.io).
+    - Feature-driven detection/classification (e.g., Kharita et al., 2024). 
+
+4) Interpretation: review the enhanced catalog to determine if meaningful patterns exist that better inform our understanding of magmatic processes at Mt. Baker. -->
+
+
 ## Repository Structure  
  - data - unprocessed or minimally processed data files  
     - Events - Data files for seismic catalog metadata  
@@ -41,6 +60,10 @@ Using the seismic record at Mt. Baker to monitor magmatic processes over the pas
  - README.md - you are here!  
  - TODO.md - General ToDo list for this repository (formatted for "Todo Tree" VSCode plugin)  
 
+## Environment Installation
+Source code living in the `src/python` and `src/notebooks` will likely make up the bulk of this repository. You can create a `conda` environment for required (and anticipated) dependencies
+using the `environment.yml` file included in the root directory of this repository. Once you have `conda` installed, you can create the `baker_dlp` environment using:  
+```conda env create -f environment.yml```
 
 ## License  
 ![image](./docs/gplv3-with-text-136x68.png)  
@@ -133,20 +156,3 @@ Advances in seismic analysis tools and computing power give us the ability to qu
 2) Is the percieved uptick in cataloged DLPs in the past decade an observational artifact, as hypothesized?  
 3) Can we identify dependable time-series-derived characteristics to differentiate DLP and glacier-sourced LP events at Mt. Baker?  
 4) How similar are DLPs and what can this tell us about their source processes?
-
-## Research Stages
-1) Catalog Survey: review the [PNSN](https://pnsn.org/events?custom_search=true) and [REDpy](https://assets.pnsn.org/red/) catalogs to:
-    - verify accurate classifications of 'LF' (for DLPs) and 'SU' (for shallow LPs)  
-    - assess if DLPs and glacier LPs are triggering clusters in the repeating earthquake catalog.  
-
-2) Catalog Classification Refinement: refine classifications of long period events using features identified in the literature and new features that arise from observations in step 1. Refined classes might be:  
-    - deep long-period (DLP)  
-    - shallow long-period (SLP) or glacier long-period (GLP)
-    - under-constrained long-period (LP)   
-
-3) Catalog Enhancement: enhance the PNSN long-period seismicity catalog at Mt. Baker using observations from steps 1-2 and one or more of the following analytic approaches:   
-    - Waveform cross correlation / template matching using [EQcorrscan](https://eqcorrscan.readthedocs.io/en/latest/) (after Thelen et al., 2013). 
-    - Detection/phase picking with the low-frequency earthquake detection model [LFEDetect](https://seisbench.readthedocs.io/en/stable/pages/documentation/models.html#seisbench.models.lfe_detect.LFEDetect) distributed with [SeisBench](https://seisbench.readthedocs.io).
-    - Feature-driven detection/classification (e.g., Kharita et al., 2024). 
-
-4) Interpretation: review the enhanced catalog to determine if meaningful patterns exist that better inform our understanding of magmatic processes at Mt. Baker. -->
