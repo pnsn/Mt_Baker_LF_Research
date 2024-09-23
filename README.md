@@ -5,7 +5,7 @@ This repository hosts code and metadata for analyzing long-period seismic events
 
 **FIGURE 1: Overview Map**
 
-The United States Geological Survey (USGS) identifies Mount Baker (48.7745°N, -121.8172°E) as a high threat potential volcano (Ewert et al., 2018), motivating its continuous seismic monitoring since 1972 by the Pacific Northwest Seismic Network (PNSN) in collaboration with the USGS Cascade Volcano Observatory (CVO). PNSN catalog indicates that only 5 earthquakes occurred within 20 km of Mt. Baker since 1980 (e.g., Fig. 2a), and little seismicity was observed during the 1975 period of unrest (Malone, 1977; review in Crider et al., 2011). In contrast, a noteworthy amount of low frequency events (LFs) emminating from Mt. Baker are recorded in the PNSN catalog, characterized as earthquake-like signals with dominant frequencies in the 1-5 Hz band (Fig. 2b-c). The retrospective study by Nichols et al. (2011) investigated LFs deeper than 10 km beneath the Cascades volcanoes between 1980 and 2009, finding that Mt. Baker hosted 31 of 60 total catalogged events for the entire region, and inferred a fluid migration source process for observed deep LFs. Monitoring from 2009 to present (Sept. 2024) resulted in an additional 21 LFs below 10 km at Mt. Baker in the PNSN catalog (Fig. 3).
+The United States Geological Survey (USGS) identified Mount Baker (48.7745°N, -121.8172°E) as a high threat potential volcano (Ewert et al., 2018), motivating its continuous seismic monitoring since 1972 by a collaboration of Pacific Northwest Seismic Network (PNSN) and the USGS Cascade Volcano Observatory (CVO). The PNSN catalog indicates that only 5 earthquakes occurred within 20 km of Mt. Baker since 1980 (e.g., Fig. 2a), and little seismicity was observed during the 1975 period of unrest (Malone, 1977; review in Crider et al., 2011). In contrast, a noteworthy amount of low frequency events (LFs) emminating from Mt. Baker are recorded in the PNSN catalog, characterized as earthquake-like signals with dominant frequencies in the 1-5 Hz band (Fig. 2b-c). The retrospective study by Nichols et al. (2011) investigated LFs deeper than 10 km beneath the Cascades volcanoes between 1980 and 2009, finding that Mt. Baker hosted 31 of 60 total catalogged events for the entire region, and inferred a fluid migration source process for observed deep LFs. Monitoring from 2009 to present (Sept. 2024) resulted in an additional 21 LFs below 10 km at Mt. Baker in the PNSN catalog (Fig. 3).
 
 **FIGURE 2: Example waveforms and spectra from PNSN catalog events accurately located within 20 km of Mt. Baker. a) VT earthquake, b) 30+ km deep LF, c) land-surface LF. <TODO: provide definition for "accurately">**
 
@@ -40,6 +40,57 @@ Using the seismic record at Mt. Baker to monitor magmatic processes over the pas
  - LICENSE - distribution terms  
  - README.md - you are here!  
  - TODO.md - General ToDo list for this repository (formatted for "Todo Tree" VSCode plugin)  
+
+
+## License  
+![image](./docs/gplv3-with-text-136x68.png)  
+Original works contained in this repository are distributed under the attached GNU General Public License v3. Figures from cited works must follow the individual licenses of the cited works (i.e., Figures 1 and 4 in the Motivation section).  
+
+## Project Collaborators
+### People
+Nathan T. Stevens (PNSN Seismologist/Developer) - Repository Manager / Research Mentor (ntsteven@uw.edu)  
+Renate Hartog (PNSN Network Manager) - Research Supervisor  
+Benz Poobua (ESS Undergraduate Researcher) - Research Mentee  
+Steve Malone (PNSN Director Emeritus)  
+Alex Hutko (PNSN Research Seismologist)  
+Amy Wright (PNSN Lead Seismic Analyst)  
+Barrett Johnson (PNSN Seismic Analyst)  
+Wes Thelen (CVO Research Geophysicist)  
+...likely more to come   
+
+### Organizations  
+ - [PNSN Scientific Products Team](https://pnsn.org)  
+ - [UW ESS Department Researchers](https://ess.uw.edu)    
+ - [USGS Cascade Volcano Observatory Researchers](https://www.usgs.gov/observatories/cvo)   
+
+## Collaborator Documents Repository  
+A repository of written documents and references for permissioned collaborators is available on the PNSN GoogleDrive.  
+
+## Works Cited
+ - [Allstadt, K., and Malone, S.D. (2014) Swarms of repeating stick-slip ice-quakes triggered by snow loading at Mt. Rainier volcano. JGR-Earth Surface, 119, 1180-1203](https://doi.org/10.1002/2014JF003086).
+
+ - [Caplan-Auerbach, J., Thelen, W.A., and Moran, S.C. (2009) An Unusual Cluster of Low-Frequency Earthquakes at Mount Baker, Washington, as Detected by a Local Broadband Network. EOS Trans. AGU 89, Fall Meeting Suppl., Paper number V23D-2111](https://ui.adsabs.harvard.edu/abs/2009AGUFM.V23D2111C/abstract)
+
+ - [Chamberlain, C.J., Hopp, C.J., Boese, C.M., Warren-Smith, E., Chambers, D., Chu, S.X., Michailos, K., and Townsend, J. (2017) EQcorrscan: Repeating and Near-Repeating Earthquake Detection and Analysis in Python. SRL 89(1): 173-181](https://doi.org/10.1785/0220170151)
+
+ - [Crider, J.G., Johnsen, K.H., and Williams-Jones, G. (2008) Thirty-year gravity change at Mount Baker volcano, Washington, USA: extracting the signal from under the ice. Geophys Res Lett 35:L20304– L20308](https://doi.org/10.1029/2008GL034921)
+
+ - [Hotovec-Ellis, A.J., and Jeffries, C. (2016) Near Real-time Detection, Clustering, and Analysis of Repeating Earthquakes: Application to Mount St. Helens and Redoubt Volcanoes – Invited, presented at Seismological Society of America Annual Meeting, Reno, Nevada, 20 Apr.](https://code.usgs.gov/vsc/REDPy)
+
+ - [Kharita, A., Denolle, M.A., West, M.E. (2024) Discrimination between icequakes and earthquakes in southern Alaska: an exploration of waveform features using Random Forest algorithm. GJI 237(2), 1189-11207](https://doi.org/10.1093/gji/ggae106)
+
+ - [Malone, S.D. (1977) Summary of Seismicity and Gravity, pg. 19-25 in Frank, D., Meier, M.F., and Swanson, D., Assessmentof Increased THermal Activity at Mount Baker, Washington March 1975-March 1976. U.S. Geological Survey Professional Paper 1022-A](https://pubs.usgs.gov/pp/1022a/report.pdf)
+
+ - [Mousavi, S.M., and Beroza, G.C. (2023) Machine Learning in Earthquake Seismology. Ann. Rev. Earth and Planet. Sci. 51: 105-129](https://doi.org/10.1145/annurev-earth-071822-100323)
+
+ - [Münchmeyer, J., Giffard-Roisin, S., Malfante, M., Frank, W.B., Poli, P., Marsan, D., and Socquet, A. (2024) Deep learning detects uncataloged low-frequency earthquakes across regions. Seismica , 3(1)](https://doi.org/10.26443/seismica.v3i1.1185)
+
+ - [Nichols, M.L., Malone, S.D., Moran, S.C., Thelen, W.A., and Vidale, J.E. (2011) Deep long-period earthquakes beneath Washington and Oregon volcanoes. J. Volc. and Geotherm. Res. 200(3–4), 116–128.](https://doi.org/10.1016/j.jvolgeores.2010.12.005)
+
+ - [Thelen, W.A., Allstadt, K., De Angelis, S., Malone, S.D., Moran, S.C., and Vidale, J. (2013) Shallow repeating seismic events under an alpine glacier at Mount Rainier, Washington, USA. J. Glac., 59(214), 345-356.](https://doi.org/10.3189/2013Jog12J111)
+
+ - [Weaver, C.S., and Malone, S.D. (1979) Seismic evidence for discrete glacier motion at the rock-ice interface. J. Glaciol 23:171–184](https://doi.org/10.3189/S0022143000029816)
+
 
 
 <!-- 
@@ -99,53 +150,3 @@ Advances in seismic analysis tools and computing power give us the ability to qu
     - Feature-driven detection/classification (e.g., Kharita et al., 2024). 
 
 4) Interpretation: review the enhanced catalog to determine if meaningful patterns exist that better inform our understanding of magmatic processes at Mt. Baker. -->
-
-## License  
-![image](./docs/gplv3-with-text-136x68.png)  
-Original works contained in this repository are distributed under the attached GNU General Public License v3. Figures from cited works must follow the individual licenses of the cited works (i.e., Figures 1 and 4 in the Motivation section).  
-
-## Project Collaborators
-### People
-Nathan T. Stevens (PNSN Seismologist/Developer) - Repository Manager / Research Mentor (ntsteven@uw.edu)  
-Renate Hartog (PNSN Network Manager) - Research Supervisor  
-Benz Poobua (ESS Undergraduate Researcher) - Research Mentee  
-Steve Malone (PNSN Director Emeritus)  
-Alex Hutko (PNSN Research Seismologist)  
-Amy Wright (PNSN Lead Seismic Analyst)  
-Barrett Johnson (PNSN Seismic Analyst)  
-Wes Thelen (CVO Research Geophysicist)  
-...likely more to come   
-
-### Organizations  
- - [PNSN Scientific Products Team](https://pnsn.org)  
- - [UW ESS Department Researchers](https://ess.uw.edu)    
- - [USGS Cascade Volcano Observatory Researchers](https://www.usgs.gov/observatories/cvo)   
-
-## Collaborator Documents Repository  
-A repository of written documents and references for permissioned collaborators is available on the PNSN GoogleDrive.  
-
-## Works Cited
- - [Allstadt, K., and Malone, S.D. (2014) Swarms of repeating stick-slip ice-quakes triggered by snow loading at Mt. Rainier volcano. JGR-Earth Surface, 119, 1180-1203](https://doi.org/10.1002/2014JF003086).
-
- - [Caplan-Auerbach, J., Thelen, W.A., and Moran, S.C. (2009) An Unusual Cluster of Low-Frequency Earthquakes at Mount Baker, Washington, as Detected by a Local Broadband Network. EOS Trans. AGU 89, Fall Meeting Suppl., Paper number V23D-2111](https://ui.adsabs.harvard.edu/abs/2009AGUFM.V23D2111C/abstract)
-
- - [Chamberlain, C.J., Hopp, C.J., Boese, C.M., Warren-Smith, E., Chambers, D., Chu, S.X., Michailos, K., and Townsend, J. (2017) EQcorrscan: Repeating and Near-Repeating Earthquake Detection and Analysis in Python. SRL 89(1): 173-181](https://doi.org/10.1785/0220170151)
-
- - [Crider, J.G., Johnsen, K.H., and Williams-Jones, G. (2008) Thirty-year gravity change at Mount Baker volcano, Washington, USA: extracting the signal from under the ice. Geophys Res Lett 35:L20304– L20308](https://doi.org/10.1029/2008GL034921)
-
- - [Hotovec-Ellis, A.J., and Jeffries, C. (2016) Near Real-time Detection, Clustering, and Analysis of Repeating Earthquakes: Application to Mount St. Helens and Redoubt Volcanoes – Invited, presented at Seismological Society of America Annual Meeting, Reno, Nevada, 20 Apr.](https://code.usgs.gov/vsc/REDPy)
-
- - [Kharita, A., Denolle, M.A., West, M.E. (2024) Discrimination between icequakes and earthquakes in southern Alaska: an exploration of waveform features using Random Forest algorithm. GJI 237(2), 1189-11207](https://doi.org/10.1093/gji/ggae106)
-
- - [Malone, S.D. (1977) Summary of Seismicity and Gravity, pg. 19-25 in Frank, D., Meier, M.F., and Swanson, D., Assessmentof Increased THermal Activity at Mount Baker, Washington March 1975-March 1976. U.S. Geological Survey Professional Paper 1022-A](https://pubs.usgs.gov/pp/1022a/report.pdf)
-
- - [Mousavi, S.M., and Beroza, G.C. (2023) Machine Learning in Earthquake Seismology. Ann. Rev. Earth and Planet. Sci. 51: 105-129](https://doi.org/10.1145/annurev-earth-071822-100323)
-
- - [Münchmeyer, J., Giffard-Roisin, S., Malfante, M., Frank, W.B., Poli, P., Marsan, D., and Socquet, A. (2024) Deep learning detects uncataloged low-frequency earthquakes across regions. Seismica , 3(1)](https://doi.org/10.26443/seismica.v3i1.1185)
-
- - [Nichols, M.L., Malone, S.D., Moran, S.C., Thelen, W.A., and Vidale, J.E. (2011) Deep long-period earthquakes beneath Washington and Oregon volcanoes. J. Volc. and Geotherm. Res. 200(3–4), 116–128.](https://doi.org/10.1016/j.jvolgeores.2010.12.005)
-
- - [Thelen, W.A., Allstadt, K., De Angelis, S., Malone, S.D., Moran, S.C., and Vidale, J. (2013) Shallow repeating seismic events under an alpine glacier at Mount Rainier, Washington, USA. J. Glac., 59(214), 345-356.](https://doi.org/10.3189/2013Jog12J111)
-
- - [Weaver, C.S., and Malone, S.D. (1979) Seismic evidence for discrete glacier motion at the rock-ice interface. J. Glaciol 23:171–184](https://doi.org/10.3189/S0022143000029816)
-
