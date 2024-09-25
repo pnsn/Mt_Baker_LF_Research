@@ -71,7 +71,8 @@ Original works contained in this repository are distributed under the attached G
 
 ## Collaboration
 ### How to Collaborate on this Repository
-Collaborative work on this repository should roughly follow the [ObsPy contribution guidelines](https://docs.obspy.org/contributing.html).  
+Collaborative work on this repository should roughly follow the [ObsPy contribution guidelines](https://docs.obspy.org/contributing.html). Detailed
+guidance on general GitHub collaboration can be found [here](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests).
 In a nutshell:  
 1) Fork this repository
 2) Make a new branch
