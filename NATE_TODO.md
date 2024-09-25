@@ -12,3 +12,5 @@ TODO: add Benz as a collaborator on this repository
 TODO: Create template generation example from Stevens SGGS SSA repository  
 TODO: Create template matching exaple from Stevens SGGS SSA repository  
 
+### CLEANUP
+TODO: Sequester any half-finished products, then make a forked repository & practice pull/fork collaboration with my development!
