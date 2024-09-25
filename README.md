@@ -66,13 +66,24 @@ using the `environment.yml` file included in the root directory of this reposito
 ```conda env create -f environment.yml```
 
 ## License  
-![image](./docs/gplv3-with-text-136x68.png)  
+![image](./docs/Figures/gplv3-with-text-136x68.png)  
 Original works contained in this repository are distributed under the attached GNU General Public License v3. Figures from cited works must follow the individual licenses of the cited works (i.e., Figures 1 and 4 in the Motivation section).  
 
-## Project Collaborators
+## Collaboration
+### How to Collaborate on this Repository
+Collaborative work on this repository should roughly follow the [ObsPy contribution guidelines](https://docs.obspy.org/contributing.html).  
+In a nutshell:  
+1) Fork this repository
+2) Make a new branch
+3) Work on something
+4) Push to your fork
+5) [Submit a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
+6) Wait for repo manager review
+
+
 ### People
 Nathan T. Stevens (PNSN Seismologist/Developer) - Repository Manager / Research Mentor (ntsteven@uw.edu)  
-Renate Hartog (PNSN Network Manager) - Research Supervisor  
+Renate Hartog (PNSN Network Manager) - PNSN GitHub Organization Owner / Research Supervisor  
 Benz Poobua (ESS Undergraduate Researcher) - Research Mentee  
 Steve Malone (PNSN Director Emeritus)  
 Alex Hutko (PNSN Research Seismologist)  
