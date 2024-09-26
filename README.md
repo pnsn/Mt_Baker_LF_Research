@@ -5,7 +5,7 @@
 ## Motivation
 
 ![image](./docs/Figures/Mt_Baker_Catalog_and_Stations_Timeseries_120dpi.png)  
-***Figure 1** (left axis) Time-series of annual seismic event frequency at Mt. Baker (within 10 km of the summit) in the PNSN catalog. Events are split by event type: LF = low frequency, EQ = earthquake, SU = surface event, PX = probable blast (key). (right axis) Time-series of PNSN-operated seismic station counts within 30 km of Mt. Baker, sampled monthly.*
+***Figure 1** (left axis) Time-series of annual seismic event frequency at Mt. Baker (within 10 km of the summit) in the PNSN catalog. Events are split by event type: LF = low frequency, EQ = earthquake, SU = surface event, PX = probable blast (key). (right axis) Time-series of PNSN-operated seismic station counts within 30 km of Mt. Baker, sampled monthly. Metadata from the IRIS MetaData Aggregator.*
 
 Mt. Baker does not produce many volcano-tectonic earthquakes, but it does produce a significant number of low-frequency seismic events (LFs) associated with either magmatic or glaciologic processes. Glacier and volcano sourced LFs from Mt. Baker have similar waveform characteristics, typically requiring accurate event location solutions to differentiate LF source type (Malone, 1977; Weaver & Malone, 1979; Caplan-Auerbach et al., 2009; Crider et al., 2011; Nichols et al., 2011; Thelen et al., 2013).
 
