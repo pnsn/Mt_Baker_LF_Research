@@ -139,6 +139,7 @@ axes[0].set_ylabel('PNSN catalog events within %d km of Mt. Baker\nAnnual Count'
 axes[0].set_xlim([pd.Timestamp('1980-01-01'), event_counts_df.index[-1]])
 axes[0].set_ylim([0,80])
 axes[1].set_ylim([0,10])
+axes[0].grid(linestyle=':')
 
 if issave:
     fig.savefig(savename, dpi=DPI, format=FMT)
