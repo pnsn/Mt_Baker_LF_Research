@@ -1,4 +1,4 @@
--- script: PNNS_catalog_MB_origin_query.sql
+-- script: PNNS_catalog_MB_phase_query.sql
 -- author: Nathan T. Stevens (ntsteven@uw.edu) + ChatGPT (see attribution)
 -- org: Pacific Northwest Seismic Network
 -- license: GPLv3
@@ -9,19 +9,19 @@
 -- Purpose:
 -- Use the Haversine function to get kilometer distance estimates between
 -- input lat/lon points from a PostgreSQL table and a reference lat/lon
--- (the summit of Mt. Baker in this example) and filter by a reference distance
+-- (the summit of Mt. Baker in this script) and filter by a reference distance
 -- (20 km from Mt. Baker's summit in this example) and then provide the following
 --      (e) Event ID and metadata
---      (r) Comment from analyst/import
 --      (o) Origin best-fit solution
---     (oe) Origin Error statistics
+--     (ac) Arrival association metadata, geometric parameters, and parameter misfits
+--      (a) Arrival pick data and metadata
 --   (calc) Calculated distance in km from Mt. Baker summit
---      (n) Network Magnitude
+--
 -- Assumes a spherical earth with radius of 6371 km, which is reasonable for local
 -- earthquake/reference point scales (a few degrees)
 
 -- NOTE: To output to CSV this needs to be wrapped with \copy (<sql command>) TO <output_file_name> WITH CSV HEADER;
-\copy (
+--\copy (
 SELECT 
     e.evid, e.etype,
     o.orid, to_timestamp(o.datetime), o.lat, o.lon, o.depth,
@@ -48,4 +48,5 @@ WHERE (
         )
     ) <= 20.
     AND e.selectflag = 1
-ORDER BY o.datetime) TO 'MtBaker_20km_radius_phases.csv' WITH CSV HEADER;
+ORDER BY o.datetime
+--) TO 'MtBaker_20km_radius_phases.csv' WITH CSV HEADER;

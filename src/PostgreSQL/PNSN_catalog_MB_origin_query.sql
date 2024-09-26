@@ -9,20 +9,20 @@
 -- Purpose:
 -- Use the Haversine function to get kilometer distance estimates between
 -- input lat/lon points from a PostgreSQL table and a reference lat/lon
--- (the summit of Mt. Baker in this example) and filter by a reference distance
--- (20 km from Mt. Baker's summit in this example) and then provide the following
+-- (the summit of Mt. Baker in this script) and filter by a reference distance
+-- (50 km from Mt. Baker's summit in this script) and then provide values from
+-- the following tables:
 --      (e) Event ID and metadata
 --      (r) Comment from analyst/import
 --      (o) Origin best-fit solution
---     (x) Origin Error statistics
+--      (x) Origin Error statistics
 --   (calc) Calculated distance in km from Mt. Baker summit
 --      (n) Network Magnitude
 -- Assumes a spherical earth with radius of 6371 km, which is reasonable for local
 -- earthquake/reference point scales (a few degrees)
 
--- NOTE: To output to CSV this needs to be wrapped with \copy (<sql command>) TO <output_file_name> WITH CSV HEADER;
-
-\copy (SELECT 
+-- \copy (
+SELECT 
     e.evid, e.etype, e.selectflag, e.version,
     r.commid, r.remark,
     n.magid, n.magnitude, n.magtype, 
@@ -57,4 +57,5 @@ WHERE (
         )
     ) <= 50.
     AND e.selectflag = 1
-ORDER BY o.datetime) TO 'MtBaker_50km_radius_origins.csv' WITH CSV HEADER;
+ORDER BY o.datetime
+-- ) TO 'MtBaker_50km_radius_origins.csv' WITH CSV HEADER;
