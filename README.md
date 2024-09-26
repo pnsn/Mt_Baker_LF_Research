@@ -55,10 +55,13 @@ The QGIS project in this repository was created using QGIS version 3.32 "Lima". 
 SQL queries in the `src/PostgreSQL` directory were composed for PostgreSQL version 14.X databases used by AQMS (see Hartog et al., 2020). The schema for AQMS databases follows the CISN/ANSS Parametric Information Schema documented [here](https://ncedc.org/db/Documents/NewSchemas/PI/v1.6.4/PI.1.6.4/index.htm)
 
 ## Collaboration
-### How to Collaborate on this Repository
-Collaborative work on this repository follows the [Fork and Pull](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/getting-started/about-collaborative-development-models#fork-and-pull-model) development model. 
+### Coding Style Guide
+The ObsPy development team provides a great [Coding Style Guide](https://docs.obspy.org/coding_style.html) in their documentation. Please adhere to their guidelines
 
-Detailed guidance on collaborative development on GitHub can be found [here](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests).
+### How to Collaborate on this Repository
+Collaborative work on this repository follows the [Fork and Pull](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/getting-started/about-collaborative-development-models#fork-and-pull-model) development model. This model is used by the ObsPy community and documented [here](https://docs.obspy.org/contributing.html)
+
+Detailed guidance on collaborative development using GitHub can be found [here](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests).
 
 Collaboration Steps In a Nutshell:  
 1) Fork this repository
@@ -73,22 +76,15 @@ Best practices for pull requests are detailed [here](https://docs.github.com/en/
 ### People
 Nathan T. Stevens (PNSN Seismologist/Developer) - Repository Manager / Research Mentor (ntsteven@uw.edu)  
 Renate Hartog (PNSN Network Manager) - PNSN GitHub Organization Owner / Research Supervisor  
-Benz Poobua (ESS Undergraduate Researcher) - Research Mentee  
-Steve Malone (PNSN Director Emeritus)  
-Alex Hutko (PNSN Research Seismologist)  
-Amy Wright (PNSN Lead Seismic Analyst)  
-Barrett Johnson (PNSN Seismic Analyst)  
-Wes Thelen (CVO Research Geophysicist)  
-...likely more to come   
+Benz Poobua (ESS Undergraduate Researcher) - Research Mentee   
 
-### Organizations  
+### Groups  
  - [PNSN Scientific Products Team](https://pnsn.org)  
- - [UW ESS Department Researchers](https://ess.uw.edu)    
- - [USGS Cascade Volcano Observatory Researchers](https://www.usgs.gov/observatories/cvo)   
+ - [UW Earth and Space Sciences Department](https://ess.uw.edu)    
+ - [USGS Cascade Volcano Observatory](https://www.usgs.gov/observatories/cvo)   
 
 ### Collaborator Documents Repository  
 A repository of written documents and references for permissioned collaborators is available on the PNSN GoogleDrive.  
-
 
 ## References
 
