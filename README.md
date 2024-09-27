@@ -4,12 +4,19 @@
 
 ## Motivation
 
+Mt. Baker does not produce many volcano-tectonic earthquakes, but it does produce a significant number of low-frequency seismic events (LFs) associated with either magmatic or glaciologic processes. Glacier and volcano sourced LFs from Mt. Baker have similar waveform characteristics, typically requiring accurate event location solutions to differentiate LF source type (Malone, 1977; Weaver & Malone, 1979; Caplan-Auerbach et al., 2009; Crider et al., 2011; Nichols et al., 2011; Thelen et al., 2013).
+
+
 ![image](./docs/Figures/Mt_Baker_Catalog_and_Stations_Timeseries_120dpi.png)  
 ***Figure 1** (left axis) Time-series of annual seismic event frequency at Mt. Baker (within 10 km of the summit) in the PNSN catalog. Events are split by event type: LF = low frequency, EQ = earthquake, SU = surface event, PX = probable blast (key). (right axis) Time-series of PNSN-operated seismic station counts within 30 km of Mt. Baker, sampled monthly. Station metadata from the IRIS MetaData Aggregator.*
 
-Mt. Baker does not produce many volcano-tectonic earthquakes, but it does produce a significant number of low-frequency seismic events (LFs) associated with either magmatic or glaciologic processes. Glacier and volcano sourced LFs from Mt. Baker have similar waveform characteristics, typically requiring accurate event location solutions to differentiate LF source type (Malone, 1977; Weaver & Malone, 1979; Caplan-Auerbach et al., 2009; Crider et al., 2011; Nichols et al., 2011; Thelen et al., 2013).
 
-From 1972 to 2001 Mt. Baker was continuously monitored by only one seismic station (UW.MBW) - a vertical component, analog station - within 30 km of the summit, making it difficult or impossible to locate lower magnitude events. Since 2001 seven new permanent stations were added to this region, and in 2023 UW.MBW2 was installed 2 km from UW.MBW while UW.MBW continued to operate until December 2023. Seismic monitoring of Mt. Baker has been periodically augmented by temporary seismic deployments on the volcano itself, including one from 1975 to 1977 (Malone, 1977; Weaver & Malone, 1979) and three seasonal deployments during 2007, 2008, and 2009 (Caplan-Auerbach et al., 2009). These temporary arrays enabled improved LF detection, location, and characteization, revealing that a substantial portion LF seismicity at Mt. Baker arises from glacier motion (Weaver & Malone, 1979; Caplan-Auerbach et al., 2009). The current permanent sub-network around Mt. Baker also provides similar benefits, resulting in a substantial increase in the occurrence of LFs in the post-2009 PNSN catalog (Fig. 1). Due to these observational biases, it is difficult to extract meaningful trends from the current catalog of LFs at Mt. Baker.
+From 1972 to 2001 Mt. Baker was continuously monitored by only one seismic station (UW.MBW) - a vertical component, analog station - within 30 km of the summit, making it difficult or impossible to locate lower magnitude events. Since 2001 seven new permanent stations were added to this region, and in 2023 UW.MBW2 was installed 2 km from UW.MBW while UW.MBW continued to operate until December 2023 (Fig. 2). Seismic monitoring of Mt. Baker has been periodically augmented by temporary seismic deployments on the volcano itself, including one from 1975 to 1977 (Malone, 1977; Weaver & Malone, 1979) and three seasonal deployments during 2007, 2008, and 2009 (Caplan-Auerbach et al., 2009). These temporary arrays enabled improved LF detection, location, and characteization, revealing that a substantial portion LF seismicity at Mt. Baker arises from glacier motion (Weaver & Malone, 1979; Caplan-Auerbach et al., 2009). The current permanent sub-network around Mt. Baker also provides similar benefits, resulting in a substantial increase in the occurrence of LFs in the post-2009 PNSN catalog (Fig. 1). Due to these observational biases, it is difficult to extract meaningful trends from the current catalog of LFs at Mt. Baker.
+
+
+![image](./docs/Figures/Overview_Maps_120dpi.png)  
+***Figure 2** Regional (left) and local (right) maps of PNSN stations within 40 km of Mt.Baker and PNSN catalog seismic events within 10 km of Mt.Baker. (key) Seismic station marker colors indicate the station's installation year, whereas seismic event epicenter colors indicate their classification. Station label colors indicate if the station is currently active (white) or decomissioned (orange).The domain of the local map is shown as a black outline in the regional map.Figure generated using QGIS 3.32, basemap imagery from Mapzen Global Terrain (both) and OpenStreetMap (local map).*
+
 
 If we can identify waveform-based features that distinguish LF source types using these well-characterized events, we can use computationally fast, single-station analytic methods (e.g., Chamberlain et al., 2017; Münchmeyer et al., 2024) to reanalyze the entire continuous waveform archive for stations around Mt. Baker to enhance the PNSN LF catalog, address observational biases in the catalog, and potentially gain new insights on magmatic and glaciologic processes at Mt. Baker.
 
@@ -45,10 +52,10 @@ Original works contained in this repository are distributed under the attached G
  - LICENSE - distribution terms  
  - README.md - you are here!  
 
-## Environment & Dependency Versions
+## Environment & Relevant Software Versions
 ### Conda Environment for Python Scripts
-Source code living in the `src/python` and `src/notebooks` will likely make up the bulk of this repository. You can create a `conda` environment for required (and anticipated) dependencies
-using the `environment.yml` file included in the root directory of this repository. Once you have `conda` installed, you can create the `baker_lf` environment using:  
+Source code in the `src/python` and `src/notebooks` directories will likely make up the bulk of this repository. 
+To create a `conda` environment `baker_lf`, use the included `environment.yml` file as such:  
 
 ```conda env create -f environment.yml```
 
@@ -56,39 +63,40 @@ using the `environment.yml` file included in the root directory of this reposito
 The QGIS project in this repository was created using QGIS version 3.32 "Lima". QGIS can be downloaded [here](https://www.qgis.org).
 
 ### PostgreSQL + AQMS
-SQL queries in the `src/PostgreSQL` directory were composed for PostgreSQL version 14.X databases used by AQMS (see Hartog et al., 2020). The schema for AQMS databases follows the CISN/ANSS Parametric Information Schema documented [here](https://ncedc.org/db/Documents/NewSchemas/PI/v1.6.4/PI.1.6.4/index.htm)
+SQL queries in the `src/PostgreSQL` directory were composed for PostgreSQL version 14.X databases used by AQMS (see Hartog et al., 2020). The schema for AQMS databases follows the CISN/ANSS Parametric Information Schema documented [here](https://ncedc.org/db/Documents/NewSchemas/PI/v1.6.4/PI.1.6.4/index.htm).
 
 ## Collaboration
+### People
+Nathan T. Stevens (PNSN Seismologist/Developer) - Repository Manager / Research Mentor (ntsteven@uw.edu)  
+Renate Hartog (PNSN Network Manager) - PNSN GitHub Organization Owner / Research Supervisor  
+Benz Poobua (ESS Undergraduate Researcher) - Research Mentee   
+
+### Organizations  
+ - [PNSN Scientific Products Team](https://pnsn.org)  
+ - [UW Earth and Space Sciences Department](https://ess.uw.edu)    
+ - [USGS Cascade Volcano Observatory](https://www.usgs.gov/observatories/cvo)   
+
+### Document Repository  
+A repository titled `Mt Baker LF Research` for written documents, presentations, and reference materials is available on the PNSN GoogleDrive account for permissioned collaborators.  
+
 ### Coding Style Guide
-The ObsPy development team provides a great [Coding Style Guide](https://docs.obspy.org/coding_style.html) in their documentation. Please adhere to their guidelines
+The ObsPy development team provides a great [Coding Style Guide](https://docs.obspy.org/coding_style.html) in their documentation. Please adhere to their guidelines.
 
 ### How to Collaborate on this Repository
-Collaborative work on this repository follows the [Fork and Pull](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/getting-started/about-collaborative-development-models#fork-and-pull-model) development model. This model is used by the ObsPy community and documented [here](https://docs.obspy.org/contributing.html)
+Collaborative work on this repository follows the [Fork and Pull](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/getting-started/about-collaborative-development-models#fork-and-pull-model) development model. This model is widely used for open-source software development: e.g., ObsPy, see their contribution guide [here](https://docs.obspy.org/contributing.html)).
 
-Detailed guidance on collaborative development using GitHub can be found [here](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests).
+Detailed guidance on collaborative development using GitHub is provided [here](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests).
 
 Collaboration Steps In a Nutshell:  
 1) Fork this repository
 2) Make a new branch
 3) Work on something locally
 4) Push changes to your forked repository
-5) [Submit a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) to the primary repository.
-6) Wait for review of pull request by repository manager
+5) [Submit a pull request to the main repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) to the primary repository.
+6) Wait for review of pull request by an admin.
 
-Best practices for pull requests are detailed [here](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/getting-started/best-practices-for-pull-requests)
+Best practices for pull requests are detailed [here](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/getting-started/best-practices-for-pull-requests).
 
-### People
-Nathan T. Stevens (PNSN Seismologist/Developer) - Repository Manager / Research Mentor (ntsteven@uw.edu)  
-Renate Hartog (PNSN Network Manager) - PNSN GitHub Organization Owner / Research Supervisor  
-Benz Poobua (ESS Undergraduate Researcher) - Research Mentee   
-
-### Groups  
- - [PNSN Scientific Products Team](https://pnsn.org)  
- - [UW Earth and Space Sciences Department](https://ess.uw.edu)    
- - [USGS Cascade Volcano Observatory](https://www.usgs.gov/observatories/cvo)   
-
-### Collaborator Documents Repository  
-A repository of written documents and references for permissioned collaborators is available on the PNSN GoogleDrive.  
 
 ## References
 
