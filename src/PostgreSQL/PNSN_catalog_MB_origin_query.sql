@@ -28,7 +28,7 @@ SELECT
     n.magid, n.magnitude, n.magtype, 
         n.uncertainty, n.nobs, n.nsta,
     o.orid, o.auth, o.subsource,
-        to_timestamp(o.datetime), o.lat, o.lon, o.depth,
+        to_timestamp(o.datetime), o.datetime, o.lat, o.lon, o.depth,
         (6371. * acos(
         cos(radians(48.7745)) * cos(radians(o.lat)) *
         cos(radians(o.lon) - radians(-121.8172)) + 
