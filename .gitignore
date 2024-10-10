@@ -1,1 +1,4 @@
 processed_data/*
+*.mseed
+.DS_Store
+mtbaker
