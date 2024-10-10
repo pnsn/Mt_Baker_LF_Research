@@ -1,10 +1,11 @@
 """
 :module: src/python/pull_wf_by_evid.py
 :auth: Benz Poobua & Nate Stevens
-:email: spoobu (at) uw.edu
-:org: University of Washington
+:email: spoobu (at) uw.edu; ntsteven (at) uw.edu
+:org: University of Washington; Pacific Northwest Seismic Network
 :license: GNU GPLv3
-:purpose: This module is used to fetch events from AQMS and fetch subset waveform pickings from IRIS web services.
+:purpose: This module contains scripts that read and format CSVs output from AQMS
+    and uses phase pick metadata to retrieve waveform picks from a web client.
 
 """
 import os,sys
