@@ -11,18 +11,17 @@ import os,sys
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np 
-
 from obspy import read
 from obspy.core import UTCDateTime
 from obspy.clients.fdsn import Client
 
 sys.path.append(os.path.join('..', 'python'))
+
 from util import unix_to_UTCDateTime
 
 def format_aqms_csv(filename, colmapping={'datetime': 'origin_datetime', 'datetime.1': 'arrival_datetime'}):
     """This method reads a raw output CSV file from an AQMS file, renames columns 
-    as specified by **colmapping**, and formats POSIX datetimes to UTCDateTimes and necessary
-    corrections to make boolean entries.
+    as specified by **colmapping**, and formats POSIX datetimes to UTCDateTimes.
 
     :param filename: name of the CSV file to load
     :type filename: str
@@ -32,18 +31,25 @@ def format_aqms_csv(filename, colmapping={'datetime': 'origin_datetime', 'dateti
     :return:
      - **df** (*pandas.dataframe.DataFrame*) -- loaded, formatted
     """    
-
+    # relative path
     rrpath = os.path.join('..', '..')
     phases = os.path.join(rrpath, 'data', 'Events', filename)
     phases_df = pd.read_csv(phases)
+
+    # rename the columns
     phases_df.rename(columns=colmapping, inplace=True)
+
+    # Delete rows that contain NaN in these two columns
+    phases_df = phases_df.dropna(subset=['origin_datetime','arrival_datetime'])
+
+    # convert float to int
+    phases_df.origin_datetime = phases_df.origin_datetime.astype(int)
+    phases_df.arrival_datetime = phases_df.arrival_datetime.astype(int)
+
+    # employ unix_to_UTCDateTime function to convert epoch times to UTC datetime
     phases_df.origin_datetime = phases_df.origin_datetime.apply(lambda x: unix_to_UTCDateTime(x))
     phases_df.arrival_datetime = phases_df.arrival_datetime.apply(lambda x: unix_to_UTCDateTime(x))
 
-    # for col in ['fdepth', 'fepi', 'ftime']:
-    #     if col in phases_df.columns:
-    #         phases_df[col] = phases_df[col].apply(lambda x: x == 'y')
-    
     return phases_df
 
 def get_phase_entries(dataframe, evid):
@@ -78,12 +84,7 @@ def get_waveforms_from_phases(client, pick, front_pad_sec=30, back_pad_sec=60):
     :type back_pad_sec: int, optional
     """
 
-    # # Get the phase entry for the specified evid
-    # lf_baker = get_phase_entries(dataframe, dataframe['evid'])
-
-    # # Filter the pick based on station
-    # pick = lf_baker[lf_baker.sta == 'MBW'].iloc[0, :] if not lf_baker.empty else None
-
+    # request waveform data from IRIS web service 
     if pick is not None:
         client_ = Client(client)
         time_ = UTCDateTime(pick['arrival_datetime'])
@@ -103,6 +104,7 @@ def get_waveforms_from_phases(client, pick, front_pad_sec=30, back_pad_sec=60):
             #Z.filter('bandpass',freqmin=0.5, freqmax=25)
             Z.plot();
             return Z
+        
         except Exception as e:
             print(f"Error fetching waveforms: {e}")
             return None
@@ -126,23 +128,23 @@ def get_waveforms(filename, evid, client, pick, savepath='../../results/waveform
     :rtype: obspy.Stream
     """
     
-    # Ensure the output directory exists
+    # ensure the output directory exists
     if not os.path.exists(savepath):
         os.makedirs(savepath)
 
-    # Load and filter phases
+    # load and filter phases
     phases_df = format_aqms_csv(filename)
     filtered_events = get_phase_entries(phases_df, evid)
 
-    # Get waveforms
+    # get waveforms
     st = get_waveforms_from_phases(client, pick)
 
-    # Construct the output filename
+    # construct the output filename
     if st is not None and len(st) > 0:
         out_file_name = f'{st[0].id}.{evid}.mseed'
         save_name = os.path.join(savepath, out_file_name)
 
-        # Save the waveforms
+        # save the waveforms
         st.write(save_name, format='MSEED')
         print(f'Waveforms saved to {save_name}')
     else:
