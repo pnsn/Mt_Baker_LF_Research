@@ -2,3 +2,5 @@ processed_data/*
 *.mseed
 .DS_Store
 mtbaker
+__pycache__
+*.pyc
