@@ -9,7 +9,7 @@
                 1. 6+ observations (P or S wave picks): nobs >= 6
                 2. 4+ observing stations: nsta >= 4
                 3. no fixed values (depth, epicenter, or time): ['fdepth', 'fepi', 'ftime'] are set to False
-                4. a minimum observing station distance of no more than 10 km: distance <= 10
+                4. observing station distance of no more than 10 km: distance <= 10
                 5. horizontal and vertical errors of 10 km or less: erhor & sdep <= 10
                 6. travel time RMS misfit of no more than 1 second: wrms <= 1
 
@@ -27,9 +27,24 @@ sys.path.append(os.path.join('..', 'python'))
 
 from util import *
 
-def convert_to_unix(timestamp_str):
+def convert_to_unix(timestamp_obj):
+    """
+    Convert a timestamp string with a timezone offset to a UNIX timestamp.
+
+    The function processes a timestamp string formatted as 
+    'YYYY-MM-DD HH:MM:SS[.ffffff]±HH', where the optional fractional seconds 
+    and timezone offset are included. It extracts the timezone offset, localizes 
+    the timestamp to that timezone, converts it to UTC, and finally returns 
+    the corresponding UNIX timestamp.
+
+    :param timestamp_obj: A string representing the timestamp, including the timezone offset.
+    :type timestamp_obj: str
+    :return: The UNIX timestamp corresponding to the input timestamp.
+    :rtype: float
+    :raises ValueError: If the offset is not found in the timestamp string.
+    """
     # extract the offset
-    match = re.search(r'([+-]\d{2})$', timestamp_str)
+    match = re.search(r'([+-]\d{2})$', timestamp_obj)
     if match:
         offset_str = match.group(1)
         offset_hours = int(offset_str)
@@ -38,7 +53,7 @@ def convert_to_unix(timestamp_str):
         raise ValueError("Offset not found in timestamp string.")
     
     # remove the offset from the string for parsing
-    timestamp_without_offset = timestamp_str[:-3]
+    timestamp_without_offset = timestamp_obj[:-3]
 
     # determine if there are fractional seconds
     if '.' in timestamp_without_offset:
@@ -56,13 +71,12 @@ def convert_to_unix(timestamp_str):
     # return UNIX timestamp
     return dt_utc.timestamp()  
 
-
-def curate_events(filename, output_path, colmapping={'to_timestamp': 'origin_datetime'}, nobs=6, nsta=4, distance=10, erhor=10, sdep=10, wrms=1):
-    """This method reads a raw output CSV file from an AQMS file, renames columns 
+def prep_data(filename, output_path, colmapping={'to_timestamp': 'origin_datetime'}):
+    """
+    This method reads a raw output CSV file from an AQMS file, renames columns 
     as specified by **colmapping**, and formats POSIX datetimes to UTCDateTimes.
 
-    :param filename: Name of the CSV file to load. This should be a string 
-                     that specifies the file's name.
+    :param filename: Name of the CSV file to load. This should be a string that specifies the file's name.
     :type filename: str
     :param output_path: Path where the curated DataFrame will be saved as a CSV file.
     :type output_path: str
@@ -70,25 +84,6 @@ def curate_events(filename, output_path, colmapping={'to_timestamp': 'origin_dat
                        original column names, and the values are the new names. 
                        Defaults to {'to_timestamp': 'origin_datetime'}.
     :type colmapping: dict, optional
-    :param nobs: Minimum number of observations required for an event to be 
-                 considered well-located. Default is 6.
-    :type nobs: int, optional
-    :param nsta: Minimum number of stations required for an event to be 
-                  considered well-located. Default is 4.
-    :type nsta: int, optional
-    :param distance: Maximum distance from the event to the station for 
-                     consideration. Default is 10. 
-    :type distance: float, optional
-    :param erhor: Maximum error in the horizontal location for an event to be 
-                   considered well-located. Default is 10.
-    :type erhor: float, optional
-    :param sdep: Maximum error in the vertical location for an event to be 
-                   considered well-located. Default is 10.
-    :type sdep: float, optional
-    :param wrms: Maximum weighted root mean square for an event to be 
-                  considered well-located. Default is 1.
-    :type wrms: float, optional
-
     :return: 
      - **df** (*pandas.DataFrame*) -- Loaded and formatted DataFrame.
 
@@ -96,7 +91,6 @@ def curate_events(filename, output_path, colmapping={'to_timestamp': 'origin_dat
     # relative path
     rrpath = os.path.join('..', '..')
     events = os.path.join(rrpath, 'data', 'Events', filename)
-    output_file = os.path.join(rrpath, 'data')
 
     # read a CSV file
     try:
@@ -123,17 +117,56 @@ def curate_events(filename, output_path, colmapping={'to_timestamp': 'origin_dat
     for col in ['fdepth', 'fepi', 'ftime']:
         if col in events_df.columns:
             events_df[col] = events_df[col].apply(lambda x: x=='y')
+            
+    events_df.to_csv(output_path, index=False)
 
+    return events_df
+
+def curate_events(events_df, output_path, nobs=6, nsta=4, distance=10, erhor=10, sdep=10, wrms=1):
     # extracting well-located events from the criteria
-    events_df = events_df[(events_df.nobs >= nobs) & 
-                                (events_df.nsta >= nsta) & 
-                                (events_df.distance <= distance) &
-                                (events_df.erhor <= erhor) & 
-                                (events_df.sdep <= sdep) & 
-                                (events_df.wrms <= wrms) &
-                                (events_df.fdepth == False) &
-                                (events_df.fepi == False) &
-                                (events_df.ftime == False)]
+    """
+    Curate well-located events from a DataFrame based on specified criteria.
+
+    This function filters events to identify those that are considered well-located 
+    based on the following parameters. It uses cleaned data from a previous function 
+    (i.e., `prep_data`) and returns a DataFrame containing only the well-located events.
+
+    :param events_df: A DataFrame containing event data that includes observations 
+                      and other relevant parameters.
+    :type events_df: pd.DataFrame
+    :param output_path: Path where the curated DataFrame will be saved as a CSV file.
+    :type output_path: str
+    :param nobs: Minimum number of observations required for an event to be 
+                 considered well-located. Default is 6.
+    :type nobs: int, optional
+    :param nsta: Minimum number of stations required for an event to be 
+                  considered well-located. Default is 4.
+    :type nsta: int, optional
+    :param distance: Maximum distance from the event to the station for 
+                     consideration. Default is 10.
+    :type distance: float, optional
+    :param erhor: Maximum error in the horizontal location for an event to be 
+                   considered well-located. Default is 10.
+    :type erhor: float, optional
+    :param sdep: Maximum error in the vertical location for an event to be 
+                   considered well-located. Default is 10.
+    :type sdep: float, optional
+    :param wrms: Maximum weighted root mean square for an event to be 
+                  considered well-located. Default is 1.
+    :type wrms: float, optional
+
+    :return: A DataFrame containing only the well-located events.
+    :rtype: pd.DataFrame
+    """
+    events_df = events_df[(events_df.nobs >= nobs)
+                           & (events_df.nsta >= nsta)
+                             & (events_df.distance <= distance)
+                               & (events_df.erhor <= erhor)
+                                 & (events_df.sdep <= sdep)
+                                   & (events_df.wrms <= wrms)
+                                     & (events_df.fdepth == False)
+                                       & (events_df.fepi == False)
+                                         & (events_df.ftime == False)]
     
     events_df.to_csv(output_path, index=False)
 
