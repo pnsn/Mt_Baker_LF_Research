@@ -21,7 +21,9 @@ import pandas as pd
 Logger = logging.getLogger(__name__)
 
 # Catalog Construction Methods
-def build_ebank(qml_dir, **options):
+def connect_to_eventbank(base_path=os.path.join('data','XML','QUAKE','BANK'),
+                     path_structure='{year}/{month}',
+                     name_structure='{event_id_short}'):
     """Very simple wrapper for ObsPlus EventBank.__init__
 
     :param qml_dir: directory containing desired QuakeML files
@@ -29,7 +31,9 @@ def build_ebank(qml_dir, **options):
     :return: 
      - **ebank** (*obsplus.EventBank*) - composed event bank
     """    
-    ebank = EventBank(base_path=qml_dir, **options)
+    ebank = EventBank(base_path=base_path,
+                      path_structure=path_structure,
+                      name_structure=name_structure)
     return ebank
 
 def assemble_catalog(qml_dir):
