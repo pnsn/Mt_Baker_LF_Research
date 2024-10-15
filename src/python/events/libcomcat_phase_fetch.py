@@ -19,7 +19,7 @@ from libcomcat.search import get_event_by_id
 
 Logger = logging.getLogger('libcomcat_phase_fetch.py')
 
-def get_libcomcat_from_evid(evid, version='preferred'):
+def get_libcomcat_event(evid, etype, version='preferred'):
     """Core process - given an Event ID (EVID) from the PNSN catalog,
     fetch origin information for the specified version (see supported 
     values) and attempt to fetch phase data using the U.S. Geological
@@ -35,16 +35,6 @@ def get_libcomcat_from_evid(evid, version='preferred'):
      - **cat** (*obspy.core.event.Catalog*) - Catalog object containing
         event, origin, and pick (meta)data
     """
-    if isinstance(evid, int):
-        evid = f'uw{evid}'
-    elif isinstance(evid, str):
-        if evid[:2] == 'uw':
-            pass
-        else:
-            evid = f'uw{evid}'
-    else:
-        raise TypeError(f'evid type {type(evid)} not supported. Must be type int or str')
-    
     if version not in ['first','last','latest','preferred']:
         raise ValueError(f'version "{version}" not supported.')
 
@@ -54,21 +44,24 @@ def get_libcomcat_from_evid(evid, version='preferred'):
     try:
         detail = get_event_by_id(evid)
     except:
-        Logger.error(f'could not get event detail for {evid}')
-        origins = []
+        Logger.error(f'could not get event detail for {evid} - ETYPE: {etype.upper()}')
+        return cat
     try:
         origins = detail.getProducts('phase-data', source='uw', version=version)
     except:
         if args.exclude_phaseless:
-            Logger.error(f'could not get phase-data for event {evid} - skipping')
-            origins = []
+            Logger.error(f'could not get phase-data for event {evid} - ETYPE: {etype.upper()} - skipping')
+            return cat
         else:
-            Logger.error(f'could not get phase-data for event {evid} - just getting origin information')
+            Logger.error(f'could not get phase-data for event {evid} - ETYPE: {etype.upper()} - just getting origin information')
             origins = detail.getProducts('origin', source='uw', version=version)
     for origin in origins:
         qbytes, url = origin.getContentBytes('xml')
         catalog = unpickler.loads(qbytes)
         cat += catalog
+        for event in cat:
+            event.resource_id = f'{event.resource_id}/{etype}'
+        
     return cat
 
 def main(args):
@@ -81,10 +74,11 @@ def main(args):
     """    
     # Load CSV
     df = pd.read_csv(args.input_csv, index_col='evid')
+    df = df[['etype','selectflag','version','mbs_distance_km']]
     # Filter by distance from Mt. Baker
     df = df[(df.mbs_distance_km <= args.max_radius_km) &\
             (df.mbs_distance_km >= args.min_radius_km)]
-    # Make sure all rows have unique EVIDs (in case the phase file is read)
+    df.drop_duplicates(keep='first', inplace=True)
     evids = df.index.unique()
     if len(evids) != len(df):
         Logger.critical('not all rows in input CSV have unique EVIDs - exiting on 1')
@@ -106,29 +100,37 @@ def main(args):
     with open(os.path.join(write_dir,'input_args.txt'), 'w') as _l:
         _l.write(str(args))
     
-    for _e, evid, row in enumerate(df.iterrows()):
-        icat = get_libcomcat_from_evid(evid)
+    for _e, (evid, row) in enumerate(df.iterrows()):
+        uw_evid = f'uw{evid}'
+        etype = row.etype.upper()
+        icat = get_libcomcat_event(uw_evid, etype)
         if len(icat) > 0:
             cat += icat
-            Logger.debug(f'EVID: {evid} done - {_e+1} of {len(evids)}')
+            Logger.debug(f'EVID: {uw_evid} done - ETYPE: {row.etype.upper()} - {_e+1} of {len(evids)}')
         # Enact incremental save-point
         if (_e+1) % args.nsavepoint == 0:
             cat.write(os.path.join(write_dir,'cat_savepoint.xml'), format='QUAKEML')
-            Logger.info(f'Savepoint at {_e+1} of {len(evids)} complete.')
+            Logger.info(f'Savepoint at {_e+1} of {len(df)} complete.')
+    # Write final file
     cat.write(args.output_xml, format='QUAKEML')
-    os.remove(os.path.join(write_dir,'cat_savepoint.xml'))
+    # As long as the savepoint file doesn't have the same name as the output file
+    if args.output_xml != os.path.join(write_dir, 'cat_savepoint.xml'):
+        # Delete the savepoint file
+        os.remove(os.path.join(write_dir,'cat_savepoint.xml'))
 
-
+# Run script if called as main
 if __name__ == '__main__':
+    # Set up logging
     ch = logging.StreamHandler()
     fmt = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     ch.setFormatter(fmt)
     Logger.addHandler(ch)
 
+    # Set up command line argument parsing
     parser = argparse.ArgumentParser(
         prog='libcomcat_search.py',
         description='Fetch event phase pick data for PNSN/UW events using libcomcat and a CSV of EVIDs')
-    
+    # Input file (and path)
     parser.add_argument(
         '-i',
         '--input',
@@ -137,7 +139,7 @@ if __name__ == '__main__':
         default= os.path.join('data','Events','MtBaker_50km_radius_origins.csv'),
         help='input CSV file with desired EVIDs'
     )
-
+    # Output file (and path)
     parser.add_argument(
         '-o',
         '--output',
@@ -146,7 +148,7 @@ if __name__ == '__main__':
         default=os.path.join('data','XML','QUAKE','libcomcat_events.xml'),
         help='output QuakeML file'
     )
-
+    # Maximum radius from Mt. Baker in km
     parser.add_argument(
         '-R',
         '--max_radius_km',
@@ -156,7 +158,7 @@ if __name__ == '__main__':
         type=float,
         help='maximum origin from Mt. Baker summit in km'
     )
-
+    # Minimum radius from Mt. Baker in km
     parser.add_argument(
         '-r',
         '--min_radius_km',
@@ -166,21 +168,21 @@ if __name__ == '__main__':
         type=float,
         help='minimum origin distance from Mt. Baker summit in km'
     )
-
+    # INFO level verbosity
     parser.add_argument(
         '-v',
         '--verbose',
         action = 'store_true',
         help='This turns logging level to INFO'
     )
-
+    # DEBUG level verbosity
     parser.add_argument(
         '-vv',
         '--extra_verbose',
         action='store_true',
         help='This turns logging level to DEBUG'
     )
-
+    # Number of iterations
     parser.add_argument(
         '-n',
         '-nsavepoint',
@@ -197,14 +199,14 @@ if __name__ == '__main__':
         action='store_true',
         help='Use this flag to exclude saving events that do not return phase data'
     )
-
+    # Parse arguments
     args = parser.parse_args()
-
+    # Set logging level from args
     if args.extra_verbose:
         Logger.setLevel(logging.DEBUG)
     elif args.verbose:
         Logger.setLevel(logging.INFO)
     else:
         Logger.setLevel(logging.ERROR)
-
+    # run main
     main(args)
