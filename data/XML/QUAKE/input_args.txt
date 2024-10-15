@@ -1,0 +1,1 @@
+Namespace(input_csv='data/Events/MtBaker_50km_radius_origins.csv', output_xml='data/XML/QUAKE/libcomcat_events.xml', max_radius_km=20.0, min_radius_km=-1, verbose=False, extra_verbose=True, nsavepoint=10, exclude_phaseless=True)
