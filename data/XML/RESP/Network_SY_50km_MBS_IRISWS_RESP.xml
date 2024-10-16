@@ -1,0 +1,2274 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<FDSNStationXML xmlns="http://www.fdsn.org/xml/station/1" schemaVersion="1.2">
+  <Source>ObsPy 1.4.1</Source>
+  <Module>ObsPy 1.4.1</Module>
+  <ModuleURI>https://www.obspy.org</ModuleURI>
+  <Created>2024-10-15T15:33:41.869585Z</Created>
+  <Network code="SY" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open">
+    <Description>Synthetic Seismograms ()</Description>
+    <TotalNumberStations>6123</TotalNumberStations>
+    <SelectedNumberStations>6</SelectedNumberStations>
+    <Station code="A05A" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.998299</Latitude>
+      <Longitude unit="DEGREES">-122.085197</Longitude>
+      <Elevation>174.3</Elevation>
+      <Site>
+        <Name>A05A synthetic</Name>
+      </Site>
+      <CreationDate>1900-01-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>6</TotalNumberChannels>
+      <SelectedNumberChannels>6</SelectedNumberChannels>
+      <Channel code="LXE" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S1">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie modes synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:50.450000Z" end="2024-10-10T11:24:41.800000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.998299</Latitude>
+        <Longitude unit="DEGREES">-122.085197</Longitude>
+        <Elevation>174.3</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">90.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">0.5</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="LXN" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S1">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie modes synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:50.450000Z" end="2024-10-10T11:24:41.800000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.998299</Latitude>
+        <Longitude unit="DEGREES">-122.085197</Longitude>
+        <Elevation>174.3</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">0.5</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="LXZ" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S1">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie modes synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:50.450000Z" end="2024-10-10T11:24:41.800000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.998299</Latitude>
+        <Longitude unit="DEGREES">-122.085197</Longitude>
+        <Elevation>174.3</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">-90.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">0.5</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="MXE" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S3">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie SEM synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:49.238000Z" end="2024-10-10T11:25:06.376000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.998299</Latitude>
+        <Longitude unit="DEGREES">-122.085197</Longitude>
+        <Elevation>174.3</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">90.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">6.192</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="MXN" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S3">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie SEM synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:49.238000Z" end="2024-10-10T11:25:06.376000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.998299</Latitude>
+        <Longitude unit="DEGREES">-122.085197</Longitude>
+        <Elevation>174.3</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">6.192</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="MXZ" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S3">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie SEM synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:49.238000Z" end="2024-10-10T11:25:06.376000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.998299</Latitude>
+        <Longitude unit="DEGREES">-122.085197</Longitude>
+        <Elevation>174.3</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">-90.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">6.192</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+    </Station>
+    <Station code="A06A" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">49.098301</Latitude>
+      <Longitude unit="DEGREES">-121.4804</Longitude>
+      <Elevation>576.0</Elevation>
+      <Site>
+        <Name>A06A synthetic</Name>
+      </Site>
+      <CreationDate>1900-01-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>6</TotalNumberChannels>
+      <SelectedNumberChannels>6</SelectedNumberChannels>
+      <Channel code="LXE" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S1">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie modes synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:50.450000Z" end="2024-10-10T11:24:41.800000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">49.098301</Latitude>
+        <Longitude unit="DEGREES">-121.4804</Longitude>
+        <Elevation>576.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">90.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">0.5</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="LXN" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S1">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie modes synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:50.450000Z" end="2024-10-10T11:24:41.800000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">49.098301</Latitude>
+        <Longitude unit="DEGREES">-121.4804</Longitude>
+        <Elevation>576.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">0.5</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="LXZ" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S1">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie modes synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:50.450000Z" end="2024-10-10T11:24:41.800000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">49.098301</Latitude>
+        <Longitude unit="DEGREES">-121.4804</Longitude>
+        <Elevation>576.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">-90.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">0.5</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="MXE" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S3">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie SEM synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:49.238000Z" end="2024-10-10T11:25:06.376000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">49.098301</Latitude>
+        <Longitude unit="DEGREES">-121.4804</Longitude>
+        <Elevation>576.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">90.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">6.192</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="MXN" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S3">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie SEM synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:49.238000Z" end="2024-10-10T11:25:06.376000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">49.098301</Latitude>
+        <Longitude unit="DEGREES">-121.4804</Longitude>
+        <Elevation>576.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">6.192</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="MXZ" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S3">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie SEM synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:49.238000Z" end="2024-10-10T11:25:06.376000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">49.098301</Latitude>
+        <Longitude unit="DEGREES">-121.4804</Longitude>
+        <Elevation>576.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">-90.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">6.192</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+    </Station>
+    <Station code="B06A" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.518299</Latitude>
+      <Longitude unit="DEGREES">-121.484497</Longitude>
+      <Elevation>75.0</Elevation>
+      <Site>
+        <Name>B06A synthetic</Name>
+      </Site>
+      <CreationDate>1900-01-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>6</TotalNumberChannels>
+      <SelectedNumberChannels>6</SelectedNumberChannels>
+      <Channel code="LXE" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S1">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie modes synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:50.450000Z" end="2024-10-10T11:24:41.800000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.518299</Latitude>
+        <Longitude unit="DEGREES">-121.484497</Longitude>
+        <Elevation>75.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">90.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">0.5</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="LXN" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S1">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie modes synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:50.450000Z" end="2024-10-10T11:24:41.800000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.518299</Latitude>
+        <Longitude unit="DEGREES">-121.484497</Longitude>
+        <Elevation>75.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">0.5</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="LXZ" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S1">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie modes synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:50.450000Z" end="2024-10-10T11:24:41.800000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.518299</Latitude>
+        <Longitude unit="DEGREES">-121.484497</Longitude>
+        <Elevation>75.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">-90.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">0.5</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="MXE" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S3">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie SEM synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:49.238000Z" end="2024-10-10T11:25:06.376000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.518299</Latitude>
+        <Longitude unit="DEGREES">-121.484497</Longitude>
+        <Elevation>75.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">90.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">6.192</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="MXN" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S3">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie SEM synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:49.238000Z" end="2024-10-10T11:25:06.376000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.518299</Latitude>
+        <Longitude unit="DEGREES">-121.484497</Longitude>
+        <Elevation>75.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">6.192</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="MXZ" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S3">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie SEM synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:49.238000Z" end="2024-10-10T11:25:06.376000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.518299</Latitude>
+        <Longitude unit="DEGREES">-121.484497</Longitude>
+        <Elevation>75.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">-90.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">6.192</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+    </Station>
+    <Station code="MRBL" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.518299</Latitude>
+      <Longitude unit="DEGREES">-121.484497</Longitude>
+      <Elevation>75.0</Elevation>
+      <Site>
+        <Name>MRBL synthetic</Name>
+      </Site>
+      <CreationDate>1900-01-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>6</TotalNumberChannels>
+      <SelectedNumberChannels>6</SelectedNumberChannels>
+      <Channel code="LXE" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S1">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie modes synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:50.450000Z" end="2024-10-10T11:24:41.800000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.518299</Latitude>
+        <Longitude unit="DEGREES">-121.484497</Longitude>
+        <Elevation>75.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">90.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">0.5</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="LXN" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S1">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie modes synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:50.450000Z" end="2024-10-10T11:24:41.800000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.518299</Latitude>
+        <Longitude unit="DEGREES">-121.484497</Longitude>
+        <Elevation>75.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">0.5</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="LXZ" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S1">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie modes synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:50.450000Z" end="2024-10-10T11:24:41.800000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.518299</Latitude>
+        <Longitude unit="DEGREES">-121.484497</Longitude>
+        <Elevation>75.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">-90.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">0.5</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="MXE" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S3">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie SEM synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:49.238000Z" end="2024-10-10T11:25:06.376000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.518299</Latitude>
+        <Longitude unit="DEGREES">-121.484497</Longitude>
+        <Elevation>75.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">90.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">6.192</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="MXN" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S3">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie SEM synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:49.238000Z" end="2024-10-10T11:25:06.376000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.518299</Latitude>
+        <Longitude unit="DEGREES">-121.484497</Longitude>
+        <Elevation>75.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">6.192</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="MXZ" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S3">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie SEM synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:49.238000Z" end="2024-10-10T11:25:06.376000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.518299</Latitude>
+        <Longitude unit="DEGREES">-121.484497</Longitude>
+        <Elevation>75.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">-90.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">6.192</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+    </Station>
+    <Station code="PASS" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.998299</Latitude>
+      <Longitude unit="DEGREES">-122.085197</Longitude>
+      <Elevation>174.3</Elevation>
+      <Site>
+        <Name>PASS synthetic</Name>
+      </Site>
+      <CreationDate>1900-01-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>6</TotalNumberChannels>
+      <SelectedNumberChannels>6</SelectedNumberChannels>
+      <Channel code="LXE" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S1">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie modes synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:50.450000Z" end="2024-10-10T11:24:41.800000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.998299</Latitude>
+        <Longitude unit="DEGREES">-122.085197</Longitude>
+        <Elevation>174.3</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">90.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">0.5</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="LXN" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S1">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie modes synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:50.450000Z" end="2024-10-10T11:24:41.800000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.998299</Latitude>
+        <Longitude unit="DEGREES">-122.085197</Longitude>
+        <Elevation>174.3</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">0.5</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="LXZ" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S1">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie modes synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:50.450000Z" end="2024-10-10T11:24:41.800000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.998299</Latitude>
+        <Longitude unit="DEGREES">-122.085197</Longitude>
+        <Elevation>174.3</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">-90.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">0.5</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="MXE" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S3">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie SEM synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:49.238000Z" end="2024-10-10T11:25:06.376000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.998299</Latitude>
+        <Longitude unit="DEGREES">-122.085197</Longitude>
+        <Elevation>174.3</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">90.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">6.192</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="MXN" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S3">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie SEM synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:49.238000Z" end="2024-10-10T11:25:06.376000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.998299</Latitude>
+        <Longitude unit="DEGREES">-122.085197</Longitude>
+        <Elevation>174.3</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">6.192</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="MXZ" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S3">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie SEM synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2004-02-23T16:04:49.238000Z" end="2024-10-10T11:25:06.376000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.998299</Latitude>
+        <Longitude unit="DEGREES">-122.085197</Longitude>
+        <Elevation>174.3</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">-90.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">6.192</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+    </Station>
+    <Station code="SHUK" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.85284</Latitude>
+      <Longitude unit="DEGREES">-121.676949</Longitude>
+      <Elevation>1516.0</Elevation>
+      <Site>
+        <Name>SHUK synthetic</Name>
+      </Site>
+      <CreationDate>1900-01-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>6</TotalNumberChannels>
+      <SelectedNumberChannels>6</SelectedNumberChannels>
+      <Channel code="LXE" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S1">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie modes synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2009-06-01T04:35:09.550000Z" end="2024-10-10T11:24:41.800000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.85284</Latitude>
+        <Longitude unit="DEGREES">-121.676949</Longitude>
+        <Elevation>1516.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">90.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">0.5</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="LXN" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S1">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie modes synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2009-06-01T04:35:09.550000Z" end="2024-10-10T11:24:41.800000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.85284</Latitude>
+        <Longitude unit="DEGREES">-121.676949</Longitude>
+        <Elevation>1516.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">0.5</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="LXZ" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S1">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie modes synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2009-06-01T04:35:09.550000Z" end="2024-10-10T11:24:41.800000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.85284</Latitude>
+        <Longitude unit="DEGREES">-121.676949</Longitude>
+        <Elevation>1516.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">-90.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">0.5</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="MXE" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S3">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie SEM synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2009-06-01T04:35:08.338000Z" end="2024-10-10T11:25:06.376000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.85284</Latitude>
+        <Longitude unit="DEGREES">-121.676949</Longitude>
+        <Elevation>1516.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">90.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">6.192</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="MXN" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S3">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie SEM synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2009-06-01T04:35:08.338000Z" end="2024-10-10T11:25:06.376000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.85284</Latitude>
+        <Longitude unit="DEGREES">-121.676949</Longitude>
+        <Elevation>1516.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">6.192</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="MXZ" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open" locationCode="S3">
+        <Comment>
+          <Value>http://www.fdsn.org/x-instrument/ShakeMovieSynthetics.html</Value>
+          <EndEffectiveTime>2599-12-31T23:59:59.000000Z</EndEffectiveTime>
+        </Comment>
+        <Comment>
+          <Value>ShakeMovie SEM synthetic</Value>
+        </Comment>
+        <DataAvailability>
+          <Extent start="2009-06-01T04:35:08.338000Z" end="2024-10-10T11:25:06.376000Z"/>
+        </DataAvailability>
+        <Latitude unit="DEGREES">48.85284</Latitude>
+        <Longitude unit="DEGREES">-121.676949</Longitude>
+        <Elevation>1516.0</Elevation>
+        <Depth>0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">-90.0</Dip>
+        <Type>SYNTHESIZED</Type>
+        <SampleRate unit="SAMPLES/S">6.192</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0001</ClockDrift>
+        <CalibrationUnits>
+          <Name>M</Name>
+          <Description>Meters displacement</Description>
+        </CalibrationUnits>
+        <Sensor>
+          <Description>Synthetic seismogram</Description>
+        </Sensor>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>1.0</Value>
+            <Frequency>0.0</Frequency>
+            <InputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>M</Name>
+              <Description>Meters displacement</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>M</Name>
+                <Description>Meters displacement</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>1.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">0.0</NormalizationFrequency>
+            </PolesZeros>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.0</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+    </Station>
+  </Network>
+</FDSNStationXML>
