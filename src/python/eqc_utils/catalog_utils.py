@@ -291,7 +291,7 @@ def compose_origin_bulk_lines(origin, method='origin',lead_time=5,
             pick = _arr.pick_id.get_referred_object()
             seed = pick.waveform_id.get_seed_string()
             if all_components:
-                seed[-1] = '?'
+                seed = seed[:-1] + '?'
             if seed not in stachans:
                 stachans.append(seed)
                 n,s,l,c = seed.split('.')
@@ -335,13 +335,12 @@ def origin_bulk_waveform_request(origin, client, quality=None, minimumlength=Non
             # If it doesn't have a distance attribute
             if not hasattr(_tr.stats, 'distance'):
                 # Assign distance in meters
-                _tr.stats.distace = _arr.distance*111.2e3
+                _tr.stats.distance = _arr.distance*111.2e3
                 ost += _tr
-    breakpoint()
     if filename is None:
         return ost
     else:
         ost.write(filename)
     
 
-    
+# TODO - contextily / plotly based visualization of events
