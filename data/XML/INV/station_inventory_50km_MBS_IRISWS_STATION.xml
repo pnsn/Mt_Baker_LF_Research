@@ -1,0 +1,720 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<FDSNStationXML xmlns="http://www.fdsn.org/xml/station/1" schemaVersion="1.2">
+  <Source>IRIS-DMC</Source>
+  <Sender>IRIS-DMC</Sender>
+  <Module>IRIS WEB SERVICE: fdsnws-station | version: 1.1.52</Module>
+  <ModuleURI>http://service.iris.edu/fdsnws/station/1/query?level=station&amp;latitude=48.7745&amp;longitude=-121.8172&amp;maxradius=0.44964028776978415&amp;includerestricted=true&amp;includeavailability=true&amp;matchtimeseries=true</ModuleURI>
+  <Created>2024-10-15T15:40:28.521400Z</Created>
+  <Network code="4P" startDate="2006-01-01T00:00:00.000000Z" endDate="2018-12-31T23:59:59.999900Z" restrictedStatus="open">
+    <Description>NSF EarthScope USArray Magnetotelluric Transportable and Backbone Arrays (EarthScope MT-TA and MT-BB)</Description>
+    <Identifier type="DOI">10.7914/SN/4P_2006
+   </Identifier>
+    <Comment subject="mt.network.acquired_by.author">
+      <Value></Value>
+    </Comment>
+    <Comment subject="mt.network.acquired_by.comments">
+      <Value></Value>
+    </Comment>
+    <Comment subject="mt.network.comments">
+      <Value></Value>
+    </Comment>
+    <Comment subject="mt.network.country">
+      <Value></Value>
+    </Comment>
+    <Comment subject="mt.network.geographic_name">
+      <Value></Value>
+    </Comment>
+    <Comment subject="mt.network.project">
+      <Value></Value>
+    </Comment>
+    <Comment subject="mt.network.summary">
+      <Value></Value>
+    </Comment>
+    <TotalNumberStations>1163</TotalNumberStations>
+    <SelectedNumberStations>2</SelectedNumberStations>
+    <Station code="WAA05" startDate="2007-07-29T03:26:48.000000Z" endDate="2007-08-18T22:10:40.000000Z" restrictedStatus="open">
+      <Comment subject="mt.run:c.metadata_by">
+        <Value>author: Anna Kelbert, comments: NIMS file declination 18.6 replaced with IGRF declination 17.8161. NIMS file elevation 173.35 replaced with the National Map elevation 176.1766. Ex wire length verified and corrected</Value>
+      </Comment>
+      <Comment subject="mt.run:c.acquired_by">
+        <Value></Value>
+      </Comment>
+      <Comment subject="mt.run:b.metadata_by">
+        <Value>author: Anna Kelbert, comments: NIMS file declination 18.6 replaced with IGRF declination 17.8218. NIMS file elevation 173.3 replaced with the National Map elevation 176.1766. Ex wire length verified and corrected</Value>
+      </Comment>
+      <Comment subject="mt.run:b.acquired_by">
+        <Value></Value>
+      </Comment>
+      <Comment subject="mt.run:a.metadata_by">
+        <Value>author: Anna Kelbert, comments: NIMS file declination 18.6 replaced with IGRF declination 17.8218. NIMS file elevation 168.5 replaced with the National Map elevation 175.724.</Value>
+      </Comment>
+      <Comment subject="mt.run:a.acquired_by">
+        <Value></Value>
+      </Comment>
+      <Comment subject="mt.station.run_list">
+        <Value>a, b, c</Value>
+      </Comment>
+      <Comment subject="mt.station.provenance.software.version">
+        <Value>2024-06-12</Value>
+      </Comment>
+      <Comment subject="mt.station.provenance.software.name">
+        <Value>mth5_metadata.m</Value>
+      </Comment>
+      <Comment subject="mt.station.provenance.software.author">
+        <Value>Anna Kelbert, USGS</Value>
+      </Comment>
+      <Comment subject="mt.station.orientation.reference_frame">
+        <Value>geographic</Value>
+      </Comment>
+      <Comment subject="mt.station.orientation.method">
+        <Value>compass</Value>
+      </Comment>
+      <Comment subject="mt.station.location.declination.value">
+        <Value>17.8189258560356</Value>
+      </Comment>
+      <Comment subject="mt.station.location.declination.model">
+        <Value>IGRF-13</Value>
+      </Comment>
+      <Comment subject="mt.station.location.declination.comments">
+        <Value>igrf.m by Drew Compston</Value>
+      </Comment>
+      <Comment subject="mt.station.data_type">
+        <Value>MT</Value>
+      </Comment>
+      <Latitude unit="DEGREES">48.985785</Latitude>
+      <Longitude unit="DEGREES">-122.118056</Longitude>
+      <Elevation>176.06347656225</Elevation>
+      <Site>
+        <Name>Silverlake, WA, USA</Name>
+        <Country>USA</Country>
+      </Site>
+      <Equipment resourceId="mt.run.id:a">
+        <Type>BB, LP</Type>
+        <Description>firmware.author: Barry Narod, power_source.comments: voltage measurements not recorded, power_source.type: battery, timing_system.type: GPS, timing_system.uncertainty: 1.0</Description>
+        <Manufacturer>Barry Narod</Manufacturer>
+        <Model>NIMS</Model>
+        <SerialNumber>2106-01</SerialNumber>
+        <InstallationDate>2007-07-29T03:26:48.000000Z</InstallationDate>
+        <RemovalDate>2007-07-29T04:14:49.000000Z</RemovalDate>
+      </Equipment>
+      <Equipment resourceId="mt.run.id:c">
+        <Type>BB, LP</Type>
+        <Description>firmware.author: Barry Narod, power_source.comments: voltage measurements not recorded, power_source.type: battery, timing_system.type: GPS, timing_system.uncertainty: 1.0</Description>
+        <Manufacturer>Barry Narod</Manufacturer>
+        <Model>NIMS</Model>
+        <SerialNumber>2106-1</SerialNumber>
+        <InstallationDate>2007-08-09T01:21:44.000000Z</InstallationDate>
+        <RemovalDate>2007-08-18T22:10:40.000000Z</RemovalDate>
+      </Equipment>
+      <Equipment resourceId="mt.run.id:b">
+        <Type>BB, LP</Type>
+        <Description>firmware.author: Barry Narod, power_source.comments: voltage measurements not recorded, power_source.type: battery, timing_system.type: GPS, timing_system.uncertainty: 1.0</Description>
+        <Manufacturer>Barry Narod</Manufacturer>
+        <Model>NIMS</Model>
+        <SerialNumber>2106-01</SerialNumber>
+        <InstallationDate>2007-07-29T04:35:05.000000Z</InstallationDate>
+        <RemovalDate>2007-08-09T00:45:06.000000Z</RemovalDate>
+      </Equipment>
+      <CreationDate>2007-07-29T03:26:48.000000Z</CreationDate>
+      <TotalNumberChannels>8</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="WAB06" startDate="2007-08-13T01:21:27.000000Z" endDate="2007-09-01T18:22:23.000000Z" restrictedStatus="open">
+      <Comment subject="mt.run:d.metadata_by">
+        <Value>author: Anna Kelbert, comments: NIMS file declination 18.3 replaced with IGRF declination 17.4949. NIMS file elevation 115.2 replaced with the National Map elevation 118.1322. GAIN LOW</Value>
+      </Comment>
+      <Comment subject="mt.run:d.acquired_by">
+        <Value></Value>
+      </Comment>
+      <Comment subject="mt.run:b.metadata_by">
+        <Value>author: Anna Kelbert, comments: NIMS file declination 18.3 replaced with IGRF declination 17.4994.</Value>
+      </Comment>
+      <Comment subject="mt.run:b.acquired_by">
+        <Value></Value>
+      </Comment>
+      <Comment subject="mt.run:a.metadata_by">
+        <Value>author: Anna Kelbert, comments: NIMS file declination 18.3 replaced with IGRF declination 17.4996.</Value>
+      </Comment>
+      <Comment subject="mt.run:a.acquired_by">
+        <Value></Value>
+      </Comment>
+      <Comment subject="mt.station.run_list">
+        <Value>a, b, d</Value>
+      </Comment>
+      <Comment subject="mt.station.provenance.software.version">
+        <Value>2024-06-12</Value>
+      </Comment>
+      <Comment subject="mt.station.provenance.software.name">
+        <Value>mth5_metadata.m</Value>
+      </Comment>
+      <Comment subject="mt.station.provenance.software.author">
+        <Value>Anna Kelbert, USGS</Value>
+      </Comment>
+      <Comment subject="mt.station.orientation.reference_frame">
+        <Value>geographic</Value>
+      </Comment>
+      <Comment subject="mt.station.orientation.method">
+        <Value>compass</Value>
+      </Comment>
+      <Comment subject="mt.station.location.declination.value">
+        <Value>17.4971890870961</Value>
+      </Comment>
+      <Comment subject="mt.station.location.declination.model">
+        <Value>IGRF-13</Value>
+      </Comment>
+      <Comment subject="mt.station.location.declination.comments">
+        <Value>igrf.m by Drew Compston</Value>
+      </Comment>
+      <Comment subject="mt.station.data_type">
+        <Value>MT</Value>
+      </Comment>
+      <Latitude unit="DEGREES">48.521098</Latitude>
+      <Longitude unit="DEGREES">-121.387116</Longitude>
+      <Elevation>117.8910972595</Elevation>
+      <Site>
+        <Name>Concrete, WA, USA</Name>
+        <Country>USA</Country>
+      </Site>
+      <Equipment resourceId="mt.run.id:a">
+        <Type>BB, LP</Type>
+        <Description>firmware.author: Barry Narod, power_source.comments: voltage measurements not recorded, power_source.type: battery, timing_system.type: GPS, timing_system.uncertainty: 1.0</Description>
+        <Manufacturer>Barry Narod</Manufacturer>
+        <Model>NIMS</Model>
+        <SerialNumber>2612-12</SerialNumber>
+        <InstallationDate>2007-08-13T01:21:27.000000Z</InstallationDate>
+        <RemovalDate>2007-08-13T02:29:31.000000Z</RemovalDate>
+      </Equipment>
+      <Equipment resourceId="mt.run.id:d">
+        <Type>BB, LP</Type>
+        <Description>firmware.author: Barry Narod, power_source.comments: voltage measurements not recorded, power_source.type: battery, timing_system.type: GPS, timing_system.uncertainty: 1.0</Description>
+        <Manufacturer>Barry Narod</Manufacturer>
+        <Model>NIMS</Model>
+        <SerialNumber>2612-12</SerialNumber>
+        <InstallationDate>2007-08-22T02:32:40.000000Z</InstallationDate>
+        <RemovalDate>2007-09-01T18:22:23.000000Z</RemovalDate>
+      </Equipment>
+      <Equipment resourceId="mt.run.id:b">
+        <Type>BB, LP</Type>
+        <Description>firmware.author: Barry Narod, power_source.comments: voltage measurements not recorded, power_source.type: battery, timing_system.type: GPS, timing_system.uncertainty: 1.0</Description>
+        <Manufacturer>Barry Narod</Manufacturer>
+        <Model>NIMS</Model>
+        <SerialNumber>2612-12</SerialNumber>
+        <InstallationDate>2007-08-13T02:44:41.000000Z</InstallationDate>
+        <RemovalDate>2007-08-21T23:56:41.000000Z</RemovalDate>
+      </Equipment>
+      <CreationDate>2007-08-13T01:21:27.000000Z</CreationDate>
+      <TotalNumberChannels>10</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+  </Network>
+  <Network code="CN" startDate="1975-01-01T00:00:00.000000Z" restrictedStatus="open">
+    <Description>Canadian National Seismograph Network (CNSN)</Description>
+    <Identifier type="DOI">10.7914/SN/CN
+   </Identifier>
+    <TotalNumberStations>300</TotalNumberStations>
+    <SelectedNumberStations>2</SelectedNumberStations>
+    <Station code="VDB" startDate="1997-03-08T00:00:00.000000Z" endDate="2020-01-08T23:59:59.999900Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">49.0261</Latitude>
+      <Longitude unit="DEGREES">-122.1028</Longitude>
+      <Elevation>404.0</Elevation>
+      <Site>
+        <Name>Vedder Mountain, BC, CA</Name>
+      </Site>
+      <CreationDate>1997-03-08T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>2</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="VDEB" startDate="2018-12-21T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">49.057</Latitude>
+      <Longitude unit="DEGREES">-122.0571</Longitude>
+      <Elevation>351.0</Elevation>
+      <Site>
+        <Name>Vedder Mountain, BC, CA</Name>
+      </Site>
+      <CreationDate>2018-12-21T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>9</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+  </Network>
+  <Network code="SY" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open">
+    <Description>Synthetic Seismograms ()</Description>
+    <TotalNumberStations>6123</TotalNumberStations>
+    <SelectedNumberStations>6</SelectedNumberStations>
+    <Station code="A05A" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.998299</Latitude>
+      <Longitude unit="DEGREES">-122.085197</Longitude>
+      <Elevation>174.3</Elevation>
+      <Site>
+        <Name>A05A synthetic</Name>
+      </Site>
+      <CreationDate>1900-01-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>6</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="A06A" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">49.098301</Latitude>
+      <Longitude unit="DEGREES">-121.4804</Longitude>
+      <Elevation>576.0</Elevation>
+      <Site>
+        <Name>A06A synthetic</Name>
+      </Site>
+      <CreationDate>1900-01-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>6</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="B06A" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.518299</Latitude>
+      <Longitude unit="DEGREES">-121.484497</Longitude>
+      <Elevation>75.0</Elevation>
+      <Site>
+        <Name>B06A synthetic</Name>
+      </Site>
+      <CreationDate>1900-01-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>6</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="MRBL" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.518299</Latitude>
+      <Longitude unit="DEGREES">-121.484497</Longitude>
+      <Elevation>75.0</Elevation>
+      <Site>
+        <Name>MRBL synthetic</Name>
+      </Site>
+      <CreationDate>1900-01-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>6</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="PASS" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.998299</Latitude>
+      <Longitude unit="DEGREES">-122.085197</Longitude>
+      <Elevation>174.3</Elevation>
+      <Site>
+        <Name>PASS synthetic</Name>
+      </Site>
+      <CreationDate>1900-01-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>6</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SHUK" startDate="1900-01-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.85284</Latitude>
+      <Longitude unit="DEGREES">-121.676949</Longitude>
+      <Elevation>1516.0</Elevation>
+      <Site>
+        <Name>SHUK synthetic</Name>
+      </Site>
+      <CreationDate>1900-01-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>6</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+  </Network>
+  <Network code="TA" startDate="2003-01-01T00:00:00.000000Z" restrictedStatus="open">
+    <Description>USArray Transportable Array (EarthScope_TA)</Description>
+    <Identifier type="DOI">10.7914/SN/TA
+   </Identifier>
+    <TotalNumberStations>1893</TotalNumberStations>
+    <SelectedNumberStations>3</SelectedNumberStations>
+    <Station code="A05A" startDate="2005-11-25T00:00:00.000000Z" endDate="2009-01-08T23:59:59.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.998299</Latitude>
+      <Longitude unit="DEGREES">-122.085197</Longitude>
+      <Elevation>174.3</Elevation>
+      <Site>
+        <Name>Maple Falls, WA, USA</Name>
+      </Site>
+      <CreationDate>2005-11-25T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>90</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="A06A" startDate="2006-10-18T00:00:00.000000Z" endDate="2008-05-21T23:59:59.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">49.098301</Latitude>
+      <Longitude unit="DEGREES">-121.4804</Longitude>
+      <Elevation>576.0</Elevation>
+      <Site>
+        <Name>Chilliwack, BC, CAN</Name>
+      </Site>
+      <CreationDate>2006-10-18T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>30</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="B06A" startDate="2006-09-17T00:00:00.000000Z" endDate="2008-11-12T23:59:59.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.518299</Latitude>
+      <Longitude unit="DEGREES">-121.484497</Longitude>
+      <Elevation>75.0</Elevation>
+      <Site>
+        <Name>Marblemount, WA, USA</Name>
+      </Site>
+      <CreationDate>2006-09-17T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>30</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+  </Network>
+  <Network code="UW" startDate="1963-01-01T00:00:00.000000Z" restrictedStatus="open">
+    <Description>Pacific Northwest Seismic Network (PNSN)</Description>
+    <Identifier type="DOI">10.7914/SN/UW
+   </Identifier>
+    <TotalNumberStations>866</TotalNumberStations>
+    <SelectedNumberStations>27</SelectedNumberStations>
+    <Station code="BHAM" startDate="2021-08-06T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.78724</Latitude>
+      <Longitude unit="DEGREES">-122.41752</Longitude>
+      <Elevation>116.5</Elevation>
+      <Site>
+        <Name>Bellingham, WA, USA</Name>
+      </Site>
+      <TotalNumberChannels>23</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="BLS" startDate="1985-03-01T00:00:00.000000Z" endDate="1985-09-15T00:00:00.000000Z" restrictedStatus="open">
+      <Comment>
+        <Value>Actual instrumentation unknown</Value>
+        <BeginEffectiveTime>1985-03-01T00:00:00.000000Z</BeginEffectiveTime>
+        <EndEffectiveTime>2500-12-31T23:59:59.000000Z</EndEffectiveTime>
+      </Comment>
+      <Comment>
+        <Value>Resonse is generic short-period but really unknown</Value>
+        <BeginEffectiveTime>1985-03-01T00:00:00.000000Z</BeginEffectiveTime>
+        <EndEffectiveTime>2500-12-31T23:59:59.000000Z</EndEffectiveTime>
+      </Comment>
+      <Latitude unit="DEGREES">48.572498</Latitude>
+      <Longitude unit="DEGREES">-121.666672</Longitude>
+      <Elevation>1341.0</Elevation>
+      <Site>
+        <Name>Lake Shannon, Mt. Baker, WA, USA</Name>
+      </Site>
+      <CreationDate>1985-03-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>2</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="CMW" startDate="1986-06-03T00:00:00.000000Z" endDate="2019-11-21T00:00:00.000000Z" restrictedStatus="open">
+      <Comment>
+        <Value>Shape of high frequency response uncertain (&gt;10 Hz). Gain OK.</Value>
+        <BeginEffectiveTime>1986-06-03T00:00:00.000000Z</BeginEffectiveTime>
+        <EndEffectiveTime>2006-05-25T23:59:59.000000Z</EndEffectiveTime>
+      </Comment>
+      <Comment>
+        <Value>Shape of high frequency response uncertain (&gt;10 Hz). Gain OK.</Value>
+        <BeginEffectiveTime>1986-06-03T00:00:00.000000Z</BeginEffectiveTime>
+        <EndEffectiveTime>2006-05-25T23:59:59.000000Z</EndEffectiveTime>
+      </Comment>
+      <Latitude unit="DEGREES">48.423519</Latitude>
+      <Longitude unit="DEGREES">-122.120262</Longitude>
+      <Elevation>1190.0</Elevation>
+      <Site>
+        <Name>Cultus Mtns.</Name>
+      </Site>
+      <CreationDate>1986-06-03T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>9</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="DMNG" startDate="2021-08-05T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.82545</Latitude>
+      <Longitude unit="DEGREES">-122.21451</Longitude>
+      <Elevation>62.8</Elevation>
+      <Site>
+        <Name>Deming, WA, USA</Name>
+      </Site>
+      <TotalNumberChannels>17</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="DONK" startDate="2019-08-29T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.42384</Latitude>
+      <Longitude unit="DEGREES">-122.15673</Longitude>
+      <Elevation>892.8</Elevation>
+      <Site>
+        <Name>Steam Donkey, WA, USA</Name>
+      </Site>
+      <CreationDate>2019-08-29T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>29</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="LARL" startDate="2021-01-13T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.85949</Latitude>
+      <Longitude unit="DEGREES">-122.48445</Longitude>
+      <Elevation>26.8</Elevation>
+      <Site>
+        <Name>Bellingham, WA, USA</Name>
+      </Site>
+      <CreationDate>2021-01-13T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>17</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="LYND" startDate="2021-08-04T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.95967</Latitude>
+      <Longitude unit="DEGREES">-122.41767</Longitude>
+      <Elevation>36.0</Elevation>
+      <Site>
+        <Name>Lynden Middle School, Lynden, WA, USA</Name>
+      </Site>
+      <TotalNumberChannels>17</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="LYW" startDate="1975-04-18T00:00:00.000000Z" endDate="1985-09-30T00:00:00.000000Z" restrictedStatus="open">
+      <Comment>
+        <Value>True response not known, something generic used.</Value>
+        <BeginEffectiveTime>1975-04-18T00:00:00.000000Z</BeginEffectiveTime>
+        <EndEffectiveTime>1985-09-30T00:00:00.000000Z</EndEffectiveTime>
+      </Comment>
+      <Latitude unit="DEGREES">48.535172</Latitude>
+      <Longitude unit="DEGREES">-122.102928</Longitude>
+      <Elevation>107.0</Elevation>
+      <Site>
+        <Name>Lyman</Name>
+      </Site>
+      <CreationDate>1975-04-18T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>2</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="MB2" startDate="1985-09-24T00:00:00.000000Z" endDate="1989-06-30T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.78384</Latitude>
+      <Longitude unit="DEGREES">-121.900932</Longitude>
+      <Elevation>1676.0</Elevation>
+      <Site>
+        <Name>Mt. Baker2 backup telemetry</Name>
+      </Site>
+      <CreationDate>1985-09-24T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>4</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="MBKE" startDate="2001-07-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.916377</Latitude>
+      <Longitude unit="DEGREES">-122.14175</Longitude>
+      <Elevation>135.0</Elevation>
+      <Site>
+        <Name>Mt Baker-Kendall, WA, USA</Name>
+      </Site>
+      <CreationDate>2001-07-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>25</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="MBW" startDate="1972-09-11T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.7838</Latitude>
+      <Longitude unit="DEGREES">-121.9009</Longitude>
+      <Elevation>1676.0</Elevation>
+      <Site>
+        <Name>Mt. Baker, WA, USA</Name>
+      </Site>
+      <CreationDate>1972-09-11T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>21</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="MBW2" startDate="2023-07-14T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.800754</Latitude>
+      <Longitude unit="DEGREES">-121.920067</Longitude>
+      <Elevation>1590.6</Elevation>
+      <Site>
+        <Name>Mt Baker West 2, WA, USA</Name>
+      </Site>
+      <TotalNumberChannels>23</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="MJO1" startDate="2021-09-01T00:00:00.000000Z" endDate="2021-12-03T23:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.582323</Latitude>
+      <Longitude unit="DEGREES">-121.938001</Longitude>
+      <Elevation>757.1</Elevation>
+      <Site>
+        <Name>Mt Josephine experiment site 1</Name>
+      </Site>
+      <CreationDate>2021-09-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>3</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="MRBL" startDate="2008-11-10T00:00:00.000000Z" endDate="2018-02-02T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.518299</Latitude>
+      <Longitude unit="DEGREES">-121.484497</Longitude>
+      <Elevation>75.0</Elevation>
+      <Site>
+        <Name>Marblemount, WA, USA</Name>
+      </Site>
+      <CreationDate>2008-11-10T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>37</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="MULN" startDate="2021-08-09T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.53544</Latitude>
+      <Longitude unit="DEGREES">-122.06441</Longitude>
+      <Elevation>101.7</Elevation>
+      <Site>
+        <Name>Lyman, WA, USA</Name>
+      </Site>
+      <TotalNumberChannels>23</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="PASS" startDate="2009-01-08T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.998299</Latitude>
+      <Longitude unit="DEGREES">-122.085197</Longitude>
+      <Elevation>175.4</Elevation>
+      <Site>
+        <Name>Maple Falls, WA, USA</Name>
+      </Site>
+      <CreationDate>2009-01-08T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>118</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="PLBD" startDate="2019-07-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.547519</Latitude>
+      <Longitude unit="DEGREES">-121.744412</Longitude>
+      <Elevation>223.0</Elevation>
+      <Site>
+        <Name>Puget Sound Energy Lower Baker Dam, WA, USA</Name>
+      </Site>
+      <CreationDate>2019-07-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>9</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="PUBD" startDate="2019-07-01T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.652599</Latitude>
+      <Longitude unit="DEGREES">-121.688091</Longitude>
+      <Elevation>325.4</Elevation>
+      <Site>
+        <Name>Puget Sound Energy Upper Baker Dam, WA, USA</Name>
+      </Site>
+      <CreationDate>2019-07-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>18</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="QHSH" startDate="2012-05-07T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.76047</Latitude>
+      <Longitude unit="DEGREES">-122.49662</Longitude>
+      <Elevation>22.1</Elevation>
+      <Site>
+        <Name>Bellingham, WA, USA</Name>
+        <Description>Basement</Description>
+        <Town>Bellingham</Town>
+        <County>Whatcom</County>
+        <Region>WA</Region>
+        <Country>USA</Country>
+      </Site>
+      <CreationDate>2012-05-07T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>6</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="RPW" startDate="1973-01-01T00:00:00.000000Z" endDate="2021-02-23T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.44817</Latitude>
+      <Longitude unit="DEGREES">-121.514847</Longitude>
+      <Elevation>850.0</Elevation>
+      <Site>
+        <Name>Rockport, WA, USA</Name>
+      </Site>
+      <CreationDate>1973-01-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>17</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="RPW2" startDate="2019-10-11T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.44488</Latitude>
+      <Longitude unit="DEGREES">-121.52654</Longitude>
+      <Elevation>694.0</Elevation>
+      <Site>
+        <Name>Rockport, WA, USA</Name>
+      </Site>
+      <CreationDate>2019-10-11T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>29</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SAXON" startDate="2021-10-25T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.683288</Latitude>
+      <Longitude unit="DEGREES">-122.160842</Longitude>
+      <Elevation>110.8</Elevation>
+      <Site>
+        <Name>Nesset Farm, Saxon, WA, USA</Name>
+      </Site>
+      <TotalNumberChannels>23</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SBES" startDate="2000-03-01T00:00:00.000000Z" endDate="2014-07-03T00:00:00.000000Z" restrictedStatus="open">
+      <Comment>
+        <Value>Shape of high frequency response uncertain (&gt;10 Hz). Gain OK.</Value>
+        <BeginEffectiveTime>2000-03-01T00:00:00.000000Z</BeginEffectiveTime>
+        <EndEffectiveTime>2006-05-25T23:59:59.000000Z</EndEffectiveTime>
+      </Comment>
+      <Comment>
+        <Value>Shape of high frequency response uncertain (&gt;10 Hz). Gain OK.</Value>
+        <BeginEffectiveTime>2000-03-01T00:00:00.000000Z</BeginEffectiveTime>
+        <EndEffectiveTime>2006-05-25T23:59:59.000000Z</EndEffectiveTime>
+      </Comment>
+      <Latitude unit="DEGREES">48.768139</Latitude>
+      <Longitude unit="DEGREES">-122.416328</Longitude>
+      <Elevation>119.0</Elevation>
+      <Site>
+        <Name>Silver Beach ES SMO</Name>
+      </Site>
+      <CreationDate>2000-03-01T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>8</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SDRO" startDate="2019-12-11T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.508714</Latitude>
+      <Longitude unit="DEGREES">-122.237726</Longitude>
+      <Elevation>17.67</Elevation>
+      <Site>
+        <Name>Sedro-Woolley City Hall, Sedro-Woolley, WA, USA</Name>
+        <Description>325 Metcalf Street</Description>
+        <Town>Sedro-Woolley</Town>
+        <County>Skagit</County>
+        <Region>WA</Region>
+        <Country>USA</Country>
+      </Site>
+      <CreationDate>2019-12-11T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>20</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SHUK" startDate="2009-09-02T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.85284</Latitude>
+      <Longitude unit="DEGREES">-121.67695</Longitude>
+      <Elevation>1516.0</Elevation>
+      <Site>
+        <Name>Shuksan (Mt. Baker Ski Area), WA, USA</Name>
+      </Site>
+      <CreationDate>2009-09-02T00:00:00.000000Z</CreationDate>
+      <TotalNumberChannels>44</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SMSH" startDate="2021-08-10T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.58641</Latitude>
+      <Longitude unit="DEGREES">-122.22551</Longitude>
+      <Elevation>97.3</Elevation>
+      <Site>
+        <Name>Samish Elementary School, Sedro-Woolley, WA, USA</Name>
+      </Site>
+      <TotalNumberChannels>17</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SUMAS" startDate="2021-08-04T00:00:00.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.99333</Latitude>
+      <Longitude unit="DEGREES">-122.2589</Longitude>
+      <Elevation>12.1</Elevation>
+      <Site>
+        <Name>Sumas Elementary School, Sumas, WA, USA</Name>
+      </Site>
+      <TotalNumberChannels>17</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+  </Network>
+  <Network code="X6" startDate="2019-01-01T00:00:00.000000Z" endDate="2020-12-31T23:59:59.999900Z" restrictedStatus="open">
+    <Description>Seismic Observations of Glacier Creek to Infer Timing and Magnitude of Bedload Transport (Glacier Creek Bedload Monitoring)</Description>
+    <Identifier type="DOI">10.7914/SN/X6_2019
+   </Identifier>
+    <TotalNumberStations>2</TotalNumberStations>
+    <SelectedNumberStations>2</SelectedNumberStations>
+    <Station code="SN1" startDate="2019-06-20T17:38:52.000000Z" endDate="2020-06-23T16:29:56.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.885564</Latitude>
+      <Longitude unit="DEGREES">-121.934718</Longitude>
+      <Elevation>292.6</Elevation>
+      <Site>
+        <Name>SN1</Name>
+      </Site>
+      <CreationDate>2019-06-20T17:38:52.000000Z</CreationDate>
+      <TotalNumberChannels>3</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+    <Station code="SN2" startDate="2019-06-20T18:20:36.000000Z" endDate="2020-06-23T16:10:38.000000Z" restrictedStatus="open">
+      <Latitude unit="DEGREES">48.885698</Latitude>
+      <Longitude unit="DEGREES">-121.934274</Longitude>
+      <Elevation>295.7</Elevation>
+      <Site>
+        <Name>SN2</Name>
+      </Site>
+      <CreationDate>2019-06-20T18:20:36.000000Z</CreationDate>
+      <TotalNumberChannels>3</TotalNumberChannels>
+      <SelectedNumberChannels>0</SelectedNumberChannels>
+    </Station>
+  </Network>
+</FDSNStationXML>
