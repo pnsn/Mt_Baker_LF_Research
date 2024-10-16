@@ -72,6 +72,8 @@ class EventBank2(EventBank):
         Parameters
         ----------
         {get_events_params}
+
+        # TODO - make a nearest station distance option extension (meter units)
         """
         # Restrict access to COMCAT_ID as a search parameter & provide hint
         if 'COMCAT_ID' in options:
