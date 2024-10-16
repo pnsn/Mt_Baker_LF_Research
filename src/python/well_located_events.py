@@ -71,15 +71,13 @@ def convert_to_unix(timestamp_obj):
     # return UNIX timestamp
     return dt_utc.timestamp()  
 
-def prep_data(filename, output_path, colmapping={'to_timestamp': 'origin_datetime'}):
+def prep_data(filename, colmapping={'to_timestamp': 'origin_datetime'}):
     """
     This method reads a raw output CSV file from an AQMS file, renames columns 
     as specified by **colmapping**, and formats POSIX datetimes to UTCDateTimes.
 
     :param filename: Name of the CSV file to load. This should be a string that specifies the file's name.
     :type filename: str
-    :param output_path: Path where the curated DataFrame will be saved as a CSV file.
-    :type output_path: str
     :param colmapping: Dictionary for column name relabeling. The keys are the 
                        original column names, and the values are the new names. 
                        Defaults to {'to_timestamp': 'origin_datetime'}.
@@ -118,11 +116,11 @@ def prep_data(filename, output_path, colmapping={'to_timestamp': 'origin_datetim
         if col in events_df.columns:
             events_df[col] = events_df[col].apply(lambda x: x=='y')
             
-    events_df.to_csv(output_path, index=False)
+    # events_df.to_csv(output_path, index=False)
 
     return events_df
 
-def curate_events(events_df, output_path, nobs=6, nsta=4, distance=10, erhor=10, sdep=10, wrms=1):
+def curate_events(events_df, nobs=6, nsta=4, distance=10, erhor=10, sdep=10, wrms=1):
     # extracting well-located events from the criteria
     """
     Curate well-located events from a DataFrame based on specified criteria.
@@ -134,8 +132,6 @@ def curate_events(events_df, output_path, nobs=6, nsta=4, distance=10, erhor=10,
     :param events_df: A DataFrame containing event data that includes observations 
                       and other relevant parameters.
     :type events_df: pd.DataFrame
-    :param output_path: Path where the curated DataFrame will be saved as a CSV file.
-    :type output_path: str
     :param nobs: Minimum number of observations required for an event to be 
                  considered well-located. Default is 6.
     :type nobs: int, optional
@@ -168,6 +164,6 @@ def curate_events(events_df, output_path, nobs=6, nsta=4, distance=10, erhor=10,
                                        & (events_df.fepi == False)
                                          & (events_df.ftime == False)]
     
-    events_df.to_csv(output_path, index=False)
+    # events_df.to_csv(output_path, index=False)
 
     return events_df
