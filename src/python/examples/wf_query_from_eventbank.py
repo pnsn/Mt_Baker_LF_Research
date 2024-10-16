@@ -21,7 +21,7 @@ print(f'subset query from wildcard search has {len(df)} entries')
 df = df.assign(anyfix=[any([x.fepi,x.ftime,x.fdepth]) for _, x in df.iterrows()])
 
 # Subset to just have non-fixed events
-df_filt = df[~df.anyfix]
+df_filt = df[(~df.anyfix) & (df.station_count >= 4)]
 print(f'subset query for non-fixed events has {len(df_filt)} entries')
 # Get all these events as a catalog from the EventBank
 cat = ebank.get_events(event_id=df_filt.event_id)
@@ -34,8 +34,10 @@ origin = event.preferred_origin()
 # Create an IRIS webservices client
 client = Client('IRIS')
 # Run query
-st = cutil.origin_bulk_waveform_request(origin, client)
-breakpoint()
+st = cutil.origin_bulk_waveform_request(origin, client, all_components=True)
+st.plot(type='section', time_down=True, fontsize=16)
+
+# breakpoint()
 # bulk = cutil.compose_origin_bulk_lines(origin, method='pick', lead_time=10, lag_time=60, all_components=True)
 
 
