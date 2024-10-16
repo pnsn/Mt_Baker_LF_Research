@@ -101,8 +101,7 @@ class EventBank2(EventBank):
         df = super().read_index(**options)
 
         # Handle fetching fixed status entries
-        if ifs:
-
+        if ifs and len(df) > 0:
             fentries = []
             for eid in df.event_id:
                 event = self.get_events(event_id=eid)[0]
