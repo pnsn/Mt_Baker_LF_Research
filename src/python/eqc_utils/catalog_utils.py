@@ -11,13 +11,19 @@
     example scripts by B. Johnson.
 """
 
-import logging, os, glob, warnings
+import logging, os, glob, warnings, sys
+from pathlib import Path
 import obspy
 from obsplus import EventBank
 import eqcorrscan.utils.catalog_utils as xutil
 from eqcorrscan.utils.clustering import catalog_cluster
 
-Logger = logging.getLogger(__name__)
+# TODO: Eventually obsolte this relative pathing in place of a library install with setup.py
+mypath = Path(__file__)
+sys.path.append(os.path.join(mypath.parent.parent))
+from classes.eventbank2 import EventBank2
+
+# Logger = logging.getLogger(__name__)
 
 # Catalog Construction Methods
 def connect_to_eventbank(base_path=os.path.join('data','XML','QUAKE','BANK'),
@@ -55,7 +61,7 @@ def connect_to_eventbank(base_path=os.path.join('data','XML','QUAKE','BANK'),
      - **ebank** (*obsplus.EventBank*) - initialized eventbank client
     
     """    
-    ebank = EventBank(base_path=base_path,
+    ebank = EventBank2(base_path=base_path,
                       path_structure=path_structure,
                       name_structure=name_structure,
                       **options)
