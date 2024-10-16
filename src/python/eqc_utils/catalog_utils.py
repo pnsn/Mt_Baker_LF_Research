@@ -11,29 +11,78 @@
     example scripts by B. Johnson.
 """
 
-import logging, os, glob
+import logging, os, glob, warnings, sys
+from pathlib import Path
 import obspy
 from obsplus import EventBank
 import eqcorrscan.utils.catalog_utils as xutil
 from eqcorrscan.utils.clustering import catalog_cluster
-import pandas as pd
 
-Logger = logging.getLogger(__name__)
+# TODO: Eventually obsolte this relative pathing in place of a library install with setup.py
+mypath = Path(__file__)
+sys.path.append(os.path.join(mypath.parent.parent))
+from classes.eventbank2 import EventBank2
+
+# Logger = logging.getLogger(__name__)
 
 # Catalog Construction Methods
 def connect_to_eventbank(base_path=os.path.join('data','XML','QUAKE','BANK'),
-                     path_structure='{year}/{month}',
-                     name_structure='{event_id_short}'):
-    """Very simple wrapper for ObsPlus EventBank.__init__
+                     path_structure='{year}',
+                     name_structure='uw{event_id_end}',
+                     events_to_add=None,
+                     **options):
+    """Establish a connection (or re-create) the Obsplus EventBank hosted
+    in the `data/XML/QUAKE/BANK` directory of this repository and provide
+    an additional option to add new events to the bank.
+    
+    :param base_path: path to the root directory of the EventBank (or where it will be hosted),
+        defaults to os.path.join('data','XML','QUAKE','BANK').
+    :type base_path: str, optional
+    :param path_structure: path_structure format for a :class:`~obsplus.bank.EventBank`,
+        defaults to '{year}'
+    :type path_structure: str, optional
+    :param name_structure: naming format for XML objects in the EventBank,
+        defaults to 'uw{event_id_end}'. This produces files/entries named uw#########.xml
+        that matches the event ID string used in the USGS COMCAT
+        - also see :meth:`~libcomcat.search.get_event_by_id`
+    :type name_structure: str, optional
+    :param events_to_add: events to add to this EventBank via the :meth:`~obsplus.bank.eventbank.EventBank.put_events` method,
+        defaults to None.
+    :type events_to_add: see below, optional
+        - None -- skip the add events step
+        - str -- name of a QuakeML file to be loaded via :meth:`~obspy.read_events` and added to the initialized EventBank
+        - :class:`~obspy.core.event.Event` -- attempts to directly add to the initialized EventBank 
+        - :class:`~obspy.core.event.Catalog` -- attempts to directly add to the initialized EventBank
+    :param options: Additional key-word argument collector passed to the EventBank initialization
+        Supported kwargs: format, ext, executor
+        - see documentation for class :class:`~obsplus.bank.eventbank.EventBank` for more info
 
-    :param qml_dir: directory containing desired QuakeML files
-    :type qml_dir: str
     :return: 
-     - **ebank** (*obsplus.EventBank*) - composed event bank
+     - **ebank** (*obsplus.EventBank*) - initialized eventbank client
+    
     """    
-    ebank = EventBank(base_path=base_path,
+    ebank = EventBank2(base_path=base_path,
                       path_structure=path_structure,
-                      name_structure=name_structure)
+                      name_structure=name_structure,
+                      **options)
+    # Skip if default None
+    if events_to_add is None:
+        pass
+    # Load QuakeML file then pass to EventBank.put_events
+    elif isinstance(events_to_add, str):
+        try:
+            ebank.put_events(obspy.read_events(events_to_add))
+        except:
+            warnings.warn(f'could not read str-formatted {events_to_add} - are you sure this is a QuakeML file? Returning EventBank as-is.')
+    # pass Catalog or Event object to
+    elif isinstance(events_to_add, (obspy.core.event.Catalog, obspy.core.event.Event)):
+        try:
+            ebank.put_events(events_to_add)
+        except:
+            warnings.warn(f'could not add Catalog | Event type object to this EventBank. Returning EventBank as-is.')
+    else:
+        warnings.warn(f'events_to_add of type {type(events_to_add)} not supported. Returning EventBank as-is.')
+    
     return ebank
 
 def assemble_catalog(qml_dir):
