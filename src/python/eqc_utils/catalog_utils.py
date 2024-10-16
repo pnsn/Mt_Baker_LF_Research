@@ -294,7 +294,7 @@ def compose_origin_bulk_lines(origin, method='origin',lead_time=5,
                 seed[-1] = '?'
             if seed not in stachans:
                 stachans.append(seed)
-                n,s,l,c = seed.split()
+                n,s,l,c = seed.split('.')
                 bulk.append((n,s,l,c,t0,t1))
     elif method == 'pick':
         for _arr in origin.arrivals:
@@ -311,3 +311,37 @@ def compose_origin_bulk_lines(origin, method='origin',lead_time=5,
     return bulk
 
 
+def origin_bulk_waveform_request(origin, client, quality=None, minimumlength=None, longestonly=None, filename=None, attach_response=False, **kwargs):
+    # Compose bulk request with kwargs
+    bulk = compose_origin_bulk_lines(origin, **kwargs)
+    # Get waveforms from client, skipping filename to allow associating event location data
+    ost = obspy.Stream()
+    st = client.get_waveforms_bulk(bulk,
+                                quality=quality,
+                                minimumlength=minimumlength,
+                                longestonly=longestonly,
+                                filename=None,
+                                attach_response=attach_response)
+    # Iterate across arrivals
+    for _arr in origin.arrivals:
+        # Get associated pick
+        pick = _arr.pick_id.get_referred_object()
+        # Get station code from channel code
+        n,s,l,c = pick.waveform_id.get_seed_string().split('.')
+        # Subset stream for this station
+        ist = st.select(network=n, station=s)
+        # Iterate across traces
+        for _tr in ist:
+            # If it doesn't have a distance attribute
+            if not hasattr(_tr.stats, 'distance'):
+                # Assign distance in meters
+                _tr.stats.distace = _arr.distance*111.2e3
+                ost += _tr
+    breakpoint()
+    if filename is None:
+        return ost
+    else:
+        ost.write(filename)
+    
+
+    
