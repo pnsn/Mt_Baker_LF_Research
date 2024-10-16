@@ -6,7 +6,8 @@ from obspy.clients.fdsn import Client
 # Get file path on your machine for Mt_Baker_LF_Research/src/python
 pyroot = Path(__file__).parent.parent
 # Add that path to your current path
-sys.path.append(pyroot)
+sys.path.append(os.path.join(pyroot))
+
 # Import catalog
 import src.python.eqc_utils.catalog_utils as cutil
 
@@ -16,6 +17,7 @@ ebank = cutil.connect_to_eventbank()
 print(f'connected to ebank: {type(ebank)}')
 # Create a wildcard based query for a set of events and include fixed status
 df = ebank.read_index(event_id='*/UW/6204*', include_fixed_status=True)
+# df = ebank.read_index(event_id = benz_well_located_evid_list)
 print(f'subset query from wildcard search has {len(df)} entries')
 # Add a temporary column to see if anything is fixed
 df = df.assign(anyfix=[any([x.fepi,x.ftime,x.fdepth]) for _, x in df.iterrows()])
