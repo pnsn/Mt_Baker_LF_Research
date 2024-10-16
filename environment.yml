@@ -31,6 +31,7 @@ dependencies:
 # Visualization
  - matplotlib
  - plotly
+ - contextily
 # Support for Pyrocko
  - pyqt
  - pyqtwebengine

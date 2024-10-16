@@ -9,6 +9,7 @@
     in a manner consistent with their GPLv3 licensing.
     see: https://github.com/niosh-mining/obsplus
 
+    
 """
 import fnmatch
 import obspy
@@ -39,6 +40,42 @@ def _parse_event_fix_status(event: obspy.core.event.Event) -> dict:
     fepi = origin.epicenter_fixed
     out = {'event_id': event_id,'fepi': fepi,'fdepth':fdepth,'ftime': ftime}
     return out
+
+def _parse_event_min_sta_dist(event: obspy.core.event.Event, unit='m') -> dict:
+    if unit.lower() in ['m','meter','km','kilometer','d','deg','degree']:
+        unit = unit.lower()
+    else:
+        raise ValueError(f'unit value {unit} not supported.')
+    
+    event_id = str(event.resource_id)
+    try: 
+        origin = event.preferred_origin()
+    except AttributeError:
+        origin = event.origins[0]
+    # Start with unrealistic degree distance
+    mindist = 999
+    for _arr in origin.arrivals:
+        if hasattr(_arr, 'distance'):
+            if isinstance(_arr.distance, float):
+                if _arr.distance < mindist:
+                    mindist = _arr.distance
+                    pick = _arr.pick_id.get_referenced_object()
+                    phz = _arr.phase
+                    seed = pick.waveform_id.get_seed_string()
+    if unit in ['km','kilometer']:
+        mindist *= 111.2
+        unit = 'km'
+    elif unit in ['m','meter']:
+        mindist *= 111.2e3
+        unit = 'm'
+    else:
+        unit ='deg'
+    out = {'event_id': event_id, f'mindist_{unit}': mindist,
+           'mindist_phz': phz, 'mindist_chan': seed}
+    return out
+
+    
+    
 
 
 class EventBank2(EventBank):
@@ -84,6 +121,15 @@ class EventBank2(EventBank):
             ifs = options.pop('include_fixed_status')
         else:
             ifs = False
+        
+        if 'include_mindist' in options.keys():
+            mds = options.pop('include_mindist')
+        else:
+            mds = False
+        if 'unit' in options.keys():
+            unit = options.pop('unit')
+        else:
+            unit = 'm'
 
         # Enable wildcard search for event_id
         # If event_id is in **options
@@ -103,17 +149,24 @@ class EventBank2(EventBank):
         df = super().read_index(**options)
 
         # Handle fetching fixed status entries
-        if ifs and len(df) > 0:
-            fentries = []
+        if len(df) > 0:
+            entries = []
             for eid in df.event_id:
+                breakpoint()
                 event = self.get_events(event_id=eid)[0]
+                e_row = {}
                 # Aggregate
-                fentries.append(_parse_event_fix_status(event))
+                if ifs:
+                    e_row.update(_parse_event_fix_status(event))
+                if mds:
+                    e_row.update(_parse_event_fix_status(event, unit=unit))
+                entries.append(e_row)
             # Create dataframe
-            fentries = pd.DataFrame(fentries)
+            entries = pd.DataFrame(entries)
             # Merge dataframe
-            df = pd.merge(df, fentries, on='event_id', how='left')
-                    
+            df = pd.merge(df, entries, on='event_id', how='left')
+        
+       
         # Update index with COMCAT_ID
         df.index = [row.agency_id.lower() + row.event_id.split('/')[-1] for _, row in df.iterrows()]
         # Update index name
