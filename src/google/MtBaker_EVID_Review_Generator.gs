@@ -1,8 +1,6 @@
-// Form Generator: Analyst Review of Well Located Events at Mt.Baker
-// Script generated with assistance from ChatGPT and adapted by N. Stevens.
-// Script tested by N. Stevens for functionality before distribution.
-
-
+// Mt. Baker Analyst Review of Well Located Events
+// Script Generated from ChatGPT 3.5 Prompt by N. Stevens
+// Script adapted & tested by N. Stevens for functionality before distribution (WIP)
 function createClassificationForm() {
   // Open the Google Form
   var form = FormApp.create('Mt. Baker Event Classification Review')
@@ -33,7 +31,7 @@ function createClassificationForm() {
   for (var _e = 0; _e < evidValues.length; _e += evidsPerPage) {
     form.addPageBreakItem()
       .setTitle('Page ' + ((_e / evidsPerPage) + 1) + ' of ' + Math.ceil(evidValues.length/evidsPerPage))
-      .setHelpText('Event Classes:\n\neq=earthquake\nlf=low frequency event\nsu=surface event\npx=probable blast\nuk=unknown\nother=exotic events\n\nEVID ASCII Table Here:\nhttps://drive.google.com/file/d/1b-Rmsehd4mMJeP7w-ioCn6uP8hGrfarJ/view?usp=share_link');
+      .setHelpText('Event Classes:\n\neq = earthquake\nlf eq = low frequency earthquake\nlf su = low frequency surface event\nsu = surface event\npx = probable blast\nuk = unknown\nother = exotic events (leave a comment please!)\n\nEVID ASCII Table Here:\nhttps://drive.google.com/file/d/1b-Rmsehd4mMJeP7w-ioCn6uP8hGrfarJ/view?usp=share_link');
 
     var gridItem = form.addGridItem()
       .setTitle('Classify the following catalog events:')
@@ -45,6 +43,12 @@ function createClassificationForm() {
         evidRows.push(evidValues[_f][0]);
       }
     gridItem.setRows(evidRows);
+
+    // add optional comment field for this page
+    form.addParagraphTextItem()
+      .setTitle('Optional: Add any comments on events for this page')
+      .setHelpText('Comment Format: start with `EVID#, ` and end with a semicolon.\n\ne.g.,\n60135818, event in coda of earlier event (already in event remarks);\n60135817, Nate made this example evid comment;');
+      
   }
 
   // // Loope over EVIDs and add a question to the form
