@@ -334,9 +334,12 @@ def origin_bulk_waveform_request(origin, client, quality=None, minimumlength=Non
         for _tr in ist:
             # If it doesn't have a distance attribute
             if not hasattr(_tr.stats, 'distance'):
-                # Assign distance in meters
-                _tr.stats.distance = _arr.distance*111.2e3
-                ost += _tr
+                if _arr.distance is not None:
+                    # Assign distance in meters
+                    _tr.stats.distance = _arr.distance*111.2e3
+                    ost += _tr
+                else:
+                    print(f"Skipping entry due to NoneType distance for {_tr}")
     if filename is None:
         return ost
     else:
