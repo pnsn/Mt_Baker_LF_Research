@@ -6,12 +6,13 @@
 :license: GNU GPLv3
 :purpose:   This module is used to select well-located events from the MtBaker_50km_radius_origins.csv file. 
             The first-pass criteria are as follows:
-                1. 6+ observations (P or S wave picks): nobs >= 6
-                2. 4+ observing stations: nsta >= 4
-                3. no fixed values (depth, epicenter, or time): ['fdepth', 'fepi', 'ftime'] are set to False
-                4. observing station distance of no more than 10 km: distance <= 10
-                5. horizontal and vertical errors of 10 km or less: erhor & sdep <= 10
-                6. travel time RMS misfit of no more than 1 second: wrms <= 1
+                1. Events within 20 km from the Mt. Baker summit: mbs_distance_km <= 20
+                2. 6+ observations (P or S wave picks): nobs >= 6
+                3. 4+ observing stations: nsta >= 4
+                4. no fixed values (depth, epicenter, or time): ['fdepth', 'fepi', 'ftime'] are set to False
+                5. observing station distance of no more than 10 km: distance <= 10
+                6. horizontal and vertical errors of 10 km or less: erhor & sdep <= 10
+                7. travel time RMS misfit of no more than 1 second: wrms <= 1
 
 """
 import os, sys, pytz, re
@@ -120,7 +121,7 @@ def prep_data(filename, colmapping={'to_timestamp': 'origin_datetime'}):
 
     return events_df
 
-def curate_events(events_df, nobs=6, nsta=4, distance=10, erhor=10, sdep=10, wrms=1):
+def curate_events(events_df, mbs_distance_km = 20, nobs=6, nsta=4, distance=10, erhor=10, sdep=10, wrms=1):
     # extracting well-located events from the criteria
     """
     Curate well-located events from a DataFrame based on specified criteria.
@@ -132,6 +133,9 @@ def curate_events(events_df, nobs=6, nsta=4, distance=10, erhor=10, sdep=10, wrm
     :param events_df: A DataFrame containing event data that includes observations 
                       and other relevant parameters.
     :type events_df: pd.DataFrame
+    :param mbs_distance_km: Maximum distance from the Mt. Baker summit required for an event to be 
+                 considered well-located. Default is 20.
+    :type mbs_distance_km: int, optional
     :param nobs: Minimum number of observations required for an event to be 
                  considered well-located. Default is 6.
     :type nobs: int, optional
@@ -154,15 +158,16 @@ def curate_events(events_df, nobs=6, nsta=4, distance=10, erhor=10, sdep=10, wrm
     :return: A DataFrame containing only the well-located events.
     :rtype: pd.DataFrame
     """
-    events_df = events_df[(events_df.nobs >= nobs)
-                           & (events_df.nsta >= nsta)
-                             & (events_df.distance <= distance)
-                               & (events_df.erhor <= erhor)
-                                 & (events_df.sdep <= sdep)
-                                   & (events_df.wrms <= wrms)
-                                     & (events_df.fdepth == False)
-                                       & (events_df.fepi == False)
-                                         & (events_df.ftime == False)]
+    events_df = events_df[(events_df.mbs_distance_km <= mbs_distance_km) 
+                          & (events_df.nobs >= nobs)
+                          & (events_df.nsta >= nsta)
+                          & (events_df.distance <= distance)
+                          & (events_df.erhor <= erhor)
+                          & (events_df.sdep <= sdep)
+                          & (events_df.wrms <= wrms)
+                          & (events_df.fdepth == False)
+                          & (events_df.fepi == False)
+                          & (events_df.ftime == False)]
     
     # events_df.to_csv(output_path, index=False)
 
