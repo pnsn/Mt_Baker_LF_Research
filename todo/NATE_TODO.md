@@ -14,3 +14,6 @@ TODO: Create template matching exaple from Stevens SGGS SSA repository
 
 ### CLEANUP
 TODO: Sequester any half-finished products, then make a forked repository & practice pull/fork collaboration with my development!
+
+### DEVELOP
+WaveBank wrapper
