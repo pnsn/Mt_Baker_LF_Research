@@ -1,3 +1,7 @@
+"""
+TODO: Nate fill in docstring header
+"""
+
 import os, sys
 from pathlib import Path
 
@@ -51,6 +55,7 @@ constructkw = {
     'num_cores': 6
 }
 # Define additional options for construct
+# TODO: ensure that removing this section does not mess things up. - superceded by `augment_template`
 construct_options = {
     'all_vertical': True,
     'all_horiz': False,
@@ -67,10 +72,6 @@ Logger = setup_standard_logger(__name__)
 ## Connect to WaveBank
 ebank= connect_to_eventbank(base_path=ebpath)
 Logger.info(f'Connected to EventBank at {ebpath}')
-
-## Load Station Inventory
-inv = read_inventory(invpath)
-Logger.info(f'Loaded inventory')
 
 ## Connect to IRIS webservices client
 client = Client('IRIS')

@@ -1,3 +1,8 @@
+"""
+TODO: Nate fill in docstring header
+"""
+
+
 import os, sys, glob
 from pathlib import Path
 
@@ -50,7 +55,7 @@ with open(os.path.join(save_dir,'params.csv'), 'w') as p:
     p.write('name,value\n')
     for _k, _v in ckwargs.items():
         p.write(f'{_k},{_v}\n')
-        
+
 Logger.info('writing input parameters to disk')
 
 # Load templates from disk
