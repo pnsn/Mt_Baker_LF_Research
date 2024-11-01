@@ -36,8 +36,11 @@ loaddir = os.path.join(root,'processed_data','templates','well_located')
 # Get list of files to load
 flist = glob.glob(os.path.join(loaddir,'*.tgz'))
 # Save Path
-save_dir = Path().cwd() / 'results' / 'tables' / 'wl_clustering'
+save_dir = Path().cwd() / 'results' / 'tables' / 'wl_clustering' / 'nan1_fill'
+# save_dir = Path().cwd() / 'results' / 'tables' / 'wl_clustering' / 'nan_mean_fill'
 
+# General save file name
+savename = 'cct0.4'
 ### DRIVER PROCESSING PAST HERE ###
 
 # Initialize Logging
@@ -70,10 +73,5 @@ tlist = compose_template_list(mytribe)
 Logger.info('running clustering')
 groups = cluster(tlist, **ckwargs)
 Logger.info('clustering finished')
-save_template_clustering_output(save_dir, groups, 
-                                cct = ckwargs['corr_thresh'], 
-                                shift_len=ckwargs['shift_len'],
-                                individual_shifts=ckwargs['allow_individual_trace_shifts'],
-                                fill_value=ckwargs['replace_nan_distances_with'],
-                                savename='full_test')
+save_template_clustering_output(save_dir, groups, savename='full_test')
 

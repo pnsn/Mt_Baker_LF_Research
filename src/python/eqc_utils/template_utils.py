@@ -146,7 +146,7 @@ def save_template_clustering_output(save_dir, groups, savename='clusters'):
         os.makedirs(save_dir)
 
     with open(os.path.join(save_dir, f'{savename}.csv'), 'w') as ofile:
-        ofile.write('template_name,group_id,corr_thresh,shift_len,individual_shifts\n')
+        ofile.write('template_name,group_id\n')
         for _e, group in enumerate(groups):
             for entry in group:
                 ofile.write(f'{entry[1]},{_e}\n')
