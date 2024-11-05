@@ -114,6 +114,14 @@ total_count = len(df_subset)
 for evid, row in df_subset.iterrows():
     # Announce iteration
     Logger.warning(f'...running {evid} ({counter}/{total_count})')
+    # Check if already exists
+    savename = os.path.join(savedir, f'{evid}')
+    if os.path.isfile(f'{savename}.tgz'):
+        Logger.warning(f'{savename} exists - skipping to next')
+        counter += 1
+        continue
+    else:
+        pass
     # Fetch Catalog for single event
     cat = ebank.get_events(event_id = df_evid.loc[evid].event_id)
     if len(cat) == 1:
@@ -126,17 +134,17 @@ for evid, row in df_subset.iterrows():
     Logger.info(f'...copying arrival phases to pick phase_hints')
     # Filter Catalog
     cat = filter_picks(cat, **pickfiltkw)
-    Logger.info(f'...filtered catalog: {len(cat.events[0].picks)} picks')
-
+    if len(cat) == 0:
+        Logger.warning('...filtering eliminated all picks. Skipping to next')
+        counter += 1
+        continue
+    else:
+        Logger.info(f'...filtered catalog: {len(cat.events[0].picks)} picks')
+    
     # Update constructkw
     constructkw.update({'catalog': cat})
     # Create template
-    savename = os.path.join(savedir, f'{evid}')
-    if os.path.isfile(savename):
-        Logger.warning(f'{savename} exists - skipping to next')
-        continue
-    else:
-        pass
+
     # Try to generate Tribe
     try:
         itribe = Tribe().construct(**constructkw)
