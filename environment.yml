@@ -7,31 +7,28 @@ channels:
 dependencies:
 # Python environment
  - python=3.10
- - cython
- - numpy #=1.9 May be needed for seisbench
 # Dependency managers
  - pip
  - git
-# ObsPy Install Recommendations
+# Libraries requiring precompiling
+ - cython
+ - numpy #=1.9 May be needed for seisbench
+ - scipy
+# ObsPy Install
  - pytest
- - pytest-json
- - pytest-json-report
  - obspy
-# EQcorrscan + ObsPlus for local catalog
+# EQcorrscan + ObsPlus
  - eqcorrscan
  - obsplus
-# Run PIP installs of major tools
- - pip:
-    - setuptools
-    - seisbench
-    - pyrocko
 # IDE
  - ipython
  - jupyterlab
 # Visualization
  - matplotlib
- - plotly
- - contextily
-# Support for Pyrocko
  - pyqt
  - pyqtwebengine
+# Run PIP installs of major tools
+ - pip:
+    - setuptools
+    - pyrocko
+    - git+https://github.com/pnsn/eqcorrscan_utils.git
