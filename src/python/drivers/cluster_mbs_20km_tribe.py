@@ -25,7 +25,7 @@ ckwargs = {'show': False,
            'shift_len': 10.,
            'allow_individual_trace_shifts': False,
            'save_corrmat': True,
-           'replace_nan_distances_with': 1,
+           'replace_nan_distances_with': 'mean',
            'cores': 'all',
            'method': 'single',
            'metric': 'euclidian',
@@ -36,11 +36,9 @@ loaddir = os.path.join(root,'processed_data','templates','20km_catalog')
 # Get list of files to load
 flist = glob.glob(os.path.join(loaddir,'*.tgz'))
 # Save Path
-save_dir = Path().cwd() / 'results' / 'tables' / '20km_clustering' / 'nan1_fill'
+save_dir = Path().cwd() / 'results' / 'tables' / '20km_clustering' / 'nanmean_fill'
 # save_dir = Path().cwd() / 'results' / 'tables' / 'wl_clustering' / 'nan_mean_fill'
 
-# General save file name
-savename = 'cct0.4'
 ### DRIVER PROCESSING PAST HERE ###
 
 # Initialize Logging
