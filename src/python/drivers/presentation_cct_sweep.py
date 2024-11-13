@@ -107,26 +107,27 @@ ctr.dendrogram(corr_thresh=0.6, ax=ax, title='All Events\n')
 fig = plt.figure(figsize=(9,4))
 ax = fig.add_subplot(111)
 lf_ctr = ctr.get_subset(ctr.clusters[ctr.clusters.etype == 'lf'].index)
-lf_ctr.dendrogram(corr_thresh=0.6, ax=ax, title='All LF Events\n')
+lf_ctr.dendrogram(xlabelfield='etype', corr_thresh=0.6, ax=ax, title='All LF Events\n')
 
 # Create Dendrogram for EQ
 fig = plt.figure(figsize=(9,4))
 ax = fig.add_subplot(111)
 eq_ctr = ctr.get_subset(ctr.clusters[ctr.clusters.etype == 'eq'].index)
-eq_ctr.dendrogram(corr_thresh=0.6, ax=ax, title='All EQ Events\n')
+eq_ctr.dendrogram(xlabelfield='index', corr_thresh=0.6, ax=ax, title='All EQ Events\n')
 
 # Create Dendrogram for LF with depth - 2*sdepth > 0
 fig = plt.figure(figsize=(9,4))
 ax = fig.add_subplot(111)
 dlf_filt = (ctr.clusters.etype=='lf') & (ctr.clusters.depth - ctr.clusters.vertical_uncertainty*2 > 0)
 dlf_ctr = ctr.get_subset(ctr.clusters[dlf_filt].index)
-dlf_ctr.dendrogram(corr_thresh=0.6, ax=ax, title='Subsurface (depth - 2*sdep > 0) LF Events\n')
+dlf_ctr.dendrogram(xlabelfield='depth', corr_thresh=0.6, ax=ax, title='Subsurface (depth - 2*sdep > 0) LF Events\n')
 
 
 fig = plt.figure(figsize=(9,4))
 ax = fig.add_subplot(111)
-slf_ctr = ctr.get_subset(ctr.clusters[~dlf_filt].index)
-slf_ctr.dendrogram(corr_thresh=0.6, ax=ax, title='Shallow (depth - 2*sdep < 0) LF Events\n')
+dlf_filt = (ctr.clusters.etype=='lf') & (ctr.clusters.depth - ctr.clusters.vertical_uncertainty*2 < 0)
+slf_ctr = ctr.get_subset(ctr.clusters[dlf_filt].index)
+slf_ctr.dendrogram(xlabelfield='depth', corr_thresh=0.6, ax=ax, title='Shallow (depth - 2*sdep < 0) LF Events\n')
 
 plt.show()
 
