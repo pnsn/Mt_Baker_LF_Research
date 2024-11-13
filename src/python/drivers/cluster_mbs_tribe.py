@@ -91,9 +91,9 @@ tnames = glob.glob(os.path.join(tdir,'*.tgz'))
 
 # Major parameters
 fill_values = [1, 'mean']
-shift_lens = [1., 5. , 10.]
+shift_lens = [1., 10.]
 locksteps = [True, False]
-overwrite_protect = True
+overwrite_protect = False
 
 save_path = os.path.join(root,'processed_data',
                          'clusters','well_located_20km',
