@@ -56,10 +56,11 @@ well_located_evids = os.path.join(root,'results','tables','well_located_mt_baker
 wfclient = Client("IRIS")
 
 # Define Pick Filtering kwargs
-pfkwargs = {'stations': ['MBW','MBW2','SHUK',
-                         'SAXON','RPW2','MULN'],
-            'phase_hints': ['P'],
-            'enforce_single_pick': 'earliest'}
+pfkwargs = {'phase_hints': ['P'],
+            'enforce_single_pick': 'earliest',
+            'stations': ['MBW','MBW2','SHUK',
+                         'SAXON','RPW2','PASS',
+                         'MULN']}
 
 # Define template construction kwargs
 ckwargs = {'method': 'from_client',
@@ -149,7 +150,6 @@ for _e in cat.events:
     for _p in _e.picks:
         sta_set[_p.waveform_id.station_code] += 1
 Logger.info(f'Pick counts are: {sta_set}')
-
 for event in cat.events:
     icat = Catalog(events=[event])
     ckwargs.update({'catalog': icat})
