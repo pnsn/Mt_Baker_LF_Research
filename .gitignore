@@ -2,6 +2,7 @@
 processed_data/*
 # Waveform files
 *.mseed
+data/waveforms/pnwstore
 
 # venv files
 mtbaker/
