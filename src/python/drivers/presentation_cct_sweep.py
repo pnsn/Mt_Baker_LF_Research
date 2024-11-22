@@ -49,7 +49,7 @@ ebkwargs = {'base_path': ebpath,
 # Get get path to ClusteringTribe file names
 processed_path = os.path.join(root,'processed_data','clusters','well_located_20km')
 ctr_file_path = os.path.join(processed_path,'hyper_parameter_trials')
-ctr_files = glob.glob(os.path.join(ctr_file_path, 'fv_1_sl_10.0_ls_False.tgz'))
+ctr_files = glob.glob(os.path.join(ctr_file_path, 'fv_mean_sl_10.0_ls_False.tgz'))
 
 # Save directory
 save_path = os.path.join(processed_path,'assoc_groupings')
@@ -95,6 +95,11 @@ ctr.clusters = ctr.clusters.join(df_etype, how='left')
 # Join eventbank metadata
 ctr.clusters = ctr.clusters.join(df_eb, how='left')
 
+ctr2 = ctr.copy()
+ctr2.select_template_traces(station='MBW*')
+meth = 'correlation_cluster'
+ctr2.cluster(meth, **ctr2.cluster_kwargs[meth])
+breakpoint()
     # Set clustering to specified threshold
 
 # Create Dendrogram For everything

@@ -60,7 +60,7 @@ pfkwargs = {'phase_hints': ['P'],
             'enforce_single_pick': 'earliest',
             'stations': ['MBW','MBW2','SHUK',
                          'SAXON','RPW2','PASS',
-                         'MULN']}
+                         'MULN','RPW2']}
 
 # Define template construction kwargs
 ckwargs = {'method': 'from_client',
