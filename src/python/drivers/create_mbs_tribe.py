@@ -163,20 +163,14 @@ for event in cat.events:
     Logger.info(f'renaming templates with EVID')
     tribe = rename_templates(tribe)
 
+
     for template in tribe:
         # Augment Templates
-        Logger.info(f'Augmenting waveform data on {template.name}')
-        template = augment_template(template=template, **akwargs)    
+        # Logger.info(f'Augmenting waveform data on {template.name}')
+        # template = augment_template(template=template, **akwargs)    
         Logger.info(f'Saving template {tribe[0].name} to {savedir}')
         template.write(os.path.join(savedir, f'{template.name}.tgz'))
 
 
-        
-
-
-# ## Iterate across events & create templates
-# for event in cat.events:
-#     Logger.info('processing event')
-# for evid, row in df_eb.iterrows():
-#     event = ebank.get_events(event_id=row.event_id)
+    
 
