@@ -1,24 +1,22 @@
 """
-:module: Mt_Baker_LF_Research/src/python/drivers/create_mbs_tribe.py
-:auth: Nathan T. Stevens
-:email: ntsteven@uw.edu
-:org: Pacific Northwest Seismic Network
+:module: Mt_Baker_LF_Research/src/python/drivers/create_mbs_shifted_tribe.py
+:auth: Benz Poobua 
+:email: spoobu@uw.edu
+:org: University of Washington
 :license: GNU GPLv3
-:purpose: This driver creates templates for a sub-catalog
+:purpose: This driver creates shifted templates for a sub-catalog
     of PNSN events near Mt. Baker that satisfy pre-defined
-    requirements for being "well-located" and augments the
-    templates by expanding the channel coverage to 3-component
-    data where available.
+    requirements for being "well-located". The shift is refered to 
+    `align_mbs_traces.py`
 """
 
 import os, logging
 from pathlib import Path
 
 import pandas as pd
-from obspy import Catalog
+from obspy import Catalog, read_events
 from obspy.clients.fdsn import Client
 from eqcorrscan import Template, Tribe
-from obsplus import EventBank
 
 from eqcutil.augment.catalog import apply_phase_hints, filter_picks
 from eqcutil.augment.template import rename_templates, augment_template
@@ -40,17 +38,12 @@ if os.path.split(root)[-1] != 'Mt_Baker_LF_Research':
 else:
     Logger.warning(f'running {__file__} from {root}')
 
-# Define connection to EventBank in repository
-ebpath = os.path.join(root,'data','XML','QUAKE','BANK')
-ebkwargs = {'base_path': ebpath,
-            'path_structure': '{year}',
-            'name_structure': 'uw{event_id_end}'}
+# Path to shifted catalog
+subcat_path = os.path.join(root,'processed_data','sub_catalog')
 
-# Define location of 20km radius catalog with phases
-phase_csv = os.path.join(root,'data','Events','MtBaker_20km_radius_phases.csv')
-
-# Define location of catalog with well-located EVIDs
-well_located_evids = os.path.join(root,'results','tables','well_located_mt_baker_evids.txt')
+# Load shifted catalog
+xml_files = [f for f in os.listdir(subcat_path) if f.endswith('.xml')]
+subcat_filepath = os.path.join(subcat_path, xml_files[0])
 
 # Define waveform client
 wfclient = Client("IRIS")
@@ -82,11 +75,8 @@ ckwargs = {'method': 'from_client',
 akwargs = {'client': wfclient,
            'padding': 120.}
 
-
 # Define Save Directory
-savedir = os.path.join(root, 'processed_data','templates','well_located_20km')
-
-
+savedir = os.path.join(root, 'processed_data','shifted_templates','well_located_20km')
 
 ##### PROCESSING SECTION #####
 if not os.path.exists(savedir):
@@ -95,42 +85,9 @@ if not os.path.exists(savedir):
 else:
     Logger.info(f'saving to existing savedir: {savedir}')
 
-
-## CONNECT TO EVENT BANK
-Logger.info(f'Connecting to EventBank with base_path: {ebpath}')
-ebank = EventBank(**ebkwargs)
-# Get eb index
-df_eb = ebank.read_index()
-# Update index as EVIDs
-idx = [row.event_id.split('/') for _, row in df_eb.iterrows()]
-idx = [f'{_e[-2].lower()}{_e[-1]}' for _e in idx]
-df_eb.index = idx
-
-# Safety check that event bank connection is good
-if len(df_eb) > 0:
-    Logger.info(f'Successfully connected: {len(df_eb)} events in bank')
-else:
-    Logger.critical('Returned an empty event bank - exiting')
-
-## GET 20km EVIDS
-_df = pd.read_csv(phase_csv)
-evid20 = [f'uw{eid}' for eid in _df.evid.value_counts().index.values]
-
-## GET WELL-LOCATED EVIDS
-with open(well_located_evids, 'r') as file:
-    lines = file.readlines()
-
-evidwl = list(set([f'uw{int(eid)}' for eid in lines]))
-
-## Event Bank Pre-Filtering
-df_eb = df_eb[(df_eb.index.isin(evid20)) & (df_eb.index.isin(evidwl))]
-if len(df_eb)> 0:
-    Logger.info(f'Subsampled EventBank contents to {len(df_eb)} events')
-else:
-    Logger.critical('No events selected from EventBank index subsampling')
-
 ## Get event catalog
-cat = ebank.get_events(event_id=df_eb.event_id)
+cat = read_events(subcat_filepath)
+
 if len(cat) > 0:
     Logger.info(f'Fetched {len(cat)} event\'s metadata from the EventBank')
 else:
@@ -162,7 +119,6 @@ for event in cat.events:
     # Rename templates
     Logger.info(f'renaming templates with EVID')
     tribe = rename_templates(tribe)
-
 
     for template in tribe:
         # Augment Templates
