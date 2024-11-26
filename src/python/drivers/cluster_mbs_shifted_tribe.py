@@ -1,5 +1,5 @@
 """
-:module: Mt_Baker_LF_Research/src/python/drivers/cluster_mbs_tribe.py
+:module: Mt_Baker_LF_Research/src/python/drivers/cluster_mbs_shifted_tribe.py
 :auth: Benz Poobua
 :email: spoobu@uw.edu
 :org: University of Washington
