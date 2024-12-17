@@ -1,6 +1,6 @@
 import os, logging
 from pathlib import Path
-
+import matplotlib.pyplot as plt
 import pandas as pd
 from obspy import Catalog, read_inventory
 from eqcorrscan import Template, Tribe
@@ -27,7 +27,7 @@ TMPD = ROOT / 'processed_data' / 'bank_templates' / 'd20km'
 # Path to INV
 INVF = ROOT / 'data' / 'XML' / 'INV' / 'station_inventory_50km_MBS_IRISWS_STATION.xml'
 # Path to CTR Save File
-CTRF = TMPD / 'corr_cluster.tgz'
+CTRF = TMPD / 'corr_cluster_XSTA_LockStep.tgz'
 
 
 ### CONNECT / LOAD ###
@@ -55,4 +55,49 @@ df_E.index = [os.path.splitext(os.path.split(row.path)[-1])[0] for _, row in df_
 CTR.clusters = CTR.clusters.join(df_O['etype'],how='left')
 CTR.clusters = CTR.clusters.join(df_E, how='left')
 
+# Recluster at higher threshold
+CTR.cct_regroup(0.6, inplace=True)
+
+# Alias clusters
 df_C = CTR.clusters
+
+gcounts = df_C.correlation_cluster.value_counts()
+min_members = 1
+min_grp = 5
+fig1 = plt.figure()
+gs1 = fig1.add_gridspec(ncols=2, nrows=2)
+axes = [fig1.add_subplot(gs1[_e]) for _e in range(4)]
+
+for grp, count in gcounts.items():
+    if count >= min_members:
+        idf_C = df_C[df_C.correlation_cluster == grp]
+
+        if count >= min_grp:
+            marker = '.'
+            zorder=count
+            label=f'G{grp} ({count})'
+        else:
+            marker = 'xk'
+            zorder=1
+            label = None
+        # axes[0].errorbar(idf_C.latitude, idf_C.longitude,
+        #                  xerr=idf_C.horizontal_uncertainty.values/111.2e3,
+        #                  yerr=idf_C.horizontal_uncertainty.values/111.2e3,
+        #                  marker=marker, zorder=zorder, label=label)
+        axes[0].plot(idf_C.longitude, idf_C.latitude, marker, label=label)
+        axes[1].plot(idf_C.depth*1e-3, idf_C.latitude, marker)
+        axes[2].plot(idf_C.longitude, idf_C.depth*1e-3, marker)
+        axes[3].plot(idf_C.time, idf_C.depth*1e-3, marker)
+        # axes[1].plot(idf_C.depth*1e-3, idf_C.vertical_uncertainty, marker)
+        # axes[2].plot(idf_C.latitude, idf_C.longitude, marker)
+        # axes[3].plot(idf_C.longitude,idf_C.depth,marker)
+
+axes[0].legend()
+    
+fig2 = plt.figure()
+ax = fig2.add_subplot(111)
+CTR.dendrogram(xlabelfield='etype')
+
+# fig3 = plt.figure()
+# gs3 = fig3.add_gridspecc
+
