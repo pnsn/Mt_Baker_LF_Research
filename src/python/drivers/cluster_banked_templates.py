@@ -31,8 +31,18 @@ INVF = ROOT / 'data' / 'XML' / 'INV' / 'station_inventory_50km_MBS_IRISWS_STATIO
 SAVE = TMPD
 
 ### FILTERING PARAMETER DEFINITIONS ###
+# Channel Mapping Kwargs
+TMAP = {'UW.MBW.01.EHZ':'UW.MBW..EHZ',
+        'UW.MBW2..HHE':'UW.MBW2..HHZ',
+        'UW.MBW2..ENZ':'UW.MBW2..HHZ',
+        'UW.MULN..HHN':'UW.MULN..HHZ',
+        'UW.RPW.01.EHZ':'UW.RPW..EHZ',
+        'UW.SHUK..HHN':'UW.SHUK..HHZ',
+        'UW.PASS..BHN':'UW.PASS..BHZ'}
+
 # Filter Picks Kwargs
-FPKW = {'stations': ['MBW','MBW2','SHUK','RPW','RPW2'],
+FPKW = {'stations': ['MBW','MBW2','SHUK','RPW','RPW2',
+                     'SAXON','PASS','MULN'],
         'phase_hints': ['P'],
         'enforce_single_pick': 'preferred'}
 # Template Build Status Filters
@@ -43,7 +53,7 @@ ccckwargs = {'method': 'correlation_cluster',
             'replace_nan_distances_with': 'mean',
             'shift_len': 10,
             'corr_thresh': 0.7,
-            'allow_individual_trace_shifts': True,
+            'allow_individual_trace_shifts': False,
             'show': False,
             'cores': 'all',
             'save_corrmat': False}
@@ -88,14 +98,18 @@ INV = read_inventory(INVF)
 ### PROCESSING ###
 # Generate Templates from Banked Data/Metadata
 ctr = generate_clustering_tribe_from_banks(
-    WBANK, EBANK, df_status.event_id, pick_filt_kwargs=FPKW, creation_kwargs=params)
+    WBANK, EBANK,
+    df_status.event_id,
+    transfer_mapping=TMAP,
+    pick_filt_kwargs=FPKW,
+    creation_kwargs=params)
 Logger.info('ClusteringTribe generated from Wave-/Event-Bank')
 # Rename Templates
 ctr = rename_templates(ctr)
 Logger.info('Templates renamed')
+
 # Run Cross-Correlation Clustering
 Logger.info('Running clustering')
-breakpoint()
 ctr.cluster(**ccckwargs)
-ctr.write(str(SAVE/'corr_cluster.tgz'))
+ctr.write(str(SAVE/'corr_cluster_XSTA_LockStep.tgz'))
 breakpoint()
