@@ -52,8 +52,8 @@ TBS = ['Full','Partial']
 ccckwargs = {'method': 'correlation_cluster',
             'replace_nan_distances_with': 'mean',
             'shift_len': 10,
-            'corr_thresh': 0.7,
-            'allow_individual_trace_shifts': False,
+            'corr_thresh': 0.6,
+            'allow_individual_trace_shifts': True,
             'show': False,
             'cores': 'all',
             'save_corrmat': False}
@@ -111,5 +111,5 @@ Logger.info('Templates renamed')
 # Run Cross-Correlation Clustering
 Logger.info('Running clustering')
 ctr.cluster(**ccckwargs)
-ctr.write(str(SAVE/'corr_cluster_XSTA_LockStep.tgz'))
+ctr.write(str(SAVE/'corr_cluster_XSTA_FreeStep.tgz'))
 breakpoint()
