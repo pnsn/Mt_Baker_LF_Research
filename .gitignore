@@ -173,3 +173,6 @@ cython_debug/
 .DS_Store
 .DS_Store
 data/Processed Datasets/MtBaker_50km_radius_origins_cleaned.csv
+data/WF/BANK/.index.h5
+data/WF/large_query_gist.txt
+data/WF/processing_log.csv
