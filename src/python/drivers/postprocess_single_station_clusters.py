@@ -27,20 +27,6 @@ TMPD = ROOT / 'processed_data' / 'bank_templates' / 'd20km'
 # Path to INV
 INVF = ROOT / 'data' / 'XML' / 'INV' / 'station_inventory_50km_MBS_IRISWS_STATION.xml'
 
-### LOAD SINGLE SITE(ish) CLUSTERS ###
-flist = glob.glob(str(TMPD/'corr_cluster_*_FreeStep.tgz'))
-tribes = {}
-for _f in flist:
-    if 'XSTA' in _f:
-        continue
-    path, fname = os.path.split(_f)
-    parts = fname.split('_')
-    _k = parts[2]
-    Logger.info(f'loading {_f}')
-    _ctr = ClusteringTribe().read(_f)
-    tribes.update({_k: _ctr})
-
-
 ### CONNECT / LOAD ###
 # Connect To EventBank
 EBANK = EventBank(EBBP)
@@ -62,6 +48,37 @@ df_E = EBANK.read_index()
 # Generate matching index to CTR.clusters
 df_E.index = [os.path.splitext(os.path.split(row.path)[-1])[0] for _, row in df_E.iterrows()]
 
+### LOAD SINGLE SITE(ish) CLUSTERS ###
+flist = glob.glob(str(TMPD/'corr_cluster_*_FreeStep.tgz'))
+tribes = {}
+for _f in flist:
+    if 'XSTA' in _f:
+        continue
+    elif 'Composite' in _f:
+        continue
+    path, fname = os.path.split(_f)
+    parts = fname.split('_')
+    _k = parts[2]
+    Logger.info(f'loading {_f}')
+    _ctr = ClusteringTribe().read(_f)
+    _resave = False
+    if 'etype' not in _ctr.clusters.columns:
+        _resave = True
+        Logger.info(f'appending etypes to clusters dataframe')
+        _ctr.clusters = _ctr.clusters.join(df_O['etype'], how='left')
+    if 'event_id' not in _ctr.clusters.columns:
+        _resave = True
+        Logger.info(f'appending EventBank summary to clusters dataframe')
+        _ctr.clusters = _ctr.clusters.join(df_E, how='left')
+    tribes.update({_k: _ctr})
+    if _ctr.clusters.correlation_cluster.value_counts().index[0] != 1:
+        _resave = True
+        Logger.info('reindexing correlation_clusters')
+        _ctr.reindex_columns()
+    if _resave:
+        Logger.info(f'resaving clustering tribe with appended event metadata')
+        _ctr.write(_f)
+
 # Concatenate groups with different thresholding values
 df_C = pd.DataFrame()
 # Iterate across thresholding values (10x corr_thresh)
@@ -72,7 +89,7 @@ for _t in [9, 8, 7, 6, 5, 4, 3, 2, 1]:
     _cct = _t*0.1
     Logger.info(f'rethresholding at NCC level: {_cct}')
 
-    for _k, _ctr in tribes.items():
+    for _e, (_k, _ctr) in enumerate(tribes.items()):
         Logger.debug(f'running rethresholding on {_k}')
         # Run re-thresholding
         _series = _ctr.cct_regroup(corr_thresh=_cct, inplace=False)
@@ -81,7 +98,9 @@ for _t in [9, 8, 7, 6, 5, 4, 3, 2, 1]:
         # Concatenate
         df_C = pd.concat([df_C, _series], axis=1, ignore_index=False)
 
-df_C = df_C.join(df_O['etype'], how='left')
-df_C = df_C.join(df_E, how='left')
+if 'etype' not in df_C.columns:
+    df_C = df_C.join(df_O['etype'], how='left')
+if 'event_id' not in df_C.columns:
+    df_C = df_C.join(df_E, how='left')
 
 df_C.to_csv(str(TMPD / 'multi_thresholded_clusters.csv'), header=True, index=True)

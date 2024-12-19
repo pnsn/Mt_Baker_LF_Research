@@ -41,7 +41,7 @@ TMAP = {'UW.MBW.01.EHZ':'UW.MBW..EHZ',
         'UW.PASS..BHN':'UW.PASS..BHZ'}
 
 
-STA_LISTS = [['MBW','MBW2'],['RPW','RPW2'],['SHUK'],['SAXON'],['PASS'],['MULN']]
+STA_LISTS = [['MBW'],['MBW2'],['RPW'],['RPW2']]#,['SHUK'],['SAXON'],['PASS'],['MULN']]
 for slist in STA_LISTS:
     # Filter Picks Kwargs
     FPKW = {'stations': slist,
@@ -90,7 +90,7 @@ for slist in STA_LISTS:
                 params[_k] = float(_v)
             elif _v.isnumeric():
                 params[_k] = float(_v)
-
+    params.update({'num_cores': 12})
     # Connect To Banks
     EBANK = EventBank(EBBP)
     WBANK = WaveBank(WBBP)
