@@ -23,28 +23,47 @@ EBBP = ROOT / "data" / "XML" / "QUAKE" / "BANK"
 WBBP = ROOT / "data" / "WF" / "BANK"
 # Get RESP file directory
 INVD = ROOT / 'data' / 'XML' / 'RESP'
+# Path to event metadata from AQMS
+AQMS = ROOT / 'data' / 'Events' / 'MtBaker_50km_radius_origins.csv'
+# Get result from step1
+S1INFO = ROOT / 'processed_data' / 'workflow' / 'catalog' / 'preferred_stachan_pick_continuity.csv'
+
 # Output directory absolute path
 DOUT = ROOT / "processed_data" / "workflow" / "templates"
 # Status file save
 STATUSFILE = DOUT / "template_construction_status.csv"
+# Parameter file for filter_pick (Pick Filtering) parameter documentation
 PFNAME = DOUT / "catalog_filtering_kwargs.csv"
-# Parameter file to save
+# Parameter file for construction (Template Construction) parameter documentation
 TCNAME = DOUT / "template_construction_kwargs.csv"
+# Name to save the constructed ClusteringTribe to
+CTRIBE = DOUT / "clustering_tribe_v3.tgz"
 
-# Preferred Stations
-STAS = ['MBW','MBW2','SHUK','RPW','RPW2','JCW','SAXON']
+### LOAD SUBSET EVENTS and CHANNELS
+df_SE = pd.read_csv(S1INFO, index_col=[0])
+# Get unique station names
+STAS = {col.split('.')[1] for col in df_SE.columns}
 
-# Channel Aliases/Remappings
+# Channel Shifts - Move picks from horizontals so that
+# templates will only use vertical data.
+# Vertical traces still have to pass the SNR minimum!
 SHIFTS = {'UW.SHUK..HHN':'UW.SHUK..HHZ',
-          'UW.MBW2..HHE':'UW.MBW2..HHZ'}
-
+          'UW.MBW2..HHE':'UW.MBW2..HHZ',
+          'UW.MBW2..ENZ':'UW.MBW2..HHZ',
+          'UW.MULN..HHN':'UW.MULN..HHZ',
+          'CN.VDB..SHZ':'CN.VDB..EHZ'}
+# Location codes to remove in order to permit records at the same
+# site from different instruments to be cross-correlated
 ALIASES = {'UW.MBW.01.EHZ':'UW.MBW..EHZ',
            'UW.RPW.01.EHZ':'UW.RPW..EHZ'}
 
+
+## filter_picks key-word arguments
 pick_filt_kwargs = {'phase_hints': ['P'],
                     'enforce_single_pick': 'preferred',
                     'stations': STAS}
 
+## Construct Tribe key-word arguments
 ckwargs = {'method': 'from_client',
            'lowcut': 0.5,
            'highcut': 20.,
@@ -90,8 +109,10 @@ EBANK = EventBank(EBBP)
 df_eb = EBANK.read_index()
 if len(df_eb) == 0:
     Logger.critical(f'Empty EventBank - check path: {str(EBBP)}')
+# Create an EVID column 
 df_eb = df_eb.assign(evid=[int(os.path.split(row.event_id)[-1]) for _, row in df_eb.iterrows()])
 df_eb = df_eb.sort_values(by='time')
+
 # Connect to wavebank
 Logger.info('Connecting to wavebank')
 WBANK = WaveBank(WBBP)
@@ -107,10 +128,10 @@ with open(str(STATUSFILE), 'w') as LOG:
     LOG.write('event_id,build_summary,template_generates,all_picks_present,unpicked_stations,error_type,pick_filter_par_name,construct_par_name\n')
 
 # Iterate across events
-for _e, event_id in enumerate(df_eb.event_id):
+for _e, event_id in enumerate(df_SE.index):
     # Re-open statusfile to append the status line for this event
     with open(str(STATUSFILE), '+a') as LOG:
-        Logger.info(f'Processing: {event_id} ({_e+1} of {len(df_eb)})')
+        Logger.info(f'Processing: {event_id} ({_e+1} of {len(df_SE)})')
         # Get event
         cat = EBANK.get_events(event_id=event_id)
         event = cat[0].copy()
@@ -185,6 +206,8 @@ for _e, event_id in enumerate(df_eb.event_id):
                     for tr in tmp.st:
                         if tr.id in ALIASES.keys():
                             tr.stats.location = ALIASES[tr.id].split('.')[-2]
+                    # Merge traces
+                    tmp.st.merge(method=1, interpolation_samples=-1)
                 # Append tribe to ClusteringTribe  
                 CTR += tribe.copy()
         else:
@@ -197,7 +220,17 @@ for _e, event_id in enumerate(df_eb.event_id):
         except NameError:
             continue
 
-# Append EBANK summary to CTR.clusters
+# Append EBANK summary and ETYPE to CTR.clusters
 df_eb.index = df_eb.evid.apply(lambda x: f'uw{x}')
+# Load Event Metadata
+df_O = pd.read_csv(str(AQMS))
+# Subset to evid and etype
+df_O = df_O[['evid','etype']]
+# Drop duplicates
+df_O = df_O.drop_duplicates(keep='first')
+# Generate matching index to CTR.clusters
+df_O.index = [f'uw{_e}' for _e in df_O.evid]
+
 CTR.clusters = CTR._c.join(df_eb, how='left')
+CTR.clusters = CTR._c.join(df_O['etype'], how='left')
 CTR.write(str(DOUT/'clustering_tribe.tgz'))
