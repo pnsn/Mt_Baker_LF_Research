@@ -24,7 +24,7 @@ _f = TMPD/'corr_cluster_XSTA_FreeStep.tgz'
 _ctr = ClusteringTribe().read(str(_f))
 _ctr.cct_regroup(0.45, inplace=True)
 _ctr.reindex_columns();
-_ctr._c = [pd.Timestamp(row.time) for _, row in _ctr._c.iterrows()]
+_ctr._c.time = [pd.Timestamp(row.time) for _, row in _ctr._c.iterrows()]
 
 
 def makeplot(_ctr):
