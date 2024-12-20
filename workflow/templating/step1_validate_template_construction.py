@@ -2,6 +2,8 @@ import os, logging, glob
 from pathlib import Path
 
 from obspy import read_inventory
+from obspy.core.event import WaveformStreamID
+from obspy.clients.fdsn import Client
 import pandas as pd
 from obsplus import EventBank, WaveBank
 from eqcorrscan import Tribe
@@ -20,9 +22,7 @@ EBBP = ROOT / "data" / "XML" / "QUAKE" / "BANK"
 # Get absolute path to wavebank
 WBBP = ROOT / "data" / "WF" / "BANK"
 # Get RESP file directory
-INVD = ROOT / 'XML' / 'RESP'
-# Get absolute path to phase file
-PHZF = ROOT / "data" / "Events" / "MtBaker_20km_radius_phases.csv"
+INVD = ROOT / 'data' / 'XML' / 'RESP'
 # Output directory absolute path
 DOUT = ROOT / "processed_data" / "workflow" / "templates"
 # Status file save
@@ -34,6 +34,13 @@ TCNAME = DOUT / "template_construction_kwargs.csv"
 # Preferred Stations
 STAS = ['MBW','MBW2','SHUK','RPW','RPW2','JCW','SAXON']
 
+# Channel Aliases/Remappings
+SHIFTS = {'UW.SHUK..HHN':'UW.SHUK..HHZ',
+          'UW.MBW2..HHE':'UW.MBW2..HHZ'}
+
+ALIASES = {'UW.MBW.01.EHZ':'UW.MBW..EHZ',
+           'UW.RPW.01.EHZ':'UW.RPW..EHZ'}
+
 pick_filt_kwargs = {'phase_hints': ['P'],
                     'enforce_single_pick': 'preferred',
                     'stations': STAS}
@@ -44,11 +51,11 @@ ckwargs = {'method': 'from_client',
            'filt_order': 4,
            'samp_rate': 50.,
            'prepick': 5.,
-           'length': 50.,
+           'length': 45.,
            'process_len': 300.,
            'min_snr': 3.,
            'parallel': True,
-           'num_cores': 6, 
+           'num_cores': 12, 
            'save_progress': False
            }
 
@@ -57,20 +64,25 @@ Logger.info(f'Will save to {str(DOUT)}')
 if not os.path.exists(str(DOUT)):
     os.makedirs(str(DOUT))
 
-
 ### GET INVENTORY ###
 flist = glob.glob(str(INVD/'*.xml'))
+for _e, _f in enumerate(flist):
+    if _e == 0:
+        INV = read_inventory(_f)
+    else:
+        INV += read_inventory(_f)
 
-### SAVE PARAMETERS
-with open(str(TCNAME), 'w') as PAR:
-    PAR.write('param,value\n')
-    for _k, _v in ckwargs.items():
-        PAR.write(f'{_k},{_v}\n')
-
+### SAVE PICK FILTERING PARAMETERS
 with open(str(PFNAME), 'w') as PAR:
     PAR.write('param,value\n')
     for _k, _v in ckwargs.items():
         PAR.write(f'{_k},"{_v}"')
+
+### SAVE TEMPLATE CONSTRUCTION PARAMETERS
+with open(str(TCNAME), 'w') as PAR:
+    PAR.write('param,value\n')
+    for _k, _v in ckwargs.items():
+        PAR.write(f'{_k},{_v}\n')
 
 # Connect to eventbank
 Logger.info('Connecting to eventbank')
@@ -79,76 +91,113 @@ df_eb = EBANK.read_index()
 if len(df_eb) == 0:
     Logger.critical(f'Empty EventBank - check path: {str(EBBP)}')
 df_eb = df_eb.assign(evid=[int(os.path.split(row.event_id)[-1]) for _, row in df_eb.iterrows()])
-
+df_eb = df_eb.sort_values(by='time')
 # Connect to wavebank
 Logger.info('Connecting to wavebank')
 WBANK = WaveBank(WBBP)
 
+# Update wavebank as client for template construction
 ckwargs.update({'client_id': WBANK})
 
-# Get phases
-Logger.info("Loading phase file")
-df_phz = pd.read_csv(str(PHZF))
-df_phz_pf = df_phz[df_phz.sta.isin(STAS)]
-
-# Get evids
-if len(df_phz.evid.unique()) != len(df_phz_pf.evid.unique()):
-    Logger.info(f'Preferred station list returns {len(df_phz_pf.evid.unique())} events')
-
-# Subset preferred events
-df_eb_pref = df_eb[df_eb.evid.isin(df_phz_pf.evid.unique())]
-
-# Get event catalog
+# Initialize ClusteringTribe object
 CTR = ClusteringTribe()
 
+# Write STATUSFILE HEADER
 with open(str(STATUSFILE), 'w') as LOG:
-    LOG.write('event_id,build_summary,template_generates,all_picks_present,unpicked_stations,param_file_name,error_type\n')
+    LOG.write('event_id,build_summary,template_generates,all_picks_present,unpicked_stations,error_type,pick_filter_par_name,construct_par_name\n')
 
-for _e, event_id in enumerate(df_eb_pref.event_id):
+# Iterate across events
+for _e, event_id in enumerate(df_eb.event_id):
+    # Re-open statusfile to append the status line for this event
     with open(str(STATUSFILE), '+a') as LOG:
-        Logger.info(f'Processing: {event_id} ({_e+1} of {len(df_eb_pref)})')
+        Logger.info(f'Processing: {event_id} ({_e+1} of {len(df_eb)})')
+        # Get event
         cat = EBANK.get_events(event_id=event_id)
-        cat = rename_templates(cat)
+        event = cat[0].copy()
+        for event in cat.events:
+            for pick in event.picks:
+                if pick.waveform_id.id in SHIFTS.keys():
+                    pick.waveform_id = WaveformStreamID(seed_string=SHIFTS[pick.waveform_id.id])
+        # Apply phase hints to picks
         cat = apply_phase_hints(cat)
+        # Filter picks
         cat = filter_picks(cat, **pick_filt_kwargs)
-        event = cat[0]
+        # update ckwargs with catalog
+        ckwargs.update({'catalog':cat})
+        # Get preferred origin time
+        prefor = event.preferred_origin()
+        tO = prefor.time
+        # Get current inventory
+        inv = INV.select(time=tO)
+        # Try to construct template
         try:
             tribe = Tribe().construct(**ckwargs)
+            # Flag as successful build
             bld_status = True
+            # Flag as no error status
             err_status = False
+            tribe = rename_templates(tribe)
+        # If construction fails
         except Exception as e:
-                Logger.warning(rich_error_message(e))
-                sum_status = 'Error'
-                err_status = type(e).__name__
-                bld_status = False
+            # Send error to the command line log
+            Logger.warning(rich_error_message(e))
+            # Update status fields for this line
+            sum_status = 'Error'
+            # Catch error type for statusfile
+            err_status = type(e).__name__
+            # Flag Build as a failure
+            bld_status = False
+            # Flag All Picks Present false
+            app_status = False
+            # Flag unpicked stations as true (a little counter-intuitive...?)
+            ups_status = True
+
+        # If tribe is built
+        if bld_status:
+            # Check if templates is empty
+            if len(tribe.templates) == 0:
+                Logger.warning(f'{event_id} produced an empty Tribe')
+                sum_status = 'Empty'
                 app_status = False
                 ups_status = True
+            # If not empty
+            else:
+                Logger.info(f'ClusteringTribe has {len(CTR)} members ({_e+1} attempted)')
+                # Set assumed values
+                app_status = True
+                sum_status = 'Full'
+                ups_status = False
+                # Verify if all picks are present
+                for pick in event.picks:
+                    if len(tribe.templates[0].st.select(id=pick.waveform_id.id)) == 0:
+                        app_status = False
+                        sum_status='Partial'
+                        break
+                # Verify if all active stations are present
+                for sta in inv.get_contents()['stations']:
+                    if len(tribe.templates[0].st.select(id=f'{sta}*')) == 0:
+                        ups_status = True
+                        break
+                    else:
+                        continue
+                # Apply any aliases to trace ID's
+                for tmp in tribe:
+                    for tr in tmp.st:
+                        if tr.id in ALIASES.keys():
+                            tr.stats.location = ALIASES[tr.id].split('.')[-2]
+                # Append tribe to ClusteringTribe  
+                CTR += tribe.copy()
+        else:
+            pass
+        # Write results to log
+        LOG.write(f'{event_id},{sum_status},{bld_status},{app_status},{ups_status},{err_status},{str(PFNAME)},{str(TCNAME)}\n')
+        # Make sure tribe doesn't bleed over into other iterations
+        try:
+            del tribe
+        except NameError:
+            continue
 
-            # If tribe is built
-            if bld_status:
-                # Check if templates is empty
-                if len(tribe.templates) == 0:
-                    Logger.warning(f'{event_id} produced an empty Tribe')
-                    sum_status = 'Empty'
-                    app_status = False
-                    ups_status = True
-                else:
-                    # Set assumed values
-                    app_status = True
-                    sum_status = 'Full'
-                    ups_status = False
-                    # Verify if all picks are present
-                    for pick in event.picks:
-                        if len(tribe.templates[0].st.select(id=pick.waveform_id.id)) == 0:
-                            app_status = False
-                            sum_status='Partial'
-                            break
-                    # Verify if all active stations are present
-                    for sta in inv.get_contents()['stations']:
-                        if len(tribe.templates[0].st.select(id=f'{sta}*')) == 0:
-                            ups_status = True
-                            break
-            # Write results to log
-            LOG.write(f'{event_id},{sum_status},{bld_status},{app_status},{ups_status},{pfnameshort},{err_status}\n')
-            # Make sure tribe doesn't bleed over into other iterations
-            del tribe  
+# Append EBANK summary to CTR.clusters
+df_eb.index = df_eb.evid.apply(lambda x: f'uw{x}')
+CTR.clusters = CTR._c.join(df_eb, how='left')
+CTR.write(str(DOUT/'clustering_tribe.tgz'))
