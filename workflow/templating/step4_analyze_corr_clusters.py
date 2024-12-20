@@ -20,7 +20,7 @@ if os.path.split(ROOT)[-1] != 'Mt_Baker_LF_Research':
 TMPD = ROOT / 'processed_data' / 'workflow' / 'templates'
 
 print('loading')
-_f = TMPD/'clustered_5sec_FreeStep.tgz'
+_f = TMPD/'step3_clustered_5sec_FreeStep.tgz'
 _ctr = ClusteringTribe().read(str(_f))
 _ctr.cct_regroup(0.45, inplace=True)
 _ctr.reindex_columns();
@@ -30,10 +30,10 @@ _ctr._c.time = [pd.Timestamp(row.time) for _, row in _ctr._c.iterrows()]
 def makeplot(_ctr, minmemb=4):
 
     fig = plt.figure()
-    gs = fig.add_gridspec(nrows=3, ncols=4)
-    dax = fig.add_subplot(gs[0,:])
-    tax = fig.add_subplot(gs[1,:])
-    axes = [tax] + [fig.add_subplot(gs[2,_e]) for _e in range(3)]
+    gs = fig.add_gridspec(nrows=5, ncols=4)
+    dax = fig.add_subplot(gs[:2,:])
+    tax = fig.add_subplot(gs[2,:-1])
+    axes = [tax] + [fig.add_subplot(gs[3:,_e]) for _e in range(3)]
 
     grps = _ctr.clusters.correlation_cluster.unique()
     stas = set()
@@ -71,47 +71,38 @@ def makeplot(_ctr, minmemb=4):
             _zmed = _subset.depth.median()
             _vc= _subset.etype.value_counts()
             _top_etype = _vc.index[0]
-
-            # if x == 'latitude' and y == 'depth':
-            #     axes[_f].errorbar(_subset[x]*xs, _subset[y]*ys,
-            #                       xerr=_subset['horizontal_uncertainty']/111.2,
-            #                       yerr=_subset['vertical_uncertainty']*ys,
-            #                       capsize=2, color='k', alpha=0.25)
+            if _top_etype == 'lf':
+                _mkr = '*'
+            elif _top_etype == 'eq':
+                _mkr = '.'
+            elif _top_etype == 'px':
+                _mkr = 'x'
+            elif _top_etype == 'su':
+                _mkr = 's'
+            else:
+                _mkr = 'o'
+        
             if len(_vc) == 1:
                 _top_etype = f'{_top_etype}!'
                 _mec = 'k'
             elif len(_vc) > 1:
                 _top_etype = f'~{_top_etype}'
                 _mec = 'c'
+                
+            # Plotting for large enough groups
             if len(_subset) >= minmemb:
-                axes[_f].plot(_x, _y, '*',
+                axes[_f].plot(_x, _y, _mkr,
                         label=f'grp{_e} {_top_etype} z :{_zmed*1e-3:.2f} km',
                         zorder=_e, ms=6, mec=_mec, mew=0.5)
-            # elif len(_subset) > 1:
-            #     # axes[_f].scatter(_x, _y, s=len(_subset)*2,
-            #     #          label=f'grp{_e} {_top_etype} z:{_zmed*1e-3:.2f} km',
-            #     #          zorder=10)
-            #     axes[_f].plot(_x, _y, mcycle[_c],
-            #                 label=f'grp{_e} {_top_etype} z:{_zmed*1e-3:.2f} km',
-            #                 zorder=_e, ms=4, mec=_mec, mew=0.5)
-            #     _t += 1
-            #     if _t%10 == 0:
-            #         _c +=1
             else:
                 _et = _subset.etype.values[0]
                 ms = 2
                 if _et == 'lf':
-                    mkr = '*k'
                     ms = 6
-                elif _et == 'eq':
-                    mkr = 'ok'
-                elif _et == 'px':
-                    mkr = '.k'
-                elif _et == 'su':
-                    mkr = 'sc'
-                else:
-                    mkr = 'm.'
-                axes[_f].plot(_x, _y, mkr,
+
+                _mkr = _mkr + 'k'
+
+                axes[_f].plot(_x, _y, _mkr,
                               alpha=0.25, zorder=_e, ms=ms)
             axes[_f].set_xlabel(x)
             axes[_f].set_ylabel(y)
