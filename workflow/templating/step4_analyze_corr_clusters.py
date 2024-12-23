@@ -88,7 +88,7 @@ def makeplot(_ctr, minmemb=4):
             elif len(_vc) > 1:
                 _top_etype = f'~{_top_etype}'
                 _mec = 'c'
-                
+
             # Plotting for large enough groups
             if len(_subset) >= minmemb:
                 axes[_f].plot(_x, _y, _mkr,
@@ -111,8 +111,6 @@ def makeplot(_ctr, minmemb=4):
 
 
 
-if __name__ == 'main':
+fig, axes = makeplot(_ctr, minmemb=5)
 
-    fig, axes = makeplot(_ctr)
-
-    plt.show()
+plt.show()
