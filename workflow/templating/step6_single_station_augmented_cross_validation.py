@@ -41,6 +41,9 @@ INVD = ROOT / 'data' / 'XML' / 'RESP' / '*.xml'
 # Get absolute path to wavebank
 WBBP = ROOT / "data" / "WF" / "BANK"
 
+min_snr = 1.1
+min_noise_RMS = 3
+
 ### SET CORRELATION PARAMETERS ###
 ccckwargs = {'method': 'correlation_cluster',
             'replace_nan_distances_with': 'mean',
@@ -214,10 +217,11 @@ for _k, _v in ctribes.items():
         # Noise in leading 4.75 seconds of 
         noise_amp = _rms(st[0].data[:240])
         onset_amp = _rms(st[0].data[240:400])
-        if noise_amp < 3:
-            breakpoint()
-        if onset_amp/noise_amp < 2:
-            Logger.warning(f'{_k} augmentation for {_evid} has SNR < 2 ({onset_amp/noise_amp}) - skipping')
+        if noise_amp < min_noise_RMS:
+            Logger.warning(f'{_k} augmentation for {_evid} has Noise RMS Amp < {min_noise_RMS} - likely dead trace - skipping')
+            continue
+        if onset_amp/noise_amp < min_snr:
+            Logger.warning(f'{_k} augmentation for {_evid} has SNR < {min_snr} ({onset_amp/noise_amp}) - skipping')
             continue
         # Add pick to event
         _itmp.event.picks.append(_pick_hat)
@@ -241,7 +245,6 @@ for _k, _v in ctribes.items():
     ctribes[_k].cluster(**ccckwargs)
     # Save to disk
     ctribes[_k].write(str(SAVE_F).format(id=_k))
-    breakpoint()
 
 
 breakpoint()
