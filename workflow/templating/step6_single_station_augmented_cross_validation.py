@@ -40,6 +40,8 @@ SAVE_F = TMPD / 'step_6_clustered_{id}_5sec_cct0.45.tgz'
 INVD = ROOT / 'data' / 'XML' / 'RESP' / '*.xml'
 # Get absolute path to wavebank
 WBBP = ROOT / "data" / "WF" / "BANK"
+WBPS = '{year}/{julday}'
+WBNS = '{seedid}_{year}{julday}_{hour}{minute}{second}'
 
 min_snr = 1.1
 min_noise_RMS = 3
@@ -56,7 +58,7 @@ ccckwargs = {'method': 'correlation_cluster',
 
 
 ### CONNECT TO WAVEBANK
-WBANK = WaveBank(WBBP)
+WBANK = WaveBank(base_path=WBBP,path_structure=WBPS, name_structure=WBNS)
 
 ### LOAD INVENTORY
 for _e, _f in enumerate(glob.glob(str(INVD))):
@@ -108,12 +110,13 @@ for _k, _v in ctribes.items():
     _ictr = ClusteringTribe()
     # Create single-channel templates from existing templates
     for _evid in _v:
-        # Copy the original trace
+        # Copy the original template
         _itmp = _ctr.select(_evid).copy()
         # Get only the specified channel
         _itmp.st = _itmp.st.select(id=_k)
         # Append new single-channel template to new tribe
         _ictr += _itmp
+
     # Safety check on trace counts
     if not all(len(_tmp.st) == 1 for _tmp in _ictr):
         Logger.critical(f'Stream {_k} produced non-single-trace template(s)')
@@ -138,12 +141,26 @@ for _k, _v in ctribes.items():
         # If there is a single entry, model arrival time    
         else:
             pass
-        # Model picks
+        # Model picks - both downgoing 'P' and upgoing 'p'
         picks_hat = model_picks(
-            _itmp.event.preferred_origin(),
+            _iorig,
             _iinv,
-            phases=['P']
+            phases=['P','p']
         )
+        # if len(picks_hat) == 0:
+        #     picks_hat = model_picks(
+        #         _iorig,
+        #         _iinv,
+        #         phases=['p']
+        #     )
+        if len(picks_hat) == 0:
+            breakpoint()
+
+        # Safety catch against bleed between events
+        if any(np.abs(_p.time - _iorig.time) > 300 for _p in picks_hat):
+            breakpoint()
+
+        
         # Get earliest pick
         for _e, _p in enumerate(picks_hat):
             if _e == 0:
@@ -153,6 +170,7 @@ for _k, _v in ctribes.items():
                 if _p.time < _pt:
                     _pt = _p.time
                     _pick_hat = _p
+
         # # TODO: Use Template construction API to run all of the next steps
         # _itribe = Tribe().construct(
         #     method='from_client',
@@ -185,6 +203,7 @@ for _k, _v in ctribes.items():
         nsmp = 0
         for _tr in st:
             nsmp += _tr.count()
+
         if nsmp < 3000:
             Logger.warning('Loaded data have less than 3000 samples - skipping')
             breakpoint()
@@ -208,6 +227,8 @@ for _k, _v in ctribes.items():
         st.trim(starttime=_pt - 5.,
                 endtime=_pt + 40. - 1./_itmp.samp_rate)
         # QC that enough data are present
+        if len(st) == 0:
+            breakpoint()
         if st[0].count()/2250 < 0.8:
             Logger.warning(f'{_k} augmentation for {_evid} has insufficient data - skipping')
             continue
@@ -240,11 +261,11 @@ for _k, _v in ctribes.items():
     _ictr.clusters = _ictr.clusters.join(_ctr.clusters[['etype','time','latitude','longitude','depth','horizontal_uncertainty','vertical_uncertainty']], how='left')
     # Overwrite EVID list with new clusteringtribe
     ctribes[_k] = _ictr
-    # Run XCORR
-    Logger.info(f'Running correlations on {_k} ({len(_v)} templates)')
-    ctribes[_k].cluster(**ccckwargs)
-    # Save to disk
-    ctribes[_k].write(str(SAVE_F).format(id=_k))
+    # # Run XCORR
+    # Logger.info(f'Running correlations on {_k} ({len(_v)} templates)')
+    # ctribes[_k].cluster(**ccckwargs)
+    # # Save to disk
+    # ctribes[_k].write(str(SAVE_F).format(id=_k))
 
 
 breakpoint()
