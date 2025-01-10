@@ -31,7 +31,7 @@ EBANK = EventBank(EBBP)
 LATMBS, LONMBS, HBMS = 48.7745,-121.8172, 3286.
 RAD_LIM_KM = 30.
 
-PSN = ['MBW','MBW2','SHUK','RPW','RPW2','JCW','CMW','SAXON','MULN']
+PSN = ['MBW','MBW2','SHUK','RPW','RPW2','JCW','CMW','SAXON','MULN','PASS']
 
 # Load inventory
 for _e, _f in enumerate(glob.glob(str(INVD/'*.xml'))):
@@ -136,6 +136,8 @@ for _k, _v in picked_stations.items():
         if _psn in _k:
             pref_sta_evid_set = pref_sta_evid_set.union(set(_v))
             pref_sta_set.add(_k)
+
+# REPORT TO LOG
 Logger.info(f'preferred station channels and pick counts:')
 pref_sta_list = list(pref_sta_set)
 pref_sta_list.sort()
