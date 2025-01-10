@@ -29,7 +29,7 @@ TMPD = ROOT / 'processed_data' / 'workflow' / 'templates'
 # USER INPUTS
 min_members = 2
 cct = 0.7
-_f = TMPD/'step_6_clustered_UW.MBW..EHZ_5sec_cct0.45.tgz'
+_f = TMPD/'step_6_clustered_UW.SAXON..HHZ_5sec_cct0.45.tgz'
 
 
 
@@ -62,14 +62,14 @@ def plot_summary(
                 fig.add_subplot(gs[1,:2]),
                 fig.add_subplot(gs[2,0]),
                 fig.add_subplot(gs[2,1]),
-                fig.add_subplot(gs[:2,2]),
-                fig.add_subplot(gs[2,2])]
+                fig.add_subplot(gs[:,2])]#,
+                # fig.add_subplot(gs[2,2])]
     
-    if len(axes) != 6:
+    if len(axes) != 5:
         raise AttributeError
     
-    emap = {'eq': 'k*', 'lf':'r*', 'px':'mx', 'su':'bo'}
-    xfmt = {'fmt':'b.','alpha': 0.1}
+    emap = {'eq': 'k*', 'lf':'rs', 'px':'gx', 'su':'bo'}
+    xfmt = {'fmt':'c','alpha': 0.2}
     # Plot Dendrogram
     if plotting_included:
         ctr.dendrogram(ax=axes[0], xlabels=['depth','etype'],scalar=[1e-3,None], title=f'{title}\n')
@@ -79,26 +79,30 @@ def plot_summary(
     unit = {'time': '', 'depth': '[km]', 'longitude': '[$^o$E]', 'latitude': '[$^o$N]'}
     for _ax,_xf,_yf,_xs,_ys in [(1,'time','depth',False,1e-3),(2,'longitude','latitude',False,False),(3,'longitude','depth',False, 1e-3)]:
         # Overlay with everything in i_ctr
-        if plotting_included:
-            for _etype in ctr._c.etype.unique():
-                j_df_c = ctr.clusters[ctr._c.etype == _etype]
-                xv = j_df_c[_xf].copy().values
-                if _xs:
-                    xv *= _xs
-                yv = j_df_c[_yf].copy().values
-                if _ys:
-                    yv *= _ys
-                # PLOT
-                axes[_ax].plot(xv, yv, emap[_etype], label=f'{_etype} (ct: {len(j_df_c)})', zorder=2)
-        else:
-            xv = ctr.clusters[_xf].copy().values
+        for _etype in ctr._c.etype.unique():
+            j_df_c = ctr.clusters[ctr._c.etype == _etype]
+            xv = j_df_c[_xf].copy().values
             if _xs:
                 xv *= _xs
-            yv = ctr.clusters[_yf].copy().values
+            yv = j_df_c[_yf].copy().values
             if _ys:
                 yv *= _ys
-            axes[_ax].plot(xv, yv, xfmt['fmt'], alpha=xfmt['alpha'], label='Unaffiliated', zorder=1)
-    
+            # PLOT
+            label = f'{_etype} (ct: {len(j_df_c)})'
+ 
+            if plotting_included:
+                fmt = emap[_etype]
+                label = f'Grouped {label}'
+                zorder=2
+                alpha=1
+            else:
+                fmt = xfmt['fmt']+emap[_etype][1]
+                label = f'Unaffiliated {label}'
+                zorder=1
+                alpha=0.2
+
+            axes[_ax].plot(xv, yv, fmt, label=label, zorder=zorder, alpha=alpha)
+
         if _yf == 'depth':
             ylims = axes[_ax].get_ylim()
             if ylims[0] < ylims[1]:
@@ -147,7 +151,7 @@ def plot_summary(
             axes[4].set_xlabel('Time Relative to\nCatalog Arrivals [sec]')
         
         if render_legend:
-            axes[1].legend(ncol=2)
+            axes[1].legend(ncol=2, loc='lower left')
 
     return axes
 
@@ -194,20 +198,19 @@ for _gn, _ct in g_counts.items():
         i_ctr = ctr.get_subset(grouped_subset)
         # Get the clustering tribe of excluded events
         x_ctr = ctr.get_subset(df_c[df_c.correlation_cluster!=_gn].index.values)
-
-        # Initialize Figure and Plot excluded events
-        axes = plot_summary(x_ctr, axes=None, plotting_included=False, render_legend=False)
-        # Plot included events
-        axes = plot_summary(i_ctr, axes=axes, title=f'Stations: {stastr} Group: {_gn:.0f}')
+        # Plot grouped events
+        axes = plot_summary(i_ctr, axes=None, title=f'Stations: {stastr} Group: {_gn:.0f}', render_legend=False)
+        # Plot unaffiliated events
+        axes = plot_summary(x_ctr, axes=axes, plotting_included=False, render_legend=True)
 
 
 o_ctr = ctr.get_subset(orphans)
 for _etype in o_ctr._c.etype.unique():
     e_orphans = o_ctr._c[o_ctr._c.etype == _etype].index.values
-    oe_ctr = o_ctr.get_subset(e_orphans)
+    oe_ctr = ctr.get_subset(e_orphans)
     xe_ctr = ctr.get_subset(list(e_orphans) + grouped)
-    axes = plot_summary(xe_ctr, axes=None, plotting_included=False, render_legend=False)
-    axes = plot_summary(oe_ctr, axes=axes, title=f'Stations: {stastr} Orphaned: {_etype}')
+    axes = plot_summary(oe_ctr, axes=None, title=f'Stations: {stastr} Orphaned: {_etype}', render_legend=False)
+    axes = plot_summary(xe_ctr, axes=axes, plotting_included=False, render_legend=True)
 
 
 #         # Plot Dendrogram
