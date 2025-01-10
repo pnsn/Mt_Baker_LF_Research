@@ -1,369 +1,369 @@
 <?xml version='1.0' encoding='utf-8'?>
 <q:quakeml xmlns="http://quakeml.org/xmlns/bed/1.2" xmlns:q="http://quakeml.org/xmlns/quakeml/1.2" xmlns:ns0="http://anss.org/xmlns/catalog/0.1">
-  <eventParameters publicID="smi:local/feb46f41-97f9-4c61-88c7-5b53e6ee8f1d">
-    <event publicID="quakeml:uw.anss.org/Event/UW/62043717" ns0:datasource="uw" ns0:dataid="uw62043717" ns0:eventsource="uw" ns0:eventid="62043717">
-      <preferredOriginID>quakeml:uw.anss.org/Origin/UW/3293078</preferredOriginID>
-      <preferredMagnitudeID>quakeml:uw.anss.org/Netmag/UW/3313473</preferredMagnitudeID>
-      <type>earthquake</type>
+  <eventParameters publicID="smi:local/b8045972-ce3e-4c3e-a111-45ae6153434f">
+    <event publicID="quakeml:uw.anss.org/Event/UW/62056731" ns0:datasource="uw" ns0:dataid="uw62056731" ns0:eventsource="uw" ns0:eventid="62056731">
+      <preferredOriginID>quakeml:uw.anss.org/Origin/UW/3296043</preferredOriginID>
+      <preferredMagnitudeID>quakeml:uw.anss.org/Netmag/UW/3318423</preferredMagnitudeID>
+      <type>other event</type>
       <creationInfo>
         <agencyID>UW</agencyID>
-        <creationTime>2024-10-04T21:47:57.000000Z</creationTime>
+        <creationTime>2024-10-24T23:28:23.000000Z</creationTime>
         <version>1</version>
       </creationInfo>
-      <origin publicID="quakeml:uw.anss.org/Origin/UW/3293078" ns0:datasource="uw" ns0:dataid="uw62043717" ns0:eventsource="uw" ns0:eventid="62043717">
+      <origin publicID="quakeml:uw.anss.org/Origin/UW/3296043" ns0:datasource="uw" ns0:dataid="uw62056731" ns0:eventsource="uw" ns0:eventid="62056731">
         <time>
-          <value>2024-10-04T17:02:43.460000Z</value>
+          <value>2024-10-24T20:56:36.860000Z</value>
         </time>
         <latitude>
-          <value>48.741</value>
+          <value>48.76083333333333</value>
         </latitude>
         <longitude>
-          <value>-121.84666666666666</value>
+          <value>-121.84983333333334</value>
         </longitude>
         <depth>
-          <value>250.0</value>
-          <uncertainty>4440.0</uncertainty>
+          <value>-780.0</value>
+          <uncertainty>31610.0</uncertainty>
         </depth>
-        <depthType>from location</depthType>
+        <depthType>operator assigned</depthType>
         <timeFixed>false</timeFixed>
         <epicenterFixed>false</epicenterFixed>
         <methodID>smi:uw.anss.org/origin/HYP2000</methodID>
         <quality>
           <associatedPhaseCount>8</associatedPhaseCount>
-          <usedPhaseCount>8</usedPhaseCount>
+          <usedPhaseCount>6</usedPhaseCount>
           <associatedStationCount>5</associatedStationCount>
           <usedStationCount>5</usedStationCount>
-          <standardError>0.21</standardError>
+          <standardError>0.03</standardError>
           <azimuthalGap>100.0</azimuthalGap>
-          <secondaryAzimuthalGap>530.0</secondaryAzimuthalGap>
-          <minimumDistance>0.07704</minimumDistance>
-          <maximumDistance>0.3647</maximumDistance>
-          <medianDistance>0.216</medianDistance>
+          <secondaryAzimuthalGap>521.0</secondaryAzimuthalGap>
+          <minimumDistance>0.06127</minimumDistance>
+          <maximumDistance>0.3822</maximumDistance>
+          <medianDistance>0.2201</medianDistance>
         </quality>
         <type>hypocenter</type>
         <evaluationMode>manual</evaluationMode>
         <evaluationStatus>reviewed</evaluationStatus>
         <creationInfo>
           <agencyID>UW</agencyID>
-          <creationTime>2024-10-04T21:45:06.000000Z</creationTime>
+          <creationTime>2024-10-24T23:26:21.000000Z</creationTime>
         </creationInfo>
         <originUncertainty>
           <preferredDescription>confidence ellipsoid</preferredDescription>
-          <horizontalUncertainty>1920.0</horizontalUncertainty>
+          <horizontalUncertainty>340.0</horizontalUncertainty>
           <confidenceLevel>95.0</confidenceLevel>
           <confidenceEllipsoid>
-            <semiMajorAxisLength>11616.0</semiMajorAxisLength>
-            <semiMinorAxisLength>1032.0</semiMinorAxisLength>
-            <semiIntermediateAxisLength>1368.0</semiIntermediateAxisLength>
-            <majorAxisPlunge>66.0</majorAxisPlunge>
-            <majorAxisAzimuth>356.0</majorAxisAzimuth>
-            <majorAxisRotation>69.0</majorAxisRotation>
+            <semiMajorAxisLength>75864.0</semiMajorAxisLength>
+            <semiMinorAxisLength>504.0</semiMinorAxisLength>
+            <semiIntermediateAxisLength>816.0</semiIntermediateAxisLength>
+            <majorAxisPlunge>90.0</majorAxisPlunge>
+            <majorAxisAzimuth>0.0</majorAxisAzimuth>
+            <majorAxisRotation>341.0</majorAxisRotation>
           </confidenceEllipsoid>
         </originUncertainty>
-        <arrival publicID="quakeml:uw.anss.org/AssocArO/UW/17364543">
-          <pickID>quakeml:uw.anss.org/Arrival/UW/17364543</pickID>
+        <arrival publicID="quakeml:uw.anss.org/AssocArO/UW/17407123">
+          <pickID>quakeml:uw.anss.org/Arrival/UW/17407123</pickID>
           <phase>P</phase>
           <timeCorrection>0.17</timeCorrection>
-          <azimuth>321.03439791981515</azimuth>
-          <distance>0.07704</distance>
+          <azimuth>310.8072069560715</azimuth>
+          <distance>0.06127</distance>
           <takeoffAngle>
-            <value>97.0</value>
+            <value>90.0</value>
           </takeoffAngle>
-          <timeResidual>-0.3</timeResidual>
-          <timeWeight>0.14</timeWeight>
+          <timeResidual>-0.02</timeResidual>
+          <timeWeight>0.15</timeWeight>
           <creationInfo>
             <agencyID>UW</agencyID>
-            <creationTime>2024-10-04T21:47:57.000000Z</creationTime>
+            <creationTime>2024-10-24T23:28:23.000000Z</creationTime>
           </creationInfo>
         </arrival>
-        <arrival publicID="quakeml:uw.anss.org/AssocArO/UW/17364548">
-          <pickID>quakeml:uw.anss.org/Arrival/UW/17364548</pickID>
+        <arrival publicID="quakeml:uw.anss.org/AssocArO/UW/17407128">
+          <pickID>quakeml:uw.anss.org/Arrival/UW/17407128</pickID>
           <phase>S</phase>
           <timeCorrection>0.3</timeCorrection>
-          <azimuth>321.03439791981515</azimuth>
-          <distance>0.07704</distance>
+          <azimuth>310.8072069560715</azimuth>
+          <distance>0.06127</distance>
           <takeoffAngle>
-            <value>97.0</value>
+            <value>90.0</value>
           </takeoffAngle>
-          <timeResidual>0.3</timeResidual>
-          <timeWeight>0.09</timeWeight>
+          <timeResidual>1.04</timeResidual>
+          <timeWeight>0.0</timeWeight>
           <creationInfo>
             <agencyID>UW</agencyID>
-            <creationTime>2024-10-04T21:47:57.000000Z</creationTime>
+            <creationTime>2024-10-24T23:28:23.000000Z</creationTime>
           </creationInfo>
         </arrival>
-        <arrival publicID="quakeml:uw.anss.org/AssocArO/UW/17364553">
-          <pickID>quakeml:uw.anss.org/Arrival/UW/17364553</pickID>
+        <arrival publicID="quakeml:uw.anss.org/AssocArO/UW/17407133">
+          <pickID>quakeml:uw.anss.org/Arrival/UW/17407133</pickID>
           <phase>P</phase>
           <timeCorrection>0.07</timeCorrection>
-          <azimuth>44.90923570286316</azimuth>
-          <distance>0.1585</distance>
+          <azimuth>50.97863697627088</azimuth>
+          <distance>0.1467</distance>
           <takeoffAngle>
-            <value>93.0</value>
-          </takeoffAngle>
-          <timeResidual>0.08</timeResidual>
-          <timeWeight>0.09</timeWeight>
-          <creationInfo>
-            <agencyID>UW</agencyID>
-            <creationTime>2024-10-04T21:47:57.000000Z</creationTime>
-          </creationInfo>
-        </arrival>
-        <arrival publicID="quakeml:uw.anss.org/AssocArO/UW/17364558">
-          <pickID>quakeml:uw.anss.org/Arrival/UW/17364558</pickID>
-          <phase>S</phase>
-          <timeCorrection>0.12</timeCorrection>
-          <azimuth>44.90923570286316</azimuth>
-          <distance>0.1585</distance>
-          <takeoffAngle>
-            <value>93.0</value>
-          </takeoffAngle>
-          <timeResidual>0.09</timeResidual>
-          <timeWeight>0.09</timeWeight>
-          <creationInfo>
-            <agencyID>UW</agencyID>
-            <creationTime>2024-10-04T21:47:57.000000Z</creationTime>
-          </creationInfo>
-        </arrival>
-        <arrival publicID="quakeml:uw.anss.org/AssocArO/UW/17364563">
-          <pickID>quakeml:uw.anss.org/Arrival/UW/17364563</pickID>
-          <phase>P</phase>
-          <timeCorrection>0.1</timeCorrection>
-          <azimuth>254.5613972614198</azimuth>
-          <distance>0.216</distance>
-          <takeoffAngle>
-            <value>57.0</value>
-          </takeoffAngle>
-          <timeResidual>0.25</timeResidual>
-          <timeWeight>0.09</timeWeight>
-          <creationInfo>
-            <agencyID>UW</agencyID>
-            <creationTime>2024-10-04T21:47:57.000000Z</creationTime>
-          </creationInfo>
-        </arrival>
-        <arrival publicID="quakeml:uw.anss.org/AssocArO/UW/17364568">
-          <pickID>quakeml:uw.anss.org/Arrival/UW/17364568</pickID>
-          <phase>P</phase>
-          <timeCorrection>0.0</timeCorrection>
-          <azimuth>215.07289529784433</azimuth>
-          <distance>0.2514</distance>
-          <takeoffAngle>
-            <value>57.0</value>
+            <value>90.0</value>
           </takeoffAngle>
           <timeResidual>0.02</timeResidual>
-          <timeWeight>0.09</timeWeight>
+          <timeWeight>0.15</timeWeight>
           <creationInfo>
             <agencyID>UW</agencyID>
-            <creationTime>2024-10-04T21:47:57.000000Z</creationTime>
+            <creationTime>2024-10-24T23:28:23.000000Z</creationTime>
           </creationInfo>
         </arrival>
-        <arrival publicID="quakeml:uw.anss.org/AssocArO/UW/17364573">
-          <pickID>quakeml:uw.anss.org/Arrival/UW/17364573</pickID>
+        <arrival publicID="quakeml:uw.anss.org/AssocArO/UW/17407138">
+          <pickID>quakeml:uw.anss.org/Arrival/UW/17407138</pickID>
           <phase>P</phase>
-          <timeCorrection>0.14</timeCorrection>
-          <azimuth>144.31413745048786</azimuth>
-          <distance>0.3647</distance>
+          <timeCorrection>0.1</timeCorrection>
+          <azimuth>249.4130797860917</azimuth>
+          <distance>0.2201</distance>
           <takeoffAngle>
-            <value>57.0</value>
-          </takeoffAngle>
-          <timeResidual>-0.14</timeResidual>
-          <timeWeight>0.09</timeWeight>
-          <creationInfo>
-            <agencyID>UW</agencyID>
-            <creationTime>2024-10-04T21:47:57.000000Z</creationTime>
-          </creationInfo>
-        </arrival>
-        <arrival publicID="quakeml:uw.anss.org/AssocArO/UW/17364578">
-          <pickID>quakeml:uw.anss.org/Arrival/UW/17364578</pickID>
-          <phase>S</phase>
-          <timeCorrection>0.25</timeCorrection>
-          <azimuth>144.31413745048786</azimuth>
-          <distance>0.3647</distance>
-          <takeoffAngle>
-            <value>57.0</value>
+            <value>90.0</value>
           </takeoffAngle>
           <timeResidual>0.07</timeResidual>
-          <timeWeight>0.09</timeWeight>
+          <timeWeight>0.08</timeWeight>
           <creationInfo>
             <agencyID>UW</agencyID>
-            <creationTime>2024-10-04T21:47:57.000000Z</creationTime>
+            <creationTime>2024-10-24T23:28:23.000000Z</creationTime>
+          </creationInfo>
+        </arrival>
+        <arrival publicID="quakeml:uw.anss.org/AssocArO/UW/17407143">
+          <pickID>quakeml:uw.anss.org/Arrival/UW/17407143</pickID>
+          <phase>S</phase>
+          <timeCorrection>0.18</timeCorrection>
+          <azimuth>249.4130797860917</azimuth>
+          <distance>0.2201</distance>
+          <takeoffAngle>
+            <value>90.0</value>
+          </takeoffAngle>
+          <timeResidual>0.01</timeResidual>
+          <timeWeight>0.11</timeWeight>
+          <creationInfo>
+            <agencyID>UW</agencyID>
+            <creationTime>2024-10-24T23:28:23.000000Z</creationTime>
+          </creationInfo>
+        </arrival>
+        <arrival publicID="quakeml:uw.anss.org/AssocArO/UW/17407148">
+          <pickID>quakeml:uw.anss.org/Arrival/UW/17407148</pickID>
+          <phase>P</phase>
+          <timeCorrection>0.0</timeCorrection>
+          <azimuth>212.24945990821013</azimuth>
+          <distance>0.2667</distance>
+          <takeoffAngle>
+            <value>57.0</value>
+          </takeoffAngle>
+          <timeResidual>0.04</timeResidual>
+          <timeWeight>0.04</timeWeight>
+          <creationInfo>
+            <agencyID>UW</agencyID>
+            <creationTime>2024-10-24T23:28:23.000000Z</creationTime>
+          </creationInfo>
+        </arrival>
+        <arrival publicID="quakeml:uw.anss.org/AssocArO/UW/17407153">
+          <pickID>quakeml:uw.anss.org/Arrival/UW/17407153</pickID>
+          <phase>P</phase>
+          <timeCorrection>0.14</timeCorrection>
+          <azimuth>145.79491191102954</azimuth>
+          <distance>0.3822</distance>
+          <takeoffAngle>
+            <value>57.0</value>
+          </takeoffAngle>
+          <timeResidual>-0.59</timeResidual>
+          <timeWeight>0.0</timeWeight>
+          <creationInfo>
+            <agencyID>UW</agencyID>
+            <creationTime>2024-10-24T23:28:23.000000Z</creationTime>
+          </creationInfo>
+        </arrival>
+        <arrival publicID="quakeml:uw.anss.org/AssocArO/UW/17407158">
+          <pickID>quakeml:uw.anss.org/Arrival/UW/17407158</pickID>
+          <phase>S</phase>
+          <timeCorrection>0.25</timeCorrection>
+          <azimuth>145.79491191102954</azimuth>
+          <distance>0.3822</distance>
+          <takeoffAngle>
+            <value>57.0</value>
+          </takeoffAngle>
+          <timeResidual>-0.03</timeResidual>
+          <timeWeight>0.08</timeWeight>
+          <creationInfo>
+            <agencyID>UW</agencyID>
+            <creationTime>2024-10-24T23:28:23.000000Z</creationTime>
           </creationInfo>
         </arrival>
       </origin>
-      <magnitude publicID="quakeml:uw.anss.org/Netmag/UW/3313473">
+      <magnitude publicID="quakeml:uw.anss.org/Netmag/UW/3318423">
         <mag>
-          <value>1.35</value>
-          <uncertainty>0.10908865079177166</uncertainty>
+          <value>1.54</value>
+          <uncertainty>0.0879603827843991</uncertainty>
         </mag>
         <type>Ml</type>
-        <originID>quakeml:uw.anss.org/Origin/UW/3293078</originID>
+        <originID>quakeml:uw.anss.org/Origin/UW/3296043</originID>
         <methodID>smi:uw.anss.org/magnitude/RichterMl2</methodID>
         <stationCount>4</stationCount>
-        <azimuthalGap>150.34783844144334</azimuthalGap>
+        <azimuthalGap>161.56555719017916</azimuthalGap>
         <evaluationMode>manual</evaluationMode>
         <evaluationStatus>reviewed</evaluationStatus>
         <stationMagnitudeContribution>
-          <stationMagnitudeID>quakeml:uw.anss.org/AssocAmM/UW/16095813</stationMagnitudeID>
-          <weight>0.0</weight>
-          <residual>-0.05</residual>
-        </stationMagnitudeContribution>
-        <stationMagnitudeContribution>
-          <stationMagnitudeID>quakeml:uw.anss.org/AssocAmM/UW/16095843</stationMagnitudeID>
-          <weight>1.0</weight>
-          <residual>0.03</residual>
-        </stationMagnitudeContribution>
-        <stationMagnitudeContribution>
-          <stationMagnitudeID>quakeml:uw.anss.org/AssocAmM/UW/16095808</stationMagnitudeID>
-          <weight>0.0</weight>
-          <residual>-0.21</residual>
-        </stationMagnitudeContribution>
-        <stationMagnitudeContribution>
-          <stationMagnitudeID>quakeml:uw.anss.org/AssocAmM/UW/16095848</stationMagnitudeID>
-          <weight>1.0</weight>
-          <residual>-0.28</residual>
-        </stationMagnitudeContribution>
-        <stationMagnitudeContribution>
-          <stationMagnitudeID>quakeml:uw.anss.org/AssocAmM/UW/16095818</stationMagnitudeID>
-          <weight>1.0</weight>
-          <residual>-0.03</residual>
-        </stationMagnitudeContribution>
-        <stationMagnitudeContribution>
-          <stationMagnitudeID>quakeml:uw.anss.org/AssocAmM/UW/16095833</stationMagnitudeID>
-          <weight>1.0</weight>
-          <residual>0.03</residual>
-        </stationMagnitudeContribution>
-        <stationMagnitudeContribution>
-          <stationMagnitudeID>quakeml:uw.anss.org/AssocAmM/UW/16095853</stationMagnitudeID>
-          <weight>1.0</weight>
-          <residual>-0.28</residual>
-        </stationMagnitudeContribution>
-        <stationMagnitudeContribution>
-          <stationMagnitudeID>quakeml:uw.anss.org/AssocAmM/UW/16095823</stationMagnitudeID>
-          <weight>1.0</weight>
-          <residual>0.12</residual>
-        </stationMagnitudeContribution>
-        <stationMagnitudeContribution>
-          <stationMagnitudeID>quakeml:uw.anss.org/AssocAmM/UW/16095838</stationMagnitudeID>
-          <weight>1.0</weight>
-          <residual>-0.17</residual>
-        </stationMagnitudeContribution>
-        <stationMagnitudeContribution>
-          <stationMagnitudeID>quakeml:uw.anss.org/AssocAmM/UW/16095828</stationMagnitudeID>
+          <stationMagnitudeID>quakeml:uw.anss.org/AssocAmM/UW/16135783</stationMagnitudeID>
           <weight>1.0</weight>
           <residual>0.09</residual>
         </stationMagnitudeContribution>
+        <stationMagnitudeContribution>
+          <stationMagnitudeID>quakeml:uw.anss.org/AssocAmM/UW/16135773</stationMagnitudeID>
+          <weight>0.0</weight>
+          <residual>-0.16</residual>
+        </stationMagnitudeContribution>
+        <stationMagnitudeContribution>
+          <stationMagnitudeID>quakeml:uw.anss.org/AssocAmM/UW/16135813</stationMagnitudeID>
+          <weight>1.0</weight>
+          <residual>-0.21</residual>
+        </stationMagnitudeContribution>
+        <stationMagnitudeContribution>
+          <stationMagnitudeID>quakeml:uw.anss.org/AssocAmM/UW/16135803</stationMagnitudeID>
+          <weight>1.0</weight>
+          <residual>0.08</residual>
+        </stationMagnitudeContribution>
+        <stationMagnitudeContribution>
+          <stationMagnitudeID>quakeml:uw.anss.org/AssocAmM/UW/16135808</stationMagnitudeID>
+          <weight>1.0</weight>
+          <residual>-0.34</residual>
+        </stationMagnitudeContribution>
+        <stationMagnitudeContribution>
+          <stationMagnitudeID>quakeml:uw.anss.org/AssocAmM/UW/16135788</stationMagnitudeID>
+          <weight>1.0</weight>
+          <residual>0.21</residual>
+        </stationMagnitudeContribution>
+        <stationMagnitudeContribution>
+          <stationMagnitudeID>quakeml:uw.anss.org/AssocAmM/UW/16135793</stationMagnitudeID>
+          <weight>1.0</weight>
+          <residual>0.04</residual>
+        </stationMagnitudeContribution>
+        <stationMagnitudeContribution>
+          <stationMagnitudeID>quakeml:uw.anss.org/AssocAmM/UW/16135798</stationMagnitudeID>
+          <weight>1.0</weight>
+          <residual>-0.04</residual>
+        </stationMagnitudeContribution>
+        <stationMagnitudeContribution>
+          <stationMagnitudeID>quakeml:uw.anss.org/AssocAmM/UW/16135778</stationMagnitudeID>
+          <weight>1.0</weight>
+          <residual>-0.05</residual>
+        </stationMagnitudeContribution>
+        <stationMagnitudeContribution>
+          <stationMagnitudeID>quakeml:uw.anss.org/AssocAmM/UW/16135768</stationMagnitudeID>
+          <weight>0.0</weight>
+          <residual>-0.19</residual>
+        </stationMagnitudeContribution>
         <creationInfo>
           <agencyID>UW</agencyID>
-          <creationTime>2024-10-04T21:47:57.000000Z</creationTime>
+          <creationTime>2024-10-24T23:28:23.000000Z</creationTime>
         </creationInfo>
       </magnitude>
-      <stationMagnitude publicID="quakeml:uw.anss.org/AssocAmM/UW/16095808">
-        <originID>quakeml:uw.anss.org/Origin/UW/3293078</originID>
+      <stationMagnitude publicID="quakeml:uw.anss.org/AssocAmM/UW/16135768">
+        <originID>quakeml:uw.anss.org/Origin/UW/3296043</originID>
         <mag>
-          <value>1.14</value>
+          <value>1.35</value>
         </mag>
         <type>ML</type>
-        <amplitudeID>quakeml:uw.anss.org/Amp/UW/16095808</amplitudeID>
+        <amplitudeID>quakeml:uw.anss.org/Amp/UW/16135768</amplitudeID>
         <waveformID networkCode="UW" stationCode="MBW2" locationCode="" channelCode="HHN"></waveformID>
       </stationMagnitude>
-      <stationMagnitude publicID="quakeml:uw.anss.org/AssocAmM/UW/16095813">
-        <originID>quakeml:uw.anss.org/Origin/UW/3293078</originID>
+      <stationMagnitude publicID="quakeml:uw.anss.org/AssocAmM/UW/16135773">
+        <originID>quakeml:uw.anss.org/Origin/UW/3296043</originID>
         <mag>
-          <value>1.3</value>
+          <value>1.38</value>
         </mag>
         <type>ML</type>
-        <amplitudeID>quakeml:uw.anss.org/Amp/UW/16095813</amplitudeID>
+        <amplitudeID>quakeml:uw.anss.org/Amp/UW/16135773</amplitudeID>
         <waveformID networkCode="UW" stationCode="MBW2" locationCode="" channelCode="HHE"></waveformID>
       </stationMagnitude>
-      <stationMagnitude publicID="quakeml:uw.anss.org/AssocAmM/UW/16095818">
-        <originID>quakeml:uw.anss.org/Origin/UW/3293078</originID>
+      <stationMagnitude publicID="quakeml:uw.anss.org/AssocAmM/UW/16135778">
+        <originID>quakeml:uw.anss.org/Origin/UW/3296043</originID>
         <mag>
-          <value>1.32</value>
+          <value>1.49</value>
         </mag>
         <type>ML</type>
-        <amplitudeID>quakeml:uw.anss.org/Amp/UW/16095818</amplitudeID>
+        <amplitudeID>quakeml:uw.anss.org/Amp/UW/16135778</amplitudeID>
         <waveformID networkCode="UW" stationCode="SHUK" locationCode="" channelCode="HHN"></waveformID>
       </stationMagnitude>
-      <stationMagnitude publicID="quakeml:uw.anss.org/AssocAmM/UW/16095823">
-        <originID>quakeml:uw.anss.org/Origin/UW/3293078</originID>
+      <stationMagnitude publicID="quakeml:uw.anss.org/AssocAmM/UW/16135783">
+        <originID>quakeml:uw.anss.org/Origin/UW/3296043</originID>
         <mag>
-          <value>1.47</value>
+          <value>1.63</value>
         </mag>
         <type>ML</type>
-        <amplitudeID>quakeml:uw.anss.org/Amp/UW/16095823</amplitudeID>
+        <amplitudeID>quakeml:uw.anss.org/Amp/UW/16135783</amplitudeID>
         <waveformID networkCode="UW" stationCode="SHUK" locationCode="" channelCode="HHE"></waveformID>
       </stationMagnitude>
-      <stationMagnitude publicID="quakeml:uw.anss.org/AssocAmM/UW/16095828">
-        <originID>quakeml:uw.anss.org/Origin/UW/3293078</originID>
+      <stationMagnitude publicID="quakeml:uw.anss.org/AssocAmM/UW/16135788">
+        <originID>quakeml:uw.anss.org/Origin/UW/3296043</originID>
         <mag>
-          <value>1.44</value>
+          <value>1.75</value>
         </mag>
         <type>ML</type>
-        <amplitudeID>quakeml:uw.anss.org/Amp/UW/16095828</amplitudeID>
+        <amplitudeID>quakeml:uw.anss.org/Amp/UW/16135788</amplitudeID>
         <waveformID networkCode="UW" stationCode="SAXON" locationCode="" channelCode="HHN"></waveformID>
       </stationMagnitude>
-      <stationMagnitude publicID="quakeml:uw.anss.org/AssocAmM/UW/16095833">
-        <originID>quakeml:uw.anss.org/Origin/UW/3293078</originID>
+      <stationMagnitude publicID="quakeml:uw.anss.org/AssocAmM/UW/16135793">
+        <originID>quakeml:uw.anss.org/Origin/UW/3296043</originID>
         <mag>
-          <value>1.38</value>
+          <value>1.58</value>
         </mag>
         <type>ML</type>
-        <amplitudeID>quakeml:uw.anss.org/Amp/UW/16095833</amplitudeID>
+        <amplitudeID>quakeml:uw.anss.org/Amp/UW/16135793</amplitudeID>
         <waveformID networkCode="UW" stationCode="SAXON" locationCode="" channelCode="HHE"></waveformID>
       </stationMagnitude>
-      <stationMagnitude publicID="quakeml:uw.anss.org/AssocAmM/UW/16095838">
-        <originID>quakeml:uw.anss.org/Origin/UW/3293078</originID>
+      <stationMagnitude publicID="quakeml:uw.anss.org/AssocAmM/UW/16135798">
+        <originID>quakeml:uw.anss.org/Origin/UW/3296043</originID>
         <mag>
-          <value>1.18</value>
+          <value>1.5</value>
         </mag>
         <type>ML</type>
-        <amplitudeID>quakeml:uw.anss.org/Amp/UW/16095838</amplitudeID>
+        <amplitudeID>quakeml:uw.anss.org/Amp/UW/16135798</amplitudeID>
         <waveformID networkCode="UW" stationCode="MULN" locationCode="" channelCode="HHN"></waveformID>
       </stationMagnitude>
-      <stationMagnitude publicID="quakeml:uw.anss.org/AssocAmM/UW/16095843">
-        <originID>quakeml:uw.anss.org/Origin/UW/3293078</originID>
+      <stationMagnitude publicID="quakeml:uw.anss.org/AssocAmM/UW/16135803">
+        <originID>quakeml:uw.anss.org/Origin/UW/3296043</originID>
         <mag>
-          <value>1.38</value>
+          <value>1.62</value>
         </mag>
         <type>ML</type>
-        <amplitudeID>quakeml:uw.anss.org/Amp/UW/16095843</amplitudeID>
+        <amplitudeID>quakeml:uw.anss.org/Amp/UW/16135803</amplitudeID>
         <waveformID networkCode="UW" stationCode="MULN" locationCode="" channelCode="HHE"></waveformID>
       </stationMagnitude>
-      <stationMagnitude publicID="quakeml:uw.anss.org/AssocAmM/UW/16095848">
-        <originID>quakeml:uw.anss.org/Origin/UW/3293078</originID>
+      <stationMagnitude publicID="quakeml:uw.anss.org/AssocAmM/UW/16135808">
+        <originID>quakeml:uw.anss.org/Origin/UW/3296043</originID>
         <mag>
-          <value>1.07</value>
+          <value>1.2</value>
         </mag>
         <type>ML</type>
-        <amplitudeID>quakeml:uw.anss.org/Amp/UW/16095848</amplitudeID>
+        <amplitudeID>quakeml:uw.anss.org/Amp/UW/16135808</amplitudeID>
         <waveformID networkCode="UW" stationCode="RPW2" locationCode="" channelCode="HHN"></waveformID>
       </stationMagnitude>
-      <stationMagnitude publicID="quakeml:uw.anss.org/AssocAmM/UW/16095853">
-        <originID>quakeml:uw.anss.org/Origin/UW/3293078</originID>
+      <stationMagnitude publicID="quakeml:uw.anss.org/AssocAmM/UW/16135813">
+        <originID>quakeml:uw.anss.org/Origin/UW/3296043</originID>
         <mag>
-          <value>1.07</value>
+          <value>1.33</value>
         </mag>
         <type>ML</type>
-        <amplitudeID>quakeml:uw.anss.org/Amp/UW/16095853</amplitudeID>
+        <amplitudeID>quakeml:uw.anss.org/Amp/UW/16135813</amplitudeID>
         <waveformID networkCode="UW" stationCode="RPW2" locationCode="" channelCode="HHE"></waveformID>
       </stationMagnitude>
-      <pick publicID="quakeml:uw.anss.org/Arrival/UW/17364543">
+      <pick publicID="quakeml:uw.anss.org/Arrival/UW/17407123">
         <time>
-          <value>2024-10-04T17:02:44.920000Z</value>
-          <uncertainty>0.06</uncertainty>
+          <value>2024-10-24T20:56:38.270000Z</value>
+          <uncertainty>0.03</uncertainty>
         </time>
         <waveformID networkCode="UW" stationCode="MBW2" locationCode="" channelCode="HHZ"></waveformID>
         <onset>impulsive</onset>
-        <polarity>positive</polarity>
+        <polarity>negative</polarity>
         <evaluationMode>manual</evaluationMode>
         <evaluationStatus>reviewed</evaluationStatus>
         <creationInfo>
           <agencyID>UW</agencyID>
-          <creationTime>2024-10-04T21:47:57.000000Z</creationTime>
+          <creationTime>2024-10-24T23:28:23.000000Z</creationTime>
         </creationInfo>
       </pick>
-      <pick publicID="quakeml:uw.anss.org/Arrival/UW/17364548">
+      <pick publicID="quakeml:uw.anss.org/Arrival/UW/17407128">
         <time>
-          <value>2024-10-04T17:02:46.890000Z</value>
+          <value>2024-10-24T20:56:40.450000Z</value>
           <uncertainty>0.15</uncertainty>
         </time>
         <waveformID networkCode="UW" stationCode="MBW2" locationCode="" channelCode="HHN"></waveformID>
@@ -373,42 +373,27 @@
         <evaluationStatus>reviewed</evaluationStatus>
         <creationInfo>
           <agencyID>UW</agencyID>
-          <creationTime>2024-10-04T21:47:57.000000Z</creationTime>
+          <creationTime>2024-10-24T23:28:23.000000Z</creationTime>
         </creationInfo>
       </pick>
-      <pick publicID="quakeml:uw.anss.org/Arrival/UW/17364553">
+      <pick publicID="quakeml:uw.anss.org/Arrival/UW/17407133">
         <time>
-          <value>2024-10-04T17:02:46.870000Z</value>
-          <uncertainty>0.15</uncertainty>
+          <value>2024-10-24T20:56:39.960000Z</value>
+          <uncertainty>0.03</uncertainty>
         </time>
         <waveformID networkCode="UW" stationCode="SHUK" locationCode="" channelCode="HHZ"></waveformID>
-        <onset>emergent</onset>
-        <polarity>undecidable</polarity>
+        <onset>impulsive</onset>
+        <polarity>negative</polarity>
         <evaluationMode>manual</evaluationMode>
         <evaluationStatus>reviewed</evaluationStatus>
         <creationInfo>
           <agencyID>UW</agencyID>
-          <creationTime>2024-10-04T21:47:57.000000Z</creationTime>
+          <creationTime>2024-10-24T23:28:23.000000Z</creationTime>
         </creationInfo>
       </pick>
-      <pick publicID="quakeml:uw.anss.org/Arrival/UW/17364558">
+      <pick publicID="quakeml:uw.anss.org/Arrival/UW/17407138">
         <time>
-          <value>2024-10-04T17:02:49.480000Z</value>
-          <uncertainty>0.15</uncertainty>
-        </time>
-        <waveformID networkCode="UW" stationCode="SHUK" locationCode="" channelCode="HHE"></waveformID>
-        <onset>emergent</onset>
-        <polarity>undecidable</polarity>
-        <evaluationMode>manual</evaluationMode>
-        <evaluationStatus>reviewed</evaluationStatus>
-        <creationInfo>
-          <agencyID>UW</agencyID>
-          <creationTime>2024-10-04T21:47:57.000000Z</creationTime>
-        </creationInfo>
-      </pick>
-      <pick publicID="quakeml:uw.anss.org/Arrival/UW/17364563">
-        <time>
-          <value>2024-10-04T17:02:48.250000Z</value>
+          <value>2024-10-24T20:56:41.550000Z</value>
           <uncertainty>0.15</uncertainty>
         </time>
         <waveformID networkCode="UW" stationCode="SAXON" locationCode="" channelCode="HHZ"></waveformID>
@@ -418,13 +403,28 @@
         <evaluationStatus>reviewed</evaluationStatus>
         <creationInfo>
           <agencyID>UW</agencyID>
-          <creationTime>2024-10-04T21:47:57.000000Z</creationTime>
+          <creationTime>2024-10-24T23:28:23.000000Z</creationTime>
         </creationInfo>
       </pick>
-      <pick publicID="quakeml:uw.anss.org/Arrival/UW/17364568">
+      <pick publicID="quakeml:uw.anss.org/Arrival/UW/17407143">
         <time>
-          <value>2024-10-04T17:02:48.540000Z</value>
-          <uncertainty>0.15</uncertainty>
+          <value>2024-10-24T20:56:45.090000Z</value>
+          <uncertainty>0.06</uncertainty>
+        </time>
+        <waveformID networkCode="UW" stationCode="SAXON" locationCode="" channelCode="HHN"></waveformID>
+        <onset>impulsive</onset>
+        <polarity>undecidable</polarity>
+        <evaluationMode>manual</evaluationMode>
+        <evaluationStatus>reviewed</evaluationStatus>
+        <creationInfo>
+          <agencyID>UW</agencyID>
+          <creationTime>2024-10-24T23:28:23.000000Z</creationTime>
+        </creationInfo>
+      </pick>
+      <pick publicID="quakeml:uw.anss.org/Arrival/UW/17407148">
+        <time>
+          <value>2024-10-24T20:56:42.330000Z</value>
+          <uncertainty>0.3</uncertainty>
         </time>
         <waveformID networkCode="UW" stationCode="MULN" locationCode="" channelCode="HHZ"></waveformID>
         <onset>emergent</onset>
@@ -433,12 +433,12 @@
         <evaluationStatus>reviewed</evaluationStatus>
         <creationInfo>
           <agencyID>UW</agencyID>
-          <creationTime>2024-10-04T21:47:57.000000Z</creationTime>
+          <creationTime>2024-10-24T23:28:23.000000Z</creationTime>
         </creationInfo>
       </pick>
-      <pick publicID="quakeml:uw.anss.org/Arrival/UW/17364573">
+      <pick publicID="quakeml:uw.anss.org/Arrival/UW/17407153">
         <time>
-          <value>2024-10-04T17:02:50.490000Z</value>
+          <value>2024-10-24T20:56:43.850000Z</value>
           <uncertainty>0.15</uncertainty>
         </time>
         <waveformID networkCode="UW" stationCode="RPW2" locationCode="" channelCode="HHZ"></waveformID>
@@ -448,27 +448,27 @@
         <evaluationStatus>reviewed</evaluationStatus>
         <creationInfo>
           <agencyID>UW</agencyID>
-          <creationTime>2024-10-04T21:47:57.000000Z</creationTime>
+          <creationTime>2024-10-24T23:28:23.000000Z</creationTime>
         </creationInfo>
       </pick>
-      <pick publicID="quakeml:uw.anss.org/Arrival/UW/17364578">
+      <pick publicID="quakeml:uw.anss.org/Arrival/UW/17407158">
         <time>
-          <value>2024-10-04T17:02:56.290000Z</value>
+          <value>2024-10-24T20:56:50.320000Z</value>
           <uncertainty>0.15</uncertainty>
         </time>
-        <waveformID networkCode="UW" stationCode="RPW2" locationCode="" channelCode="HHE"></waveformID>
+        <waveformID networkCode="UW" stationCode="RPW2" locationCode="" channelCode="HHN"></waveformID>
         <onset>emergent</onset>
         <polarity>undecidable</polarity>
         <evaluationMode>manual</evaluationMode>
         <evaluationStatus>reviewed</evaluationStatus>
         <creationInfo>
           <agencyID>UW</agencyID>
-          <creationTime>2024-10-04T21:47:57.000000Z</creationTime>
+          <creationTime>2024-10-24T23:28:23.000000Z</creationTime>
         </creationInfo>
       </pick>
-      <amplitude publicID="quakeml:uw.anss.org/Amp/UW/16095813">
+      <amplitude publicID="quakeml:uw.anss.org/Amp/UW/16135773">
         <genericAmplitude>
-          <value>0.00041856</value>
+          <value>0.00056785</value>
         </genericAmplitude>
         <type>AML</type>
         <category>point</category>
@@ -478,9 +478,9 @@
         <evaluationMode>manual</evaluationMode>
         <evaluationStatus>reviewed</evaluationStatus>
       </amplitude>
-      <amplitude publicID="quakeml:uw.anss.org/Amp/UW/16095808">
+      <amplitude publicID="quakeml:uw.anss.org/Amp/UW/16135768">
         <genericAmplitude>
-          <value>0.00028598</value>
+          <value>0.00052016</value>
         </genericAmplitude>
         <type>AML</type>
         <category>point</category>
@@ -490,9 +490,9 @@
         <evaluationMode>manual</evaluationMode>
         <evaluationStatus>reviewed</evaluationStatus>
       </amplitude>
-      <amplitude publicID="quakeml:uw.anss.org/Amp/UW/16095843">
+      <amplitude publicID="quakeml:uw.anss.org/Amp/UW/16135803">
         <genericAmplitude>
-          <value>0.0001701</value>
+          <value>0.00027549</value>
         </genericAmplitude>
         <type>AML</type>
         <category>point</category>
@@ -502,9 +502,9 @@
         <evaluationMode>manual</evaluationMode>
         <evaluationStatus>reviewed</evaluationStatus>
       </amplitude>
-      <amplitude publicID="quakeml:uw.anss.org/Amp/UW/16095838">
+      <amplitude publicID="quakeml:uw.anss.org/Amp/UW/16135798">
         <genericAmplitude>
-          <value>0.00010686</value>
+          <value>0.00020696</value>
         </genericAmplitude>
         <type>AML</type>
         <category>point</category>
@@ -514,9 +514,9 @@
         <evaluationMode>manual</evaluationMode>
         <evaluationStatus>reviewed</evaluationStatus>
       </amplitude>
-      <amplitude publicID="quakeml:uw.anss.org/Amp/UW/16095853">
+      <amplitude publicID="quakeml:uw.anss.org/Amp/UW/16135813">
         <genericAmplitude>
-          <value>3.4854e-05</value>
+          <value>6.0807e-05</value>
         </genericAmplitude>
         <type>AML</type>
         <category>point</category>
@@ -526,9 +526,9 @@
         <evaluationMode>manual</evaluationMode>
         <evaluationStatus>reviewed</evaluationStatus>
       </amplitude>
-      <amplitude publicID="quakeml:uw.anss.org/Amp/UW/16095848">
+      <amplitude publicID="quakeml:uw.anss.org/Amp/UW/16135808">
         <genericAmplitude>
-          <value>3.5099e-05</value>
+          <value>4.4475e-05</value>
         </genericAmplitude>
         <type>AML</type>
         <category>point</category>
@@ -538,9 +538,9 @@
         <evaluationMode>manual</evaluationMode>
         <evaluationStatus>reviewed</evaluationStatus>
       </amplitude>
-      <amplitude publicID="quakeml:uw.anss.org/Amp/UW/16095833">
+      <amplitude publicID="quakeml:uw.anss.org/Amp/UW/16135793">
         <genericAmplitude>
-          <value>8.9957e-05</value>
+          <value>0.00013871</value>
         </genericAmplitude>
         <type>AML</type>
         <category>point</category>
@@ -550,9 +550,9 @@
         <evaluationMode>manual</evaluationMode>
         <evaluationStatus>reviewed</evaluationStatus>
       </amplitude>
-      <amplitude publicID="quakeml:uw.anss.org/Amp/UW/16095828">
+      <amplitude publicID="quakeml:uw.anss.org/Amp/UW/16135788">
         <genericAmplitude>
-          <value>0.00010377</value>
+          <value>0.00020642</value>
         </genericAmplitude>
         <type>AML</type>
         <category>point</category>
@@ -562,9 +562,9 @@
         <evaluationMode>manual</evaluationMode>
         <evaluationStatus>reviewed</evaluationStatus>
       </amplitude>
-      <amplitude publicID="quakeml:uw.anss.org/Amp/UW/16095823">
+      <amplitude publicID="quakeml:uw.anss.org/Amp/UW/16135783">
         <genericAmplitude>
-          <value>0.00013382</value>
+          <value>0.00020943</value>
         </genericAmplitude>
         <type>AML</type>
         <category>point</category>
@@ -574,9 +574,9 @@
         <evaluationMode>manual</evaluationMode>
         <evaluationStatus>reviewed</evaluationStatus>
       </amplitude>
-      <amplitude publicID="quakeml:uw.anss.org/Amp/UW/16095818">
+      <amplitude publicID="quakeml:uw.anss.org/Amp/UW/16135778">
         <genericAmplitude>
-          <value>9.4247e-05</value>
+          <value>0.0001514</value>
         </genericAmplitude>
         <type>AML</type>
         <category>point</category>
