@@ -108,7 +108,7 @@ def main():
         # Apply phase hints
         cat = apply_phase_hints(cat)
         # Subset to selected stations and phases only
-        # cat = filter_picks(cat, **pick_filt_kwargs)
+        cat = filter_picks(cat, **pick_filt_kwargs)
         # Create a comment for etype
         comment = Comment(text=meta.etype)
         cat[0].comments.append(comment)
@@ -123,15 +123,15 @@ def main():
         active = INV.select(time=cat[0].preferred_origin().time)
         # Get picked channels
         picked = []
-        # kept_arrivals = []
+        kept_arrivals = []
         for _arr in cat[0].preferred_origin().arrivals:
             pick = _arr.pick_id.get_referred_object()
             if not pick is None:
                 picked.append(pick.waveform_id.id)
-        #         kept_arrivals.append(_arr)
-        # if kept_arrivals == []:
-        #     breakpoint()
-        # cat[0].preferred_origin().arrivals = kept_arrivals
+                kept_arrivals.append(_arr)
+        if kept_arrivals == []:
+            breakpoint()
+        cat[0].preferred_origin().arrivals = kept_arrivals
 
         
         # Get unpicked channels
@@ -148,8 +148,8 @@ def main():
                                     model_name=velocity_model,
                                     phases=phases)
             for ph in picks_hat:
-                cat[0].event.picks.append(ph)
-                Logger.info(f'Modeled pick "{ph.phase_hint}" for stream "{ph.waveform_id.id}"')
+                cat[0].picks.append(ph)
+                Logger.debug(f'Modeled pick "{ph.phase_hint}" for stream "{ph.waveform_id.id}"')
         # Save subset, augmented catalog to EVENT BANK
         Logger.info('Submitting processed/augmented event to new eventbank')
         ABANK.put_events(cat)
