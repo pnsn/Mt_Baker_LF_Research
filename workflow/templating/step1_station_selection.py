@@ -30,6 +30,7 @@ EBANK = EventBank(EBBP)
 
 LATMBS, LONMBS, HBMS = 48.7745,-121.8172, 3286.
 RAD_LIM_KM = 30.
+STARTDATE = pd.Timestamp('2001-01-01T00:00:00')
 
 PSN = ['MBW','MBW2','SHUK','RPW','RPW2','JCW','CMW','SAXON','MULN','PASS']
 
@@ -49,6 +50,9 @@ df_eb = df_eb.assign(mbs_dist_km=[
     111.2* locations2degrees(LATMBS, LONMBS, row.latitude, row.longitude)
     for _, row in df_eb.iterrows()])
 
+# Subset events fo startdate
+df_eb = df_eb[df_eb.time >= STARTDATE]
+
 # Construct P-pick mapping for preferred_origins to each station
 picked_stations = {}
 picking_continuity = {}
@@ -59,14 +63,22 @@ if Logger.level < 20:
 else:
     _dtqdmf = False
 
+# Subset Events by Date
+newcount = len(df_eb[df_eb.time >= STARTDATE])
+Logger.info(f'Subsetting to {STARTDATE} to PRESENT retains {newcount} events')
+
 # Subset Events by Distance
 newcount = len(df_eb[df_eb.mbs_dist_km <= RAD_LIM_KM])
 Logger.info(f'Subsetting to {RAD_LIM_KM} km distance retains {newcount} events')
 
+df_eb_sub = df_eb[(df_eb.time >= STARTDATE) & (df_eb.mbs_dist_km <= RAD_LIM_KM)]
+newcount = len(df_eb_sub)
+Logger.info(f'Subsetting by both retains {newcount} events')
+
 # Get pick counts for all events' preferred origins
 picked_times = []
 picked_evids = []
-for event_id in tqdm(df_eb[df_eb.mbs_dist_km <= RAD_LIM_KM].event_id, disable=_dtqdmf):
+for event_id in tqdm(df_eb_sub.event_id, disable=_dtqdmf):
     _e += 1
     Logger.debug(f"{event_id} ({_e+1} of {newcount})")
     cat = EBANK.get_events(event_id=event_id)
@@ -75,22 +87,31 @@ for event_id in tqdm(df_eb[df_eb.mbs_dist_km <= RAD_LIM_KM].event_id, disable=_d
     if len(prefor.arrivals) == 0:
         _e -= 1
         continue
+    # Iterate across arrivals
     for arr in prefor.arrivals:
+        # If this is a P-pick
         if arr.phase == 'P':
             pick = arr.pick_id.get_referred_object()
             chan = pick.waveform_id.id
+            # Populate new stations
             if chan not in picked_stations.keys():
                 picked_stations.update({chan: [event_id]})
                 # pad with 0's on initialization
                 picking_continuity.update({chan: [0]*(_e - 1) + [1]})
+            # If the channel is active at this
             else:
                 picked_stations[chan].append(event_id)
                 picking_continuity[chan].append(1)
-    # If channel wasn't picked, but has been in the past, assign -1 to penalize
+    # If channel wasn't picked
     for _k, _v in picking_continuity.items():
-        if len(_v) != _e + 1:
-            picking_continuity[_k].append(-1)
-
+        # But the channel is active
+        if chan in INV.select(time=prefor.time).get_contents()['channels']:    
+            if len(_v) != _e + 1:
+                picking_continuity[_k].append(-1)
+        # If the channel is inactive
+        else:
+            if len(_v) != _e + 1:
+                picking_continuity[_k].append(0)
     picked_times.append(prefor.time)
     picked_evids.append(event_id)
 
@@ -211,3 +232,5 @@ ax.set_ylim(ylims)
 #     plt.plot(_v, [_e]*len(_v), 'k-')
     
 # Plot Pick continuity
+
+plt.show()
