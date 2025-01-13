@@ -37,9 +37,9 @@ CHANS = '[BHE]'
 # Load inventory, subsetting for desired channels
 INV = Inventory()
 for _e, _f in enumerate(glob.glob(str(INVD/'*.xml'))):
-    inv = read_inventory(_f):
-    for sta in STAS
-    INV += read_inventory(_f).select(channel='[BHE][HN][ZNE12]')
+    inv = read_inventory(_f)
+    for sta in STAS:
+        INV = inv.select(station=sta, channel=CHANS)
 
 
 # Load event summary
@@ -92,6 +92,13 @@ for event_id in tqdm(df_eb_sub.event_id, disable = _dtqdmf):
         pick = arr.pick_id.get_referred_object()
         nslc = pick.waveform_id.id
         line = [event_id, arr.phase, nslc]
+        pick_info.append(line)
+    
+df_picked = pd.DataFrame(pick_info, columns=['event_id','phase','nslc'])
+
+breakpoint()
+# # Convert to boolean array of present/not present
+# df['multi_index']
 
 
 # Construct P-pick mapping for preferred_origins to each station
