@@ -7,7 +7,7 @@ from tqdm import tqdm
 import pandas as pd
 from obsplus import EventBank
 from obspy.geodetics import locations2degrees
-from obspy import read_inventory
+from obspy import read_inventory, Inventory
 
 from eqcutil.util.logging import setup_terminal_logger, CriticalExitHandler
 
@@ -32,14 +32,15 @@ LATMBS, LONMBS, HBMS = 48.7745,-121.8172, 3286.
 RAD_LIM_KM = 30.
 STARTDATE = pd.Timestamp('2001-01-01T00:00:00')
 
-PSN = ['MBW','MBW2','SHUK','RPW','RPW2','JCW','CMW','SAXON','MULN','PASS']
-
-# Load inventory
+STAS = ['MBW','MBW2','SHUK','RPW','RPW2','JCW','CMW','SAXON','MULN','PASS']
+CHANS = '[BHE]'
+# Load inventory, subsetting for desired channels
+INV = Inventory()
 for _e, _f in enumerate(glob.glob(str(INVD/'*.xml'))):
-    if _e == 0:
-        INV = read_inventory(_f)
-    else:
-        INV += read_inventory(_f)
+    inv = read_inventory(_f):
+    for sta in STAS
+    INV += read_inventory(_f).select(channel='[BHE][HN][ZNE12]')
+
 
 # Load event summary
 df_eb = EBANK.read_index()
@@ -50,68 +51,118 @@ df_eb = df_eb.assign(mbs_dist_km=[
     111.2* locations2degrees(LATMBS, LONMBS, row.latitude, row.longitude)
     for _, row in df_eb.iterrows()])
 
-# Subset events fo startdate
-df_eb = df_eb[df_eb.time >= STARTDATE]
+### ANNOUNCE SUBSETTING IMPACTS ON EVENT COUNTS ###
+# Test Subset Events by Date
+newcount = len(df_eb[df_eb.time >= STARTDATE])
+Logger.info(f'Subsetting to {STARTDATE} to PRESENT retains {newcount} events')
+
+# Test Subset Events by Distance
+newcount = len(df_eb[df_eb.mbs_dist_km <= RAD_LIM_KM])
+Logger.info(f'Subsetting to {RAD_LIM_KM} km distance retains {newcount} events')
+
+# Apply Subsetting
+df_eb_sub = df_eb[(df_eb.time >= STARTDATE) & (df_eb.mbs_dist_km <= RAD_LIM_KM)]
+newcount = len(df_eb_sub)
+Logger.info(f'Subsetting by both retains {newcount} events')
+
+### CONDUCT CONTINUITY/COVERAGE CHECK
+if Logger.level < 20:
+    _dtqdmf = True
+else:
+    _dtqdmf = False
+
+picked_channels = set()
+pick_info = []
+_e = -1
+for event_id in tqdm(df_eb_sub.event_id, disable = _dtqdmf):
+    # Increment up indexer
+    _e += 1
+    Logger.debug(f"{event_id} ({_e+1} of {newcount})")
+    # Fetch event metadata
+    cat = EBANK.get_events(event_id=event_id)
+    # Get preferred origin metadata
+    prefor = cat[0].preferred_origin()
+    # Get active channels for this event
+    inv = INV.select(time=prefor.time)
+    # Check if it has any associated picks
+    if len(prefor.arrivals) == 0:
+        Logger.warning(f'No associated picks for {event_id} - skipping to next')
+        continue
+    for arr in prefor.arrivals:
+        pick = arr.pick_id.get_referred_object()
+        nslc = pick.waveform_id.id
+        line = [event_id, arr.phase, nslc]
+
 
 # Construct P-pick mapping for preferred_origins to each station
 picked_stations = {}
 picking_continuity = {}
 
 _e = -1
-if Logger.level < 20:
-    _dtqdmf = True
-else:
-    _dtqdmf = False
 
-# Subset Events by Date
-newcount = len(df_eb[df_eb.time >= STARTDATE])
-Logger.info(f'Subsetting to {STARTDATE} to PRESENT retains {newcount} events')
 
-# Subset Events by Distance
-newcount = len(df_eb[df_eb.mbs_dist_km <= RAD_LIM_KM])
-Logger.info(f'Subsetting to {RAD_LIM_KM} km distance retains {newcount} events')
-
-df_eb_sub = df_eb[(df_eb.time >= STARTDATE) & (df_eb.mbs_dist_km <= RAD_LIM_KM)]
-newcount = len(df_eb_sub)
-Logger.info(f'Subsetting by both retains {newcount} events')
 
 # Get pick counts for all events' preferred origins
 picked_times = []
 picked_evids = []
+# Iterate across events in chronologic order
 for event_id in tqdm(df_eb_sub.event_id, disable=_dtqdmf):
+    # Increment up indexer
     _e += 1
     Logger.debug(f"{event_id} ({_e+1} of {newcount})")
+    # Fetch event record
     cat = EBANK.get_events(event_id=event_id)
+    # Get preferred origin object
     prefor = cat[0].preferred_origin()
-    # Skip no-pick prefor
+    # Skip prefor with no associated picks
     if len(prefor.arrivals) == 0:
         _e -= 1
         continue
-    # Iterate across arrivals
+    # Iterate across prefor arrivals
     for arr in prefor.arrivals:
-        # If this is a P-pick
+        # If the arrival is a P-wave
         if arr.phase == 'P':
+            # Get the associated pick
             pick = arr.pick_id.get_referred_object()
+            # Get teh channel code for that pick
             chan = pick.waveform_id.id
-            # Populate new stations
+
+            ## CONTINUITY LOGGING
+            # If channel ID is new
             if chan not in picked_stations.keys():
+                # Populate the picked station & include the event_id
                 picked_stations.update({chan: [event_id]})
-                # pad with 0's on initialization
+                # pad with 0's on initialization plus 1 for shoing a pick was present
                 picking_continuity.update({chan: [0]*(_e - 1) + [1]})
-            # If the channel is active at this
+            # If the picked channel is active at this point
             else:
                 picked_stations[chan].append(event_id)
                 picking_continuity[chan].append(1)
-    # If channel wasn't picked
+
+    # Iterate across all channels present in picking_continuity
     for _k, _v in picking_continuity.items():
-        # But the channel is active
+        # if the channel was active during this event
         if chan in INV.select(time=prefor.time).get_contents()['channels']:    
-            if len(_v) != _e + 1:
+            # If the continuity vector is missing an element
+            if len(_v) < _e + 1:
+                # append a missed pick value
                 picking_continuity[_k].append(-1)
-        # If the channel is inactive
+            # DEBUG: Safety catch of too-long
+            elif len(_v) > _e + 1:
+                breakpoint()
+        # If the channel is not active
         else:
-            if len(_v) != _e + 1:
+            # And it shows a missing last pick
+            if len(_v) < _e + 1:
+                # Append a non-active pick value
                 picking_continuity[_k].append(0)
+
+        #     if len(_v) != _e + 1:
+        #         picking_continuity[_k].append(-1)
+        # # If the channel is inactive
+        # else:
+        #     if len(_v) != _e + 1:
+        #         picking_continuity[_k].append(0)
     picked_times.append(prefor.time)
     picked_evids.append(event_id)
 
@@ -153,7 +204,7 @@ for _cha, _val in ser_picks.items():
 pref_sta_evid_set = set()
 pref_sta_set = set()
 for _k, _v in picked_stations.items():
-    for _psn in PSN:
+    for _psn in STAS:
         if _psn in _k:
             pref_sta_evid_set = pref_sta_evid_set.union(set(_v))
             pref_sta_set.add(_k)
@@ -180,7 +231,7 @@ with open(str(PSPEF), 'w') as LOG:
 
 # Write continuity dataframe to disk
 # Subset to preferred stations
-df_cont = df_cont.filter(regex='|'.join(PSN))
+df_cont = df_cont.filter(regex='|'.join(STAS))
 # Sort by station name
 df_cont = df_cont.T.sort_index().T
 df_cont.to_csv(str(OUTD/'preferred_stachan_pick_continuity.csv'),
@@ -197,7 +248,7 @@ for sta in auto_pref_sta:
     inv = INV.select(station=sta)
     for net in inv.networks:
         for sta in net.stations:
-            if sta.code in PSN:
+            if sta.code in STAS:
                 marker = 'rv'
             else:
                 marker = 'kv'
