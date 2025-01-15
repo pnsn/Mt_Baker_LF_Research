@@ -1,4 +1,4 @@
-import logging, os, glob
+import logging, os, glob, warnings
 from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -11,7 +11,8 @@ from eqcorrscan.utils.stacking import align_traces
 from eqcutil.core.clusteringtribe import ClusteringTribe
 from eqcutil.util.logging import setup_terminal_logger, CriticalExitHandler
 
-
+# Ignore FutureWarning
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 #### SETUP ####
 
@@ -24,12 +25,12 @@ Logger.addHandler(CriticalExitHandler(exit_code=1))
 ROOT= Path(__file__).parent.parent.parent
 if os.path.split(ROOT)[-1] != 'Mt_Baker_LF_Research':
     Logger.critical(f'root path does not appear to look like the repo root: {ROOT}')
-TMPD = ROOT / 'processed_data' / 'workflow' / 'templates'
+TMPD = ROOT / 'processed_data' / 'workflow' / 'templates' / 'single_station'
 
 # USER INPUTS
-min_members = 2
-cct = 0.7
-_f = TMPD/'step_6_clustered_UW.SAXON..HHZ_5sec_cct0.45.tgz'
+min_members = 4
+cct = 0.4
+_f = TMPD/'JCW.tgz'
 
 
 
@@ -38,7 +39,7 @@ _f = TMPD/'step_6_clustered_UW.SAXON..HHZ_5sec_cct0.45.tgz'
 
 print('loading')
 ctr = ClusteringTribe().read(str(_f))
-ctr.cct_regroup(0.45, inplace=True)
+ctr.cct_regroup(cct, inplace=True)
 ctr.reindex_columns();
 ctr._c.time = [pd.Timestamp(row.time) for _, row in ctr._c.iterrows()]
 ctr.cct_regroup(corr_thresh=cct,inplace=True)
@@ -212,6 +213,8 @@ for _etype in o_ctr._c.etype.unique():
     axes = plot_summary(oe_ctr, axes=None, title=f'Stations: {stastr} Orphaned: {_etype}', render_legend=False)
     axes = plot_summary(xe_ctr, axes=axes, plotting_included=False, render_legend=True)
 
+
+plt.show()
 
 #         # Plot Dendrogram
 #         i_ctr.dendrogram(ax=axes[0], xlabels=['depth','etype'],scalar=[1e-3,None], title=f'Stations: {stastr} Group {_gn:.0f}\n')
