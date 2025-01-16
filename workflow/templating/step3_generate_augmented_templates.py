@@ -1,5 +1,6 @@
 import os, logging, warnings
 from pathlib import Path
+import matplotlib.pyplot as plt
 
 import numpy as np
 import pandas as pd
@@ -41,6 +42,7 @@ CTSD = PD_DIR / 'templates' / 'single_station'
 # Define location code aliases
 ALIASES = {'01': ''}
 
+MIN_PICK_SNR = 1.2
 # Define Template Construction Parameters
 tckwargs = {
     'method':'from_client',
@@ -85,6 +87,14 @@ def check_prepick_rms(trace, prepick):
     amp = _rms(ntr.data)
     return amp
 
+def get_template_pick_snr(tmp, scale=0.9):
+    tr = tmp.st[0].copy()
+
+    noise_RMS = _rms(tr.copy().trim(endtime=tr.stats.starttime + tmp.prepick*scale))
+    onset_RMS = _rms(tr.copy().trim(starttime=tr.stats.starttime + tmp.prepick,
+                                    endtime=tr.stats.starttime + (1. + scale)*tmp.prepick))
+    pick_snr = onset_RMS / noise_RMS
+    return pick_snr
 
 #### PROCESSING SECTION ####
 if not os.path.exists(CTSD):
@@ -113,10 +123,10 @@ del lines
 
 
 # Iterate across event_ids
-if Logger.level < 20:
+if Logger.level < 10:
     tqdm_disable = True
 else:
-    tqdm_disable = False
+    tqdm_disable = True
 
 for sta in STAS:
     Logger.info(f'Processing events for station {sta}')
@@ -158,7 +168,7 @@ for sta in STAS:
         else:
             tmp = itribe[0]
             # Rename template
-            tmp.name = f'{sta}_{uwevid}'
+            tmp.name = uwevid
             tmp.event.comments[-1].text = f'eqcorrscan_template_{tmp.name}'
 
             Logger.debug(f'Construction of template {tmp.name} successful')
@@ -171,6 +181,12 @@ for sta in STAS:
             if len(tmp.st) != 1:
                 Logger.warning(f'template has {len(tmp.st)} traces despite merge')
                 breakpoint()
+            # Double check SNR around pick
+            pick_snr = get_template_pick_snr(tmp)
+
+            if pick_snr <= MIN_PICK_SNR:
+                Logger.warning(f'Rejecting template {tmp.name} due to low SNR around pick ({pick_snr:.3f})')
+                continue
             
             # Apply aliases (if applicable)
             loc = tmp.event.picks[0].waveform_id.location_code
@@ -188,21 +204,32 @@ for sta in STAS:
         event = tmp.event
         prefor = event.preferred_origin()
         prefmag = event.preferred_magnitude()
-        line = [tmp.name.split('_')[-1], event.comments[-2].text,prefor.time,
-                tmp.st[0].stats.channel, event.picks[0].evaluation_mode,
+        # Get essential origin information
+        line = [tmp.name.split('_')[-1], event.comments[-2].text,
+                tmp.st[0].stats.channel, event.picks[0].evaluation_mode, prefor.time,
                 prefor.longitude, prefor.latitude, prefor.depth]
+        # Get origin uncertainties if provided
         if prefor.origin_uncertainty is None:
-            line += [-9999, -9999]
+            line.append(-9999)
         else:
-            line += [prefor.origin_uncertainty.horizontal_uncertainty,
-                    prefor.depth_errors.uncertainty]
+            line.append(prefor.origin_uncertainty.horizontal_uncertainty)
+        try:
+            sdep = prefor.depth_errors.uncertainty
+            if not np.isfinite(sdep):
+                sdep = -9999
+            line.append(sdep)
+        except:
+            line.append(-9999)
+        # Get magnitude and magnitude type
         line += [prefmag.mag, prefmag.magnitude_type]
+        # Calculate pick SNR
+        line.append(get_template_pick_snr(tmp))
         holder.append(line)
     df = pd.DataFrame(holder, columns=['evid', 'etype',
-                                       'channel','eval_mode','time'
+                                       'channel','eval_mode','time',
                                        'longitude','latitude','depth',
                                        'horizontal_uncertainty','vertical_uncertainty',
-                                       'magnitude','magtype'])
+                                       'magnitude','magtype','snr'])
     df.index.name='id_no'
     # Join etype and pick evaluation mode
     ictr.clusters = ictr.clusters.join(df, on='id_no')
@@ -214,7 +241,9 @@ for sta in STAS:
     # Save station-specific clustering tribes
     isavename = str(CTSD/sta)
     ictr.write(isavename, compress=True)
-
+    # ictr.dendrogram(xlabels=['etype'], scalar=[None])
+    # plt.show()
+    # breakpoint()
             # # Check if the pick location code has a known alias
             # if pick.waveform_id.location_code in ALIASES.keys():
             #     # Make doubly sure that the pick metadata matches
