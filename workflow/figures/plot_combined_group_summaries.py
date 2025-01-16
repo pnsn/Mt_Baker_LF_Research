@@ -29,8 +29,8 @@ TMPD = ROOT / 'processed_data' / 'workflow' / 'templates' / 'single_station'
 
 # USER INPUTS
 min_members = 4
-cct = 0.4
-_f = TMPD/'JCW.tgz'
+cct = 0.6
+_f = TMPD/'MBW.tgz'
 
 
 
@@ -63,10 +63,11 @@ def plot_summary(
                 fig.add_subplot(gs[1,:2]),
                 fig.add_subplot(gs[2,0]),
                 fig.add_subplot(gs[2,1]),
-                fig.add_subplot(gs[:,2])]#,
+                fig.add_subplot(gs[:2,2]),
+                fig.add_subplot(gs[2,2])]
                 # fig.add_subplot(gs[2,2])]
     
-    if len(axes) != 5:
+    if len(axes) != 6:
         raise AttributeError
     
     emap = {'eq': 'k*', 'lf':'rs', 'px':'gx', 'su':'bo'}
@@ -116,8 +117,11 @@ def plot_summary(
     if plotting_included:
         # Get Shifts & Plot shifted traces
         tr_list = [tmp.st[0].copy() for tmp in ctr]
+        # NEW: Use pick SNR to pick master, rather than overall trace RMS
+        snr_list = ctr._c.snr
+        master_tr = tr_list[np.argmax(snr_list)]
         if calculate_shifts:
-            shifts_corrs = align_traces(tr_list, shift_len=50, positive=positive_shift)
+            shifts_corrs = align_traces(tr_list, shift_len=50, master=master_tr, positive=positive_shift)
             display_cc = True
         else:
             shifts_corrs = np.full(shape=(2,len(tr_list)), fill_value=1)
@@ -131,20 +135,20 @@ def plot_summary(
             _tr.normalize(norm=_tr.std()*3)
             _ccsign = np.sign(shifts_corrs[1][_e])
             axes[4].plot(_tr.times() + shifts_corrs[0][_e] - ctr[_e].prepick,
-                            _ccsign*_tr.data + _e*2,
+                            _ccsign*_tr.data*0.5 + _e,
                             emap[ctr._c.etype[_e]][0],
-                            lw=0.5)
+                            lw=0.5, zorder=1)
         if display_cc:
             if positive_shift:
                 vkwargs = {'vmin': 0, 'vmax': 1}
             else:
                 vkwargs = {'vmin': -1, 'vmax': 1}
-            ch = axes[4].scatter(-1*np.ones(len(tr_list)), np.arange(len(tr_list))*2, c=shifts_corrs[1], cmap='seismic', **vkwargs)
-            plt.colorbar(ch, location='bottom', orientation='horizontal', fraction=0.05)
+            ch = axes[4].scatter(-1*np.ones(len(tr_list)), np.arange(len(tr_list)), c=shifts_corrs[1], s=16, cmap='seismic', zorder=2, **vkwargs)
+            # plt.colorbar(ch, location='bottom', orientation='horizontal', fraction=0.05)
 
         axes[4].yaxis.tick_right()
         axes[4].set_ylabel('-- Towards Present Day -->')
-        axes[4].set_yticks(np.arange(len(ctr))*2.,ctr._c.index)
+        # axes[4].set_yticks(np.arange(len(ctr))*2.,ctr._c.index)
         axes[4].tick_params('y',labelsize=6)
         if calculate_shifts:
             axes[4].set_xlabel('Time Relative to\nXCorr Adjusted Arrival [sec]')
@@ -153,6 +157,8 @@ def plot_summary(
         
         if render_legend:
             axes[1].legend(ncol=2, loc='lower left')
+        XX, YY = np.meshgrid(np.arange(0,len(ctr)), np.arange(0,len(ctr)))
+        axes[5].pcolor(XX, YY, ctr.dist_mat, cmap='bone')
 
     return axes
 
@@ -200,9 +206,9 @@ for _gn, _ct in g_counts.items():
         # Get the clustering tribe of excluded events
         x_ctr = ctr.get_subset(df_c[df_c.correlation_cluster!=_gn].index.values)
         # Plot grouped events
-        axes = plot_summary(i_ctr, axes=None, title=f'Stations: {stastr} Group: {_gn:.0f}', render_legend=False)
+        axes = plot_summary(i_ctr, axes=None, title=f'Stations: {stastr} Group: {_gn:.0f}', render_legend=True)
         # Plot unaffiliated events
-        axes = plot_summary(x_ctr, axes=axes, plotting_included=False, render_legend=True)
+        axes = plot_summary(x_ctr, axes=axes, plotting_included=False, render_legend=False)
 
 
 o_ctr = ctr.get_subset(orphans)
@@ -210,8 +216,8 @@ for _etype in o_ctr._c.etype.unique():
     e_orphans = o_ctr._c[o_ctr._c.etype == _etype].index.values
     oe_ctr = ctr.get_subset(e_orphans)
     xe_ctr = ctr.get_subset(list(e_orphans) + grouped)
-    axes = plot_summary(oe_ctr, axes=None, title=f'Stations: {stastr} Orphaned: {_etype}', render_legend=False)
-    axes = plot_summary(xe_ctr, axes=axes, plotting_included=False, render_legend=True)
+    axes = plot_summary(oe_ctr, axes=None, title=f'Stations: {stastr} Orphaned: {_etype}', render_legend=True)
+    axes = plot_summary(xe_ctr, axes=axes, plotting_included=False, render_legend=False)
 
 
 plt.show()
