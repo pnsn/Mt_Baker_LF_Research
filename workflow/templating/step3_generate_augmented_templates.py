@@ -35,14 +35,14 @@ WBBP = ROOT / "data" / "WF" / "BANK"
 # Preferred Event-Station File
 PSEF = PD_DIR / 'catalog' / 'preferred_event_sta_picks.csv'
 # Template Save Directory
-CTSD = PD_DIR / 'templates' / 'single_station'
+CTSD = PD_DIR / 'templates' / 'single_station' / 'xcc_test'
 
 ############ TEMPLATE CONSTRUCTION PARAMETERS ############
 
 # Define location code aliases
-ALIASES = {'01': ''}
-
+LOC_ALIASES = {'01': ''}
 MIN_PICK_SNR = 1.2
+MIN_RMS = 3
 # Define Template Construction Parameters
 tckwargs = {
     'method':'from_client',
@@ -53,20 +53,18 @@ tckwargs = {
     'prepick': 5.,
     'length': 45.,
     'process_len': 300.,
-    'min_snr': 3.,
+    'min_snr': 2.,
     'parallel': True,
     'num_cores': 12,
     'save_progress': False
 }
 
-ccckwargs = {'method': 'correlation_cluster',
+ccckwargs = {'method': 'xcc',
             'replace_nan_distances_with': 'mean',
-            'shift_len': 5,
+            'shift_len': 2,
             'corr_thresh': 0.5,
             'allow_individual_trace_shifts': True,
-            'show': False,
-            'cores': 'all',
-            'save_corrmat': False}
+            'cores': 'all'}
 ################################
 
 ### HELPER FUNCTIONS ###
@@ -93,8 +91,8 @@ def get_template_pick_snr(tmp, scale=0.9):
     noise_RMS = _rms(tr.copy().trim(endtime=tr.stats.starttime + tmp.prepick*scale))
     onset_RMS = _rms(tr.copy().trim(starttime=tr.stats.starttime + tmp.prepick,
                                     endtime=tr.stats.starttime + (1. + scale)*tmp.prepick))
-    pick_snr = onset_RMS / noise_RMS
-    return pick_snr
+    # pick_snr = onset_RMS / noise_RMS
+    return onset_RMS, noise_RMS
 
 #### PROCESSING SECTION ####
 if not os.path.exists(CTSD):
@@ -182,22 +180,19 @@ for sta in STAS:
                 Logger.warning(f'template has {len(tmp.st)} traces despite merge')
                 breakpoint()
             # Double check SNR around pick
-            pick_snr = get_template_pick_snr(tmp)
-
+            onset_rms, noise_rms = get_template_pick_snr(tmp)
+            pick_snr = onset_rms/noise_rms
             if pick_snr <= MIN_PICK_SNR:
                 Logger.warning(f'Rejecting template {tmp.name} due to low SNR around pick ({pick_snr:.3f})')
                 continue
             
-            # Apply aliases (if applicable)
-            loc = tmp.event.picks[0].waveform_id.location_code
-            if loc in ALIASES.keys():
-                Logger.warning(f'Applying location alias to {sta} {event_id} template')
-                tmp.event.picks[0].waveform_id.location_code = ALIASES[loc]
-                tmp.event.picks[0].comments.append(Comment(text=f'Location code aliased: "{loc}" to "{ALIASES[loc]}"'))
-                tmp.st[0].stats.location = ALIASES[loc]
-            
+            if noise_rms <= MIN_RMS and onset_rms <= MIN_RMS:
+                Logger.warning(f'Rejecting template {tmp.name} due to low RMS on both sides of pick ({noise_rms:.3f} | {onset_rms:.3f})')
+                continue
+
             # Append template to clustering tribe
             ictr += tmp
+
     # Add metadata to ictr.clusters
     holder = []
     for tmp in ictr:
@@ -206,6 +201,7 @@ for sta in STAS:
         prefmag = event.preferred_magnitude()
         # Get essential origin information
         line = [tmp.name.split('_')[-1], event.comments[-2].text,
+                tmp.st[0].stats.network, tmp.st[0].stats.station, tmp.st[0].stats.location,
                 tmp.st[0].stats.channel, event.picks[0].evaluation_mode, prefor.time,
                 prefor.longitude, prefor.latitude, prefor.depth]
         # Get origin uncertainties if provided
@@ -223,34 +219,48 @@ for sta in STAS:
         # Get magnitude and magnitude type
         line += [prefmag.mag, prefmag.magnitude_type]
         # Calculate pick SNR
-        line.append(get_template_pick_snr(tmp))
+        onset_rms, noise_rms = get_template_pick_snr(tmp)
+        line += [onset_rms/noise_rms, onset_rms, noise_rms]
         holder.append(line)
-    df = pd.DataFrame(holder, columns=['evid', 'etype',
-                                       'channel','eval_mode','time',
-                                       'longitude','latitude','depth',
-                                       'horizontal_uncertainty','vertical_uncertainty',
-                                       'magnitude','magtype','snr'])
+    try:
+        df = pd.DataFrame(holder, columns=['evid', 'etype','network','station','location',
+                                        'channel','eval_mode','time',
+                                        'longitude','latitude','depth',
+                                        'horizontal_uncertainty','vertical_uncertainty',
+                                        'magnitude','magtype','snr', 'noise_rms','onset_rms'])
+    except:
+        breakpoint()
     df.index.name='id_no'
     # Join etype and pick evaluation mode
     ictr.clusters = ictr.clusters.join(df, on='id_no')
     Logger.info(f'Constructed {len(ictr)} templates for {sta} (of {npotential} possible)')
 
-    # RUN CLUSTERING
-    Logger.info(f'Running clustering for {sta}')
-    ictr.cluster(**ccckwargs)
-    # Save station-specific clustering tribes
+    ## APPLY ALIASES TO TEMPLATES IN TRIBES WITH MORE THAN ONE CHANNEL CODE
+    # Get unique set of trace IDs
+    id_set = set([])
+    for tmp in ictr:
+        id_set.add(tmp.st[0].id)
+    # If there is more than one NSLC
+    if len(id_set) > 1:
+        # Blind the band and instrument characters
+        new_id_set = set([])
+        for tmp in ictr:
+            tmp.st[0].stats.channel='??Z'
+            # Apply aliases (if applicable)
+            loc = tmp.event.picks[0].waveform_id.location_code
+            # If the location is in LOC aliases, also adjust that
+            if loc in LOC_ALIASES.keys():
+                Logger.warning(f'Applying location alias to {sta} {event_id} template')
+                tmp.st[0].stats.location = LOC_ALIASES[loc]
+            new_id_set.add(tmp.st[0].id)
+    
+    # # RUN CLUSTERING
+    # Logger.info(f'Running clustering for {sta}')
+    # ictr.cluster(**ccckwargs)
+    # # Save station-specific clustering tribes
     isavename = str(CTSD/sta)
     ictr.write(isavename, compress=True)
-    # ictr.dendrogram(xlabels=['etype'], scalar=[None])
-    # plt.show()
-    # breakpoint()
-            # # Check if the pick location code has a known alias
-            # if pick.waveform_id.location_code in ALIASES.keys():
-            #     # Make doubly sure that the pick metadata matches
-            #     if tmp.event.picks[0] != pick:
-            #         breakpoint()
-            #     # Update the location code in the template
-            #     # itr
+
 
     
 

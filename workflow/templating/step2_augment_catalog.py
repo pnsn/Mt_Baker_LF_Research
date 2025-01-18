@@ -46,25 +46,11 @@ velocity_model = 'P4'
 SHIFTS = {'N':'Z',
           'E':'Z'}
 
-BAND_PRIORITY_ORDER = 'HN'
+ITYPE_PRIORITY_ORDER = ['HH','BH','EH','HN','EN']
 
 pick_filt_kwargs = {'phase_hints': phases,
                     'enforce_single_pick': 'preferred'}
 
-
-def _rms(array):
-    """
-    Calculate RMS of array.
-
-    :type array: numpy.ndarray
-    :param array: Array to calculate the RMS for.
-
-    :returns: RMS of array
-    :rtype: float
-    """
-    return np.sqrt(np.mean(np.square(array)))
-
-# def main():
 # Load preferred_event_sta_picks
 df_evids = pd.read_csv(str(PSPEF), index_col=[0])
 # Filter by phases
@@ -100,6 +86,7 @@ for _f in glob.glob(str(INVD/'*.xml')):
     # Filter for desired stations
     for _sta in STAS:
         INV += inv.select(station=_sta,channel='[BHE][NH][ZNE]')
+
 
 df_seb = EBANK.read_index()
 df_aeb = ABANK.read_index()
@@ -200,9 +187,9 @@ for event_id in tqdm(EVIDS, disable=tqdm_disable):
     modeled_first_arrivals = []
     for sta in modsta:
         sinv = inv.select(station=sta)
-        # Apply band priority
-        for band in BAND_PRIORITY_ORDER:
-            sbinv = sinv.select(channel=f'?{band}?')
+        # Apply instrument type priority order
+        for itype in ITYPE_PRIORITY_ORDER:
+            sbinv = sinv.select(channel=f'{itype}?')
             if len(sbinv.get_contents()['channels']) == 1:
                 break
         if len(sbinv.get_contents()['channels']) != 1:
