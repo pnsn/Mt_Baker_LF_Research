@@ -36,6 +36,9 @@ for f in flist:
     # Load
     Logger.warning(f'loading {f}')
     ctr = ClusteringTribe().read(f)
+    # Apply new clustering threshold
+    ctr.cct_regroup(corr_thresh=cct, inplace=True)
+    ctr.reindex_columns(group='xcc')
     # Iterate across groups
     ser_grp = ctr._c.xcc.value_counts()
     for _gn, _ct in ser_grp.items():
@@ -74,7 +77,7 @@ for f in flist:
             # Use the id_no to pull the specific shift
             shift = ctr.shift_mat[master_row.id_no[0], _ctr._c.loc[_tmp_name,'id_no']]
 
-            pick.time += shift
+            pick.time -= shift
             pick.evaluation_mode='automatic'
             pm = pick_to_phase(pick, kind=kind)
             shifted_markers.append(pm)
