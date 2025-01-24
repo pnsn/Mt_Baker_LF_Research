@@ -25,11 +25,11 @@ Logger.addHandler(CriticalExitHandler(exit_code=1))
 ROOT= Path(__file__).parent.parent.parent
 if os.path.split(ROOT)[-1] != 'Mt_Baker_LF_Research':
     Logger.critical(f'root path does not appear to look like the repo root: {ROOT}')
-TMPD = ROOT / 'processed_data' / 'workflow' / 'templates' / 'single_station'
+TMPD = ROOT / 'processed_data' / 'workflow' / 'templates' / 'single_station' / 'xcc_test'
 
 ##### USER INPUTS #####
 min_members = 4
-file = TMPD/'PASS.tgz'
+file = TMPD/'JCW.tgz'
 cct = 0.45
 ##### END OF USER INPUT SECTION #####
 
@@ -240,7 +240,7 @@ def load_data(file):
 #### RE-THRESHOLDING ####
 def rethreshold(ctr, cct=cct):
     ctr.cct_regroup(cct, inplace=True)
-    ctr.reindex_columns();
+    ctr.reindex_columns('xcc');
     ctr._c.time = [pd.Timestamp(row.time) for _, row in ctr._c.iterrows()]
     ctr.cct_regroup(corr_thresh=cct,inplace=True)
     ctr.reindex_columns()
@@ -293,22 +293,22 @@ def grouped_plots(ctr, min_members=min_members):
     # Get alias to clusters dataframe
     df_c = ctr._c.copy()
     # Get group membership counts
-    g_counts = df_c.correlation_cluster.value_counts()
+    g_counts = df_c.xcc.value_counts()
 
     # Iterate across groups
     for _gn, _ct in g_counts.items():
         # If insufficient membership, log EVID(s) to orphans
         if _ct < min_members:
-            orphans += list(df_c[df_c.correlation_cluster==_gn].index.values)
+            orphans += list(df_c[df_c.xcc==_gn].index.values)
         # If sufficient membership, log EVIDs to grouped
         else:
             # Get this group subset and add to grouped EVIDs list
-            grouped_subset = df_c[df_c.correlation_cluster==_gn].index.values
+            grouped_subset = df_c[df_c.xcc==_gn].index.values
             grouped += list(grouped_subset)
             # Get the clusering tribe of included events
             i_ctr = ctr.get_subset(grouped_subset)
             # Get the clustering tribe of excluded events
-            x_ctr = ctr.get_subset(df_c[df_c.correlation_cluster!=_gn].index.values)
+            x_ctr = ctr.get_subset(df_c[df_c.xcc !=_gn].index.values)
             # Plot grouped events
             axes, Ri = plot_summary(i_ctr, axes=None, title=f'Stations: {nslcstr} Group: {_gn:.0f}', render_legend=False)
             # Plot unaffiliated events
@@ -339,7 +339,7 @@ if __name__ == '__main__':
     ctr = load_data(file)
     ctr = rethreshold(ctr, cct=cct)
     synopsis(ctr)
-    # grouped_plots(ctr, min_members=min_members)
+    grouped_plots(ctr, min_members=min_members)
 
     plt.show()
 
