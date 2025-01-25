@@ -1,27 +1,82 @@
+"""
+:program: Mt_Baker_LF_Research/workflow/templating/step2_augment_catalog.py
+:auth: Nathan T. Stevens
+:email: ntsteven@uw.edu
+:org: Pacific Northwest Seismic Network
+:license: GNU GPLv3
+:purpose:
+    This program iterates across events and stations selected in "step1_station_selection.py" 
+    and does the following filtering/augmentations:
+        1) Sub-sample event metadata to include only selected stations and phase types
+        2) Models the arrival times of desired phase type(s) at stations reportedly active
+            during a catalog event (i.e., station metadata says it was running)
+        3) Appends the PNSN AQMS event-type classification as a 2-character comment on
+            each obspy Event object's **comments** attribute
+    
+    filtered/augmented event metadata are then saved to a new "Augmented Event Bank" that
+    is used as the input for template generation in "step3_generate_templates.py"
+"""
+
 import os, logging, glob, warnings
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
 from obspy import read_inventory, Inventory, UTCDateTime
-from obspy.core.event import  Comment
-from eqcorrscan.utils.catalog_utils import filter_picks
-from obsplus import EventBank
+from obspy.core.event import Comment
+
+# from obspy.clients.fdsn import Client
+from obsplus import EventBank #, WaveBank
 
 from eqcutil.augment.catalog import apply_phase_hints, filter_picks
-from eqcutil.core.clusteringtribe import ClusteringTribe
 from eqcutil.catalog.model_phases import model_picks
 from eqcutil.util.logging import setup_terminal_logger, CriticalExitHandler
+from eqcutil.viz.eqc_compat import plant
+
+plant()
 
 # Set up logging at debug level reporting
-Logger = setup_terminal_logger(os.path.split(__file__)[-1],level=logging.WARNING)
+Logger = setup_terminal_logger(os.path.split(__file__)[-1],level=logging.INFO)
 # Add a critical -> sysexit handler custom class
 Logger.addHandler(CriticalExitHandler(exit_code=1))
-
 # Ignore FutureWarning
 warnings.simplefilter(action='ignore', category=FutureWarning)
+
+### USER CONTROLS ###
+# Modeled Pick Processing Parameters
+phases=['P','p']            # classic phase labels for Pyrocko/Cake to model
+velocity_model = 'P4'       # PNSN velocity model name to use for ray-tracing
+MODCHAN = '??Z'             # Channel code to use for modeled picks
+
+# Prioritization of instrument / band codes for assigning model picks
+# I.e., if there are multiple active sensors at a station being modeled, which should be
+# prioritized for retrieving trace data and auto-picking
+ITYPE_PRIORITY_ORDER = ['HH','BH','EH','HN','EN'] 
+
+# Developmental - auto_picker
+# auto_pick_pad = [300, 300]    # [sec] front and back padding around modeled pick for autopicking
+# RMS_win = 3.                # [sec] window on either side of a pick for calculating RMS amplitudes
+# min_snr = 1.1               # [dB] Minimum acceptable SNR for final pick
+# min_noise_RMS = 3           # [dB] Minimum acceptable SNR for noise segment in front of final modeled pick
+
+
+# Manual Pick Processing Parameters
+pick_filt_kwargs = {'phase_hints': phases,
+                    'enforce_single_pick': 'preferred'}
+# Mappings for transferring picks to other channels on the same instrument
+# Syntax: {FROM: TO}
+SHIFTS = {'N':'Z',
+          'E':'Z'}
+
+# Figure rendering parameters
+FMT = 'PNG'
+DPI = 120
+plot_save_kwargs = {}
+
+### END OF USER CONTROLS ###
+
+### PATH DEFINITIONS ###
 
 # Get absolute path of repo root directory
 ROOT = Path(__file__).parent.parent.parent
@@ -35,22 +90,11 @@ OUTD = ROOT / 'processed_data' / 'workflow' / 'catalog'
 PSPEF = OUTD / 'preferred_event_sta_picks.csv'
 # Event Type Metadata
 ETDATA = ROOT / 'data' / 'Events' / 'Mount_Baker_evids_etypes_10_JAN_2025.csv'
-### USER CONTROLS ###
-min_snr = 1.1
-min_noise_RMS = 3
-MODCHAN = '??Z'
-phases=['P','p']
-velocity_model = 'P4'
-# Mappings for transferring picks to other channels on the same instrument
-# Syntax: {FROM: TO}
-SHIFTS = {'N':'Z',
-          'E':'Z'}
+# WaveBank Base Path
+WBBP = ROOT / "data" / "WF" / "BANK"
 
-ITYPE_PRIORITY_ORDER = ['HH','BH','EH','HN','EN']
 
-pick_filt_kwargs = {'phase_hints': phases,
-                    'enforce_single_pick': 'preferred'}
-
+### PROCESSING SECTION ###
 # Load preferred_event_sta_picks
 df_evids = pd.read_csv(str(PSPEF), index_col=[0])
 # Filter by phases
@@ -78,6 +122,10 @@ ABANK = EventBank(base_path=OUTD/'AUGMENTED_BANK',
                     path_structure='{year}',
                     name_structure='uw{event_id_end}')
 
+# WBANK = WaveBank(base_path=WBBP)
+
+# IRIS = Client("IRIS")
+
 # Load inventory for preferred stations
 INV = Inventory()
 for _f in glob.glob(str(INVD/'*.xml')):
@@ -96,6 +144,7 @@ if Logger.level < 30:
 else:
     tqdm_disable = False
 
+pick_info = []
 for event_id in tqdm(EVIDS, disable=tqdm_disable):
     # Confirm that event_id is not already in AUGMENTED
     if event_id in df_aeb.event_id.values:
@@ -144,7 +193,6 @@ for event_id in tqdm(EVIDS, disable=tqdm_disable):
             _p.waveform_id.channel_code = scode
             _p.comments.append(comment)
             
-    
     # Station magnitudes cleanup
     smk = []
     for smag in event.station_magnitudes:
@@ -172,6 +220,7 @@ for event_id in tqdm(EVIDS, disable=tqdm_disable):
     prefor.arrivals = ark
 
     ### MODEL ARRIVAL TIMES ###
+
     # Get active station list
     inv = INV.select(time=prefor.time, channel=MODCHAN)
     active = inv.get_contents()['channels']
@@ -183,7 +232,8 @@ for event_id in tqdm(EVIDS, disable=tqdm_disable):
         msg += f' {ms},'
     msg = msg[:-1]
     Logger.debug(msg)
-    # Model by individual station
+
+    # Model by individual station using P4 velocity model
     modeled_first_arrivals = []
     for sta in modsta:
         sinv = inv.select(station=sta)
@@ -192,15 +242,16 @@ for event_id in tqdm(EVIDS, disable=tqdm_disable):
             sbinv = sinv.select(channel=f'{itype}?')
             if len(sbinv.get_contents()['channels']) == 1:
                 break
+        # If there is more than one channel in this inventory - go to debug
         if len(sbinv.get_contents()['channels']) != 1:
             breakpoint()
-        # if len(sinv.get_contents()['channels']) > 1:
-        #     print('TEST')
-        #     breakpoint()
+
+        # Model pick times using the P4 velocity model
         picks_hat = model_picks(
             prefor, sbinv, 
             model_name=velocity_model,
             phases=phases)
+        
         # Identify earliest modeled arrival for each channel
         t0 = UTCDateTime()
         # Iterate across modeled picks
@@ -208,22 +259,62 @@ for event_id in tqdm(EVIDS, disable=tqdm_disable):
             if _ph.time < t0:
                 t0 = _ph.time
                 earliest = _ph
-        # If there were any modeled arrivals, append the earliest
+
+        # # Run auto-picker approach for "earliest"
+        # request = earliest.waveform_id.id.split('.') + [earliest.time - auto_pick_pad[0], earliest.time + auto_pick_pad[1]]
+        # # Try to get waveforms from local client first
+        # try:
+        #     st = WBANK.get_waveforms(*request)
+        #     Logger.debug('successful WaveBank request')
+        # except:
+        #     Logger.warning(f'WaveBank request failed for {request} - trying IRIS')
+        #     try:
+        #         st = IRIS.get_waveforms(*request)
+        #     except:
+        #         Logger.warning('IRIS request failed - abandoning modeled pick')
+        #         continue
+
+        # # Run picker
+        # breakpoint()
+
+         # If there were any modeled arrivals, append the earliest
         if len(picks_hat) > 0:
             modeled_first_arrivals.append(earliest)
         # If there were no modeled arrivals, proceed to next station
         # for modeling picks
         else:
             continue
-    Logger.debug(f'Adding {len(modeled_first_arrivals)} modeled first arrivals')
-    event.picks += modeled_first_arrivals
 
+    Logger.info(f'Adding {len(modeled_first_arrivals)} modeled first arrivals to {event_id}')
+    event.picks += modeled_first_arrivals
+    for _p in event.picks:
+        nslc = _p.waveform_id.id
+        line = [event_id, _p.phase_hint, nslc, _p.evaluation_mode] + nslc.split('.')
+        pick_info.append(line)
     # Try committing updated event to AUGMENTED EVENT BANK
     try:
         ABANK.put_events(cat)
         Logger.info('Successfully added to Augmented Event Bank')
     except:
         breakpoint()
+
+
+
+df_picked = pd.DataFrame(
+    pick_info,
+    columns=['event_id','phase','nslc','eval_mode','net','sta','loc','chan']
+)
+# # Get count of station-event picks
+# ser_top_picked = df_picked.sta.value_counts()
+# df_p_cont = df_picked[['event_id','sta']]
+# breakpoint()
+# df_p_cont = df_p_cont.pivot_table(
+#     index=['event_id'],
+#     columns=['sta'],
+#     aggfunc=lambda x: 1, fill_value=0)
+# for evid, row in df_p_cont.iterrows():
+#     if 
+                         
 
 # Show new pick availability 
 

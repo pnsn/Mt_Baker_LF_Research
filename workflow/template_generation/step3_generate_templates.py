@@ -35,7 +35,7 @@ WBBP = ROOT / "data" / "WF" / "BANK"
 # Preferred Event-Station File
 PSEF = PD_DIR / 'catalog' / 'preferred_event_sta_picks.csv'
 # Template Save Directory
-CTSD = PD_DIR / 'templates' / 'single_station' / 'xcc_test'
+CTSD = PD_DIR / 'templates' / 'single_station'
 
 ############ TEMPLATE CONSTRUCTION PARAMETERS ############
 
@@ -109,13 +109,21 @@ EBANK = EventBank(AEBBP)
 # Read index
 df_eb = EBANK.read_index()
 
-# Get preferred station codes
+# Get preferred station codes and Well Constrained Events
 STAS = set()
+WCID = set()
 with open(PSEF, 'r') as _f:
     lines = _f.readlines()
 for line in lines[1:]:
+    # Parse line
     parts = line.split(',')
+    # Append sta regardless
     STAS.add(parts[4])
+    # If True for WCE
+    # DEBUG: Passes all asd true
+    if bool(parts[7]):
+        # Add EventID to list
+        WCID.add(parts[0])
 # Cleanup
 del lines
 
@@ -130,6 +138,7 @@ for sta in STAS:
     Logger.info(f'Processing events for station {sta}')
     npotential = 0
     ictr = ClusteringTribe()
+    wce_names = []
     for event_id in tqdm(df_eb.event_id, disable=tqdm_disable):
         uwevid = ''.join(event_id.split('/')[-2:]).lower()
         Logger.debug(f'Constructing templates for event {event_id}')
@@ -192,47 +201,51 @@ for sta in STAS:
 
             # Append template to clustering tribe
             ictr += tmp
+            # If also a well-constrained event
+            if event_id in WCID:
+                wce_names.append(tmp.name)
 
-    # Add metadata to ictr.clusters
-    holder = []
-    for tmp in ictr:
-        event = tmp.event
-        prefor = event.preferred_origin()
-        prefmag = event.preferred_magnitude()
-        # Get essential origin information
-        line = [tmp.name.split('_')[-1], event.comments[-2].text,
-                tmp.st[0].stats.network, tmp.st[0].stats.station, tmp.st[0].stats.location,
-                tmp.st[0].stats.channel, event.picks[0].evaluation_mode, prefor.time,
-                prefor.longitude, prefor.latitude, prefor.depth]
-        # Get origin uncertainties if provided
-        if prefor.origin_uncertainty is None:
-            line.append(-9999)
-        else:
-            line.append(prefor.origin_uncertainty.horizontal_uncertainty)
-        try:
-            sdep = prefor.depth_errors.uncertainty
-            if not np.isfinite(sdep):
-                sdep = -9999
-            line.append(sdep)
-        except:
-            line.append(-9999)
-        # Get magnitude and magnitude type
-        line += [prefmag.mag, prefmag.magnitude_type]
-        # Calculate pick SNR
-        onset_rms, noise_rms = get_template_pick_snr(tmp)
-        line += [onset_rms/noise_rms, onset_rms, noise_rms]
-        holder.append(line)
-    try:
-        df = pd.DataFrame(holder, columns=['evid', 'etype','network','station','location',
-                                        'channel','eval_mode','time',
-                                        'longitude','latitude','depth',
-                                        'horizontal_uncertainty','vertical_uncertainty',
-                                        'magnitude','magtype','snr', 'noise_rms','onset_rms'])
-    except:
-        breakpoint()
-    df.index.name='id_no'
-    # Join etype and pick evaluation mode
-    ictr.clusters = ictr.clusters.join(df, on='id_no')
+    # # Add metadata to ictr.clusters
+    # holder = []
+    # for tmp in ictr:
+    #     event = tmp.event
+    #     prefor = event.preferred_origin()
+    #     prefmag = event.preferred_magnitude()
+    #     # Get essential origin information
+    #     line = [tmp.name.split('_')[-1], event.comments[-2].text,
+    #             tmp.st[0].stats.network, tmp.st[0].stats.station, tmp.st[0].stats.location,
+    #             tmp.st[0].stats.channel, event.picks[0].evaluation_mode, prefor.time,
+    #             prefor.longitude, prefor.latitude, prefor.depth]
+    #     # Get origin uncertainties if provided
+    #     if prefor.origin_uncertainty is None:
+    #         line.append(-9999)
+    #     else:
+    #         line.append(prefor.origin_uncertainty.horizontal_uncertainty)
+    #     try:
+    #         sdep = prefor.depth_errors.uncertainty
+    #         if not np.isfinite(sdep):
+    #             sdep = -9999
+    #         line.append(sdep)
+    #     except:
+    #         line.append(-9999)
+    #     # Get magnitude and magnitude type
+    #     line += [prefmag.mag, prefmag.magnitude_type]
+    #     # Calculate pick SNR
+    #     onset_rms, noise_rms = get_template_pick_snr(tmp)
+    #     line += [onset_rms/noise_rms, onset_rms, noise_rms]
+    #     holder.append(line)
+    # try:
+    #     df = pd.DataFrame(holder, columns=['evid', 'etype','network','station','location',
+    #                                     'channel','eval_mode','time',
+    #                                     'longitude','latitude','depth',
+    #                                     'horizontal_uncertainty','vertical_uncertainty',
+    #                                     'magnitude','magtype','snr', 'noise_rms','onset_rms'])
+    # except:
+    #     breakpoint()
+    # df.index.name='id_no'
+    # # Join etype and pick evaluation mode
+    # ictr.clusters = ictr.clusters.join(df, on='id_no')
+                
     Logger.info(f'Constructed {len(ictr)} templates for {sta} (of {npotential} possible)')
 
     ## APPLY ALIASES TO TEMPLATES IN TRIBES WITH MORE THAN ONE CHANNEL CODE
@@ -242,7 +255,7 @@ for sta in STAS:
         id_set.add(tmp.st[0].id)
     # If there is more than one NSLC
     if len(id_set) > 1:
-        # Blind the band and instrument characters
+        # Blind the band and instrument characters on the TRACE ONLY
         new_id_set = set([])
         for tmp in ictr:
             tmp.st[0].stats.channel='??Z'
@@ -254,12 +267,16 @@ for sta in STAS:
                 tmp.st[0].stats.location = LOC_ALIASES[loc]
             new_id_set.add(tmp.st[0].id)
     
-    # # RUN CLUSTERING
-    # Logger.info(f'Running clustering for {sta}')
-    # ictr.cluster(**ccckwargs)
+    # populate event metadata
+    ictr.populate_event_metadata()
+    # Append if well constrained event
+    ictr.clusters = ictr.clusters.assign(WCE=[x in WCID for x in ictr._c.event_id])
     # # Save station-specific clustering tribes
     isavename = str(CTSD/sta)
+    breakpoint()
     ictr.write(isavename, compress=True)
+
+    
 
 
     
