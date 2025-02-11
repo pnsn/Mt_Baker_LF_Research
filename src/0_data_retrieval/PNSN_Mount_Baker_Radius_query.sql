@@ -9,5 +9,4 @@ WHERE (
         )
     ) <= 50.
     AND e.selectflag = 1
-    AND o.datetime > 1727959393
 ORDER BY o.datetime TO "MtBaker_50km_evids_supp.csv" CSV HEADER;

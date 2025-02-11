@@ -1,3 +1,5 @@
+# Archived stuff
+arch/*
 # intermediate data products
 processed_data/*
 # Waveform files
