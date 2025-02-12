@@ -32,7 +32,7 @@ CONST_LOG = ROOT / 'processed_data' / 'template' / 'single_station' / 'construct
 
 update_wavebank = False
 write_protect = True
-last_event_id = 'quakeml:uw.anss.org/Event/UW/10679373'
+last_event_id = None #'quakeml:uw.anss.org/Event/UW/10679373'
 
 # Trace Retrieval Parameters
 PREPICK = 5.
@@ -98,6 +98,8 @@ def main():
     grouper = defaultdict(ClusteringTribe)
     _e = 0
     hit_last = False
+    if last_event_id is None:
+        hit_last = True
     for event_id, row in index.iterrows():
         _e += 1
         Logger.info(f'processing {event_id} ({_e}/{len(index)})')
@@ -250,17 +252,20 @@ def main():
             if eqc_snr < MIN_SNR:
                 Logger.info(f'{event_id} {tr.id} EQcorrscan SNR {eqc_snr} < {MIN_SNR}')
                 continue
-            # Then new Trace RMS check on whole trace, mostly for byte-noise detection
-            elif rms_trace < MIN_DATA_RMS:
-                Logger.info(f'{event_id} {tr.id} whole trace RMS amplitude too low ({rms_trace} < {MIN_DATA_RMS})')
-                continue
-            # Then new Pick SNR on pick-bounded SNR calculations
-            elif pick_snr < MIN_PICK_SNR:
-                Logger.info(f'{event_id} {tr.id} pick-centered SNR {pick_snr} < {MIN_PICK_SNR}')
-                continue
-            # Passing everything, propagate trace
             else:
                 pass
+            if _rstatus == 'automatic':
+                # Then new Trace RMS check on whole trace, mostly for byte-noise detection
+                if rms_trace < MIN_DATA_RMS:
+                    Logger.info(f'{event_id} {tr.id} whole trace RMS amplitude too low ({rms_trace} < {MIN_DATA_RMS})')
+                    continue
+                # Then new Pick SNR on pick-bounded SNR calculations
+                elif pick_snr < MIN_PICK_SNR:
+                    Logger.info(f'{event_id} {tr.id} pick-centered SNR {pick_snr} < {MIN_PICK_SNR}')
+                    continue
+                # Passing everything, propagate trace
+                else:
+                    pass
             # Apply EQCorrscan preprocessing pipeline - TODO Check if starttime and endtime are needed..
             tr = pre_processing.multi_process(
                 tr, LOWCUT, HIGHCUT, FILT_ORDER, SAMP_RATE,
