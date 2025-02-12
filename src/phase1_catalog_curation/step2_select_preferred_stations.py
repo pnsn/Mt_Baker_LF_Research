@@ -1,7 +1,9 @@
 
-import os, logging, glob
+import os, logging
 from pathlib import Path
+from collections import defaultdict
 
+import numpy as np
 import pandas as pd
 from obspy.clients.fdsn.client import Client
 from obsplus import EventBank
@@ -18,11 +20,11 @@ INVD = ROOT / "data" / "XML" / "RESP"
 PDDIR = ROOT / "processed_data" 
 # Catalog Membership CSV File (From phase1 step1)
 CAT_MEMBERSHIP = PDDIR / "catalog" / "P1S1_Event_ID_Catalog_Membership.csv"
-
-
+# 
+SAVEFILE = PDDIR / "catalog" / "P1S2_Preferred_Sta_Event_Picks.csv"
 # STATION SELECTION PARAMETERS
 # Network Code(s) to include
-NETS = ['UW']      
+NETS = ['UW','CN','TA','PB','CC','UO']
 # Channel Codes to include
 CHANS = []
 for _b in 'BHE':
@@ -33,55 +35,128 @@ for _b in 'BHE':
 LAT_REF = 48.7745   # [deg N] Reference point latitude
 LON_REF= -121.8172  # [deg E] Reference point longitude
 RAD_LIM_KM = 100.   # [km] Radius limit for station query
-
+INV_LEVEL = 'channel' # Inventory query depth
+MINSTAPICK = 50
+MINEVEPICK = 1
 def main():
     # Load catalog membership CSV
-    df_cat = pd.read_csv(CAT_MEMBERSHIP, index_col=[0], parse_dates=['time'])
+    df_cat = pd.read_csv(CAT_MEMBERSHIP, index_col=[0], parse_dates=['prefor_time'])
     # Connect to IRIS webservice client
     IRIS = Client('IRIS')
     # Connect to Event Bank
     EBANK = EventBank(EBBP)
-
+    # Load inventory from webservices
     INV = IRIS.get_stations(latitude=LAT_REF,
                             longitude=LON_REF,
                             maxradius=RAD_LIM_KM/111.2,
                             network=','.join(NETS),
-                            channel=','.join(CHANS))
-    breakpoint()
+                            channel=','.join(CHANS),
+                            level=INV_LEVEL)
 
-    # Read Index
-    df_eb = EBANK.read_index()
-    for evid in df_eb.event_id:
-        # If not included in CAT0, continue to next
-        if not df_cat.loc[evid,'CAT0']:
+    # Subset by CAT1 - Within 30 km of MB & after 1980-01-01T00:00:00
+    df_cat1 = df_cat[df_cat.CAT1]
+    # Iterate across CAT1 events
+    pick_status = defaultdict(list)
+    for _e, (evid, row) in enumerate(df_cat1.iterrows()):
+        # Log progress
+        Logger.info(f'Processing {evid} ({_e+1}/{len(df_cat1)})')
+        # Get prefor from EBANK
+        cat = EBANK.get_events(event_id=evid)
+        prefor = cat[0].preferred_origin()
+        # Subset inventory by origin time (active stations during event)
+        inv = INV.select(time=prefor.time)
+        # Warn if no picks are available
+        if len(prefor.arrivals) == 0:
+            Logger.warning(f'No associated picks for {evid}')
             continue
-
+        # Iterate across arrivals
+        for arr in prefor.arrivals:
+            # Get associated pick
+            pick = arr.pick_id.get_referred_object()
+            # Get NSLC channel code
+            nslc = pick.waveform_id.id
+            # Split into parts
+            parts = nslc.split('.')
+            # Make sure network code is acknowledged
+            if parts[-1] in CHANS:
+                # Append to defaultdict accumulator
+                pick_status['event_id'].append(evid)
+                pick_status['phase'].append(arr.phase)
+                pick_status['nslc'].append(nslc)
+                pick_status['time'].append(pick.time)
+                pick_status['resource_id'].append(pick.resource_id.id)
+                pick_status['etype'].append(row.etype)
+                
+                for _x, _y in zip(['network','station','location','channel'],parts):
+                    pick_status[_x].append(_y)
+            else:
+                continue
+    # Form selected picks dataframe
+    df_picks = pd.DataFrame(pick_status)
     
-
-    # Load inventory, subsetting for desired channels
-    INV = Inventory()
-    for _e, _f in enumerate(glob.glob(str(INVD/'*.xml'))):
-        inv = read_inventory(_f)
-        for net in NETS:
-            INV += inv.select(network=net, channel=CHANS)
-
-
-
-
-    #     # Get active channels for this event
-    #     inv = INV.select(time=prefor.time)
-    #     # Check if it has any associated picks
-    #     if len(prefor.arrivals) == 0:
-    #         Logger.warning(f'No associated picks for {event_id} - skipping to next')
-    #         continue
-    #     for arr in prefor.arrivals:
-    #         pick = arr.pick_id.get_referred_object()
-    #         nslc = pick.waveform_id.id
-    #         line = [event_id, arr.phase, nslc] + nslc.split('.')
-    #         pick_info.append(line)
-
+    # Conduct Pick Continuity/Availability Analysis
+    # Get top P-picked stations
+    sta_P_pick_counts = df_picks[df_picks.phase=='P'].station.value_counts()
+    sta_S_pick_counts = df_picks[df_picks.phase=='S'].station.value_counts()
+    sta_E_pick_counts = df_picks.station.value_counts()
+    # Get top P-picked stations
+    top_P_picked_stas = sta_P_pick_counts[sta_P_pick_counts >= MINSTAPICK].index.values
+    top_S_picked_stas = sta_S_pick_counts[sta_S_pick_counts >= MINSTAPICK].index.values
+    top_picked_stas = sta_E_pick_counts[sta_E_pick_counts >= MINSTAPICK].index.values
     
-    # for event_id in tqdm(df_eb_sub.event_id, disable = _dtqdmf):
+    # Pivot table for just P picks
+    ptable = df_picks[(df_picks.phase=='P') & (df_picks.station.isin(top_P_picked_stas))][['event_id','station']]
+    ptable = ptable.pivot_table(index=['event_id'], columns=['station'], aggfunc=lambda x: 1, fill_value=0)
+    # Translate and sort channels by pick count
+    ptable = ptable.T.loc[top_P_picked_stas]
+
+    # Pivot table for just S picks
+    stable = df_picks[(df_picks.phase=='S') & (df_picks.station.isin(top_S_picked_stas))][['event_id','station']]
+    stable = stable.pivot_table(index=['event_id'], columns=['station'], aggfunc=lambda x: 1, fill_value=0)
+    # Translate and sort channels by pick count
+    stable = stable.T.loc[top_S_picked_stas]
+     
+    # Pivot table for all picks
+    etable = df_picks[df_picks.station.isin(top_picked_stas)][['event_id','station']]
+    etable = etable.pivot_table(index=['event_id'], columns=['station'], aggfunc=lambda x: 1, fill_value=0)
+    # Translate and sort channels by pick count
+    etable = etable.T.loc[top_picked_stas]
+
+
+    # Analyze for how many stations to include to cover all events with N picks
+    include = set()
+    event_pick_sums = ptable.cumsum(axis=0)
+    for sta, row in event_pick_sums.iterrows():
+        if any(_e < 1 for _e in row):
+            include.add(sta)
+            continue
+        else:
+            include.add(sta)
+            break
+    
+    # Save preferred station list to disk
+    df_out = df_picks[
+        (df_picks.phase=='P')&\
+        (df_picks.station.isin(include))&\
+        (df_picks.event_id.isin(df_cat1.index))]
+    df_out.to_csv(SAVEFILE, header=True, index=False)
+    return df_out
+
+
+if __name__ == '__main__':
+    # Setup Logging
+    Logger = setup_terminal_logger(os.path.split(__file__)[-1], level=logging.DEBUG)
+    Logger.addHandler(CriticalExitHandler(exit_code=1))
+
+    # RUN MAIN 
+    df_out = main()
+
+
+
+    # if SHOW:
+    #     plt.show()
+
+            # for event_id in tqdm(df_eb_sub.event_id, disable = _dtqdmf):
     #     # Increment up indexer
     #     _e += 1
     #     Logger.debug(f"{event_id} ({_e+1} of {newcount})")
@@ -202,15 +277,3 @@ def main():
 
     # if display_after:
     #     plt.show()
-
-
-if __name__ == '__main__':
-    # Setup Logging
-    Logger = setup_terminal_logger(os.path.split(__file__)[-1], level=logging.DEBUG)
-    Logger.addHandler(CriticalExitHandler(exit_code=1))
-
-    # RUN MAIN 
-    main()
-
-    if SHOW:
-        plt.show()

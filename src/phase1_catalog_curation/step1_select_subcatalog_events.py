@@ -49,6 +49,8 @@ from eqcutil.util.logging import setup_terminal_logger, CriticalExitHandler
 ROOT = Path(__file__).parent.parent.parent
 # Absolute path to pre-generated eventbank
 EBBP = ROOT / "data" / "XML" / "QUAKE" / "BANK"
+# Get event type metadata
+ETDATA = ROOT / "data" / "Events" / "Mount_Baker_evids_etypes_10_JAN_2025.csv"
 # Aboslute path to processed data / catalog directory
 PDDIR = ROOT / "processed_data" 
 # Catalog Membership Output
@@ -69,6 +71,7 @@ no_fixed = True         # No fixed status flags on origin components
 max_loc_err_m = 10e3    # [m] maximum location error (horizontal or vertical)
 max_rms_s = 1.          # [seconds] maximum RMS misfit
 min_obs = 6             # [no.] minimum number of phase observations for the preferred origin
+min_sta = 4.            # [no.] minimum number of unique stations observing the preferred origin
 max_closest_m = 10e3    # [m] largest closest station distance to accept as well constrained
 
 def main():
@@ -88,7 +91,12 @@ def main():
     df_eb = df_eb.assign(radius_offset_km=[
         111.2* locations2degrees(LAT_REF, LON_REF, row.latitude, row.longitude)
         for _, row in df_eb.iterrows()])
-
+    
+    # Load event metadata
+    df_meta = pd.read_csv(ETDATA, index_col=[0])
+    # Attach etype to df_eb
+    df_eb = df_eb.assign(evid=[int(row.event_id.split('/')[-1]) for _, row in df_eb.iterrows()])
+    df_eb = df_eb.join(df_meta, on='evid', how='left')
     # Iterate across events
     _e = -1
     catalog_status = defaultdict(list)
@@ -97,17 +105,19 @@ def main():
         Logger.debug(f'{event_id} ({_e+1} of {len(df_eb)})')
         # Get event_id
         catalog_status['event_id'].append(event_id)
+        # Get event type
+        catalog_status['etype'].append(row.etype)
         # Get preferred origin time (used for filtering)
         catalog_status['prefor_time'].append(row.time)
         # Get radius (derived value used for filtering)
         catalog_status['offset_km'].append(row.radius_offset_km)
-        # CAT0 Membership (after 1980-01-01)
-        CAT0 = row.time >= DIGITAL_STARTDATE
+        # CAT0 Membership (within 30 km of Mount Baker)
+        CAT0 = row.radius_offset_km <= RAD_LIM_KM
         catalog_status['CAT0'].append(CAT0)
-        # CAT1 Membership (CAT0 + within 30 km of Mt Baker)
-        CAT1 = row.radius_offset_km <= RAD_LIM_KM and CAT0
+        # CAT1 Membership (CAT0 + after 1980-01-01)
+        CAT1 = CAT0 and row.time >= DIGITAL_STARTDATE
         catalog_status['CAT1'].append(CAT1)
-        # CAT1 Membership (CAT1 + post 2000)
+        # CAT2 Membership (CAT1 + post 2001-01-01)
         CAT2 = CAT1 and row.time >= CONTINUOUS_STARTDATE
         catalog_status['CAT2'].append(CAT2)
         # Get preferred origin object
@@ -148,7 +158,7 @@ def main():
         else:
             low_phase_count = False
         catalog_status['low_phase_count'].append(low_phase_count)
-        # min_dist
+        # max distance to closest observing station
         if prefor.quality is None:
             closest_sta_too_far = True
         elif prefor.quality.minimum_distance is None:
@@ -158,15 +168,36 @@ def main():
             closest_sta_too_far = True
         else:
             closest_sta_too_far = prefor.quality.minimum_distance > max_closest_m
-        
         catalog_status['closest_sta_too_far'].append(closest_sta_too_far)
+        # minimum number of unique observing stations
+        if len(prefor.arrivals) < min_sta:
+            too_few_sta = True
+        else:
+            unique = set()
+            for arr in prefor.arrivals:
+                pick = arr.pick_id.get_referred_object()
+                nslc = pick.waveform_id.id
+                n,s,l,c = nslc.split('.')
+                unique.add('.'.join([n,s]))
+            too_few_sta = len(unique) < min_sta
+        catalog_status['too_few_sta'].append(too_few_sta)
 
+        # Finally evaluate Well Constrained Status
+        # Initially set to true, then check if anything fails (a True result for individual tests)
         wc_status = True
-        for _f in ['time_fixed','epi_fixed','depth_fixed','herr_large','zerr_large','terr_large','low_phase_count','closest_sta_too_far']:
-            _v = catalog_status[_f][-1]
-            if _v:
+        # Iterate across keys
+        for _f in catalog_status.keys():
+            # Ignore non evaluation keys
+            if _f in ['CAT0','CAT1','CAT2','event_id','prefor_time','offset_km','etype']:
+                continue
+                # ['time_fixed','epi_fixed','depth_fixed','herr_large','zerr_large','terr_large','low_phase_count','closest_sta_too_far','too_few_sta']:
+            # If the last entry (this iteration) returns a True (True means fails test)
+            elif catalog_status[_f][-1]:
+                # set Well Constrained Status as False
                 wc_status = False
+                # Break iteration, one failure means total failure
                 break
+        # Append result
         catalog_status['WC'].append(wc_status)
 
     # Format for output
