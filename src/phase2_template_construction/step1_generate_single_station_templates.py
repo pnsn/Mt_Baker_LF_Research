@@ -32,6 +32,7 @@ CONST_LOG = ROOT / 'processed_data' / 'template' / 'single_station' / 'construct
 
 update_wavebank = False
 write_protect = True
+last_event_id = 'quakeml:uw.anss.org/Event/UW/10679373'
 
 # Trace Retrieval Parameters
 PREPICK = 5.
@@ -96,9 +97,15 @@ def main():
     # Make holder for clustering tribes
     grouper = defaultdict(ClusteringTribe)
     _e = 0
+    hit_last = False
     for event_id, row in index.iterrows():
         _e += 1
         Logger.info(f'processing {event_id} ({_e}/{len(index)})')
+        if event_id == last_event_id:
+            hit_last = True
+        if not hit_last:
+            Logger.info(f'yet to hit {last_event_id} - skipping ({_e}/{len(index)})')
+            continue
         # Read event
         cat = AEBANK.get_events(event_id=event_id)
 
