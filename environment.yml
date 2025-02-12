@@ -2,11 +2,12 @@ name: baker_lf
 channels:
  - defaults
  - conda-forge
- - pytorch
- - anaconda
+#  - pytorch
+#  - anaconda
+#  - apple
 dependencies:
 # Python environment
- - python=3.10
+ - python #=3.10
 # Dependency managers
  - pip
  - git
@@ -22,13 +23,13 @@ dependencies:
  - obsplus
 # IDE
  - ipython
- - jupyterlab
+#  - jupyterlab
 # Visualization
  - matplotlib
- - pyqt
- - pyqtwebengine
+#  - pyqt
+#  - pyqtwebengine
 # Run PIP installs of major tools
  - pip:
     - setuptools
-    - pyrocko
-    - git+https://github.com/pnsn/eqcorrscan_utils.git
+   #  - pyrocko
+    - git+https://github.com/pnsn/eqcutil.git
