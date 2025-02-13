@@ -248,12 +248,13 @@ def main():
                 endtime = _p.time + PICK_SNR_WINDOW).data)
             eqc_snr = max(tr.data) / rms_noise
             pick_snr = rms_onset/rms_noise
-            # Run EQcorrscan's SNR QC check first
+            # Run EQcorrscan's SNR QC check for all candidate traces
             if eqc_snr < MIN_SNR:
                 Logger.info(f'{event_id} {tr.id} EQcorrscan SNR {eqc_snr} < {MIN_SNR}')
                 continue
             else:
                 pass
+            # Run additional checks on auto-picks
             if _rstatus == 'automatic':
                 # Then new Trace RMS check on whole trace, mostly for byte-noise detection
                 if rms_trace < MIN_DATA_RMS:
