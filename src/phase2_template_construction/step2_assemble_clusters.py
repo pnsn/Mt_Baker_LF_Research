@@ -58,30 +58,30 @@ def main():
             if _e %10 == 0 and _e > 0:
                 Logger.info(f'({_e+1}/{len(tlist)})')
             # Load Template
-        #     template = Tribe().read(_t)[0]
-        #     # If band/instrument are aliased
-        #     if bi:
-        #         # "Iterate" across trace
-        #         for tr in template.st:
-        #             Logger.warning(f'Alias {tr.stats.channel} --> {bi}{tr.stats.component}')
-        #             tr.stats.channel = f'{bi}{tr.stats.component}'
-        #     # add to clustering tribe
-        #     ctr += template
-        # # Apply alias to clustering tribe save name
+            template = Tribe().read(_t)[0]
+            # If band/instrument are aliased
+            if bi:
+                # "Iterate" across trace
+                for tr in template.st:
+                    Logger.warning(f'Alias {tr.stats.channel} --> {bi}{tr.stats.component}')
+                    tr.stats.channel = f'{bi}{tr.stats.component}'
+            # add to clustering tribe
+            ctr += template
+        # Apply alias to clustering tribe save name
 
-        # # Run clustering
-        # Logger.warning(f'Running clustering for {chanid}')
-        # ctr.cluster(**ccckwargs)
-        # # Populate metadata
-        # ctr.populate_event_metadata()
-        # # Write to disk
-        # Logger.info(f'Writing to disk')
-        # SAVENAME = RDIR / chanid
-        # ctr.write(str(SAVENAME))
-        # # Mark chanid as processed
+        # Run clustering
+        Logger.warning(f'Running clustering for {chanid}')
+        ctr.cluster(**ccckwargs)
+        # Populate metadata
+        ctr.populate_event_metadata()
+        # Write to disk
+        Logger.info(f'Writing to disk')
+        SAVENAME = RDIR / chanid
+        ctr.write(str(SAVENAME))
+        # Mark chanid as processed
         processed_chanids.add(chanid)
 
-    breakpoint()
+    # breakpoint()
 
 
 if __name__ == '__main__':
