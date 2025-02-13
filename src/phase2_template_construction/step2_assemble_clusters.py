@@ -25,21 +25,35 @@ def main():
     # Ensure main save directory exists
     if not RDIR.is_dir():
         os.makedirs(str(RDIR))
-    # Get channel names from 
+    # Get channel names from directory names
     chan_dirs = glob.glob(str(TDIR/'*'))
     chanids = [_c.split('/')[-1] for _c in chan_dirs]
     chanids.sort()
+    
+    
 
     processed_chanids = set()
 
     for chanid in chanids:
+        n,s,l,c = chanid.split('.')
+        # Group multiple location codes
+        if len(glob.glob(str(TDIR/f'{n}.{s}.*.{c}'))) > 1:
+            chanid = f'{n}.{s}.*.{c}'
+        # Group multiple sensors/sampling bands
+        elif len(glob.glob(str(TDIR/f'{n}.{s}.{l}.*'))) > 1:
+            chanid = f'{n}.{s}.{l}.??{c[-1]}'
+        else:
+            pass
+        
+
+
         # Skip location 01's that will 
         if chanid.split('.')[2] == '01':
             Logger.warning(f'Skipping {chanid} - has 01 location code that will be merged with -- location code')
             continue
         Logger.info(f'Processing {chanid}')
         n,s,l,c = chanid.split('.')
-        clist = glob.glob(str(TDIR/f'{n}.{s}.*.*'))
+        clist = glob.glob(str(TDIR/f'{n}.{s}.{l}.*'))
         # Check if there are Band / Instrument codes to alias
         if len(clist) > 1 and ALIAS_INSTRUMENTS:
             bi = 'XX'
@@ -47,10 +61,16 @@ def main():
             chanid = f'{n}.{s}.{l}.{bi}{c[-1]}'
         else:
             bi = False
+        llist = glob.glob(str(TDIR/f'{n}.{s}.*.*'))
+        if len(llist) > 1:
+
         if chanid in processed_chanids:
             Logger.warning(f'CHANID {chanid} already processed - skipping')
             continue
         tlist = glob.glob(str(TDIR/f'{n}.{s}.*.*'/'*'/'*'/'*.tgz'))
+        SAVEFP = RDIR / f'{chanid}.tgz'
+        if SAVEFP.is_file():
+            continue
         ctr = ClusteringTribe()
         for _e, _t in enumerate(tlist):
             Logger.debug(f'Loading {_t}')
