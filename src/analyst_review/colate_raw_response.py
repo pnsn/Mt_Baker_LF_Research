@@ -13,7 +13,7 @@ hdr = []
 opt_lines = []
 class_lines = []
 for idx, row in df.iterrows():
-    if idx =='REVIEWER NUMBER']:
+    if idx =='REVIEWER NUMBER':
         hdr.append(row)
     elif 'Optional' in idx:
         opt_lines.append(row)
