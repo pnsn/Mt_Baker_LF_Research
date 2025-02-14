@@ -1,9 +1,10 @@
+import os
 from random import sample
 from pathlib import Path
 import pandas as pd
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.compose import ColumnTransformer
-from sklearn.metrics import silhouette_score, adjusted_mutual_info_score, normalized_mutual_info_score
+# from sklearn.preprocessing import OneHotEncoder
+# from sklearn.compose import ColumnTransformer
+# from sklearn.metrics import silhouette_score, adjusted_mutual_info_score, normalized_mutual_info_score
 
 # Absolute path for repository root directory
 ROOT = Path(__file__).parent.parent.parent
@@ -11,7 +12,8 @@ ROOT = Path(__file__).parent.parent.parent
 DATA = ROOT / 'data' / 'Survey' / 'Classification_Responses.csv'
 # Absolute path to AQMS etypes | uwEVID### pairs
 AQMS = ROOT / 'data' / 'Events' / 'Mount_Baker_evids_etypes_10_JAN_2025.csv'
-
+# Save file name
+SAVENAME = ROOT / 'processed_data' / 'survey' / 'S1_extracted_reviewer_classes.csv'
 # Load Raw Survey Responses
 df = pd.read_csv(DATA)
 # Pivot to place questions as index
@@ -37,6 +39,8 @@ for _r in class_lines:
 df_class = df_class.T
 # Set index as full uwEVID#### 
 df_class.index = [f"uw{_ind.split('[')[-1][:-1]}" for _ind in df_class.index]
+df_class.index.name = 'EVID'
+
 # Generate random sequence for reviewer shuffle
 new_order = sample(range(4),4)
 df_class = df_class.rename(columns={_k: new_order[_k] for _k in range(len(df_class.columns))})
@@ -55,29 +59,36 @@ df_class = df_class.join(ser_aqms, how='left')
 # pivot to access column names for sorting
 df_class = df_class.T.sort_index().T
 
-df_cfac = df_class.copy()
-# Factorize Columns
-for col in df_class.columns:
-    df_cfac[col], _ = pd.factorize(df_cfac[col])
 
-# breakpoint()
-# Conduct pairwise score on reviewer pairs
-scores = []
-for _i, _ci in enumerate(df_class.columns):
-    for _j, _cj in enumerate(df_class.columns):
-        if _i < _j:
-            idf = df_cfac[(df_class[_ci].notna()) & (df_class[_cj].notna())]
-            print(len(idf))
+
+if not SAVENAME.parent.is_dir():
+    os.makedirs(str(SAVENAME.parent))
+df_class.to_csv(SAVENAME, index=True, header=True)
+
+
+# df_cfac = df_class.copy()
+# # Factorize Columns
+# for col in df_class.columns:
+#     df_cfac[col], _ = pd.factorize(df_cfac[col])
+
+# # breakpoint()
+# # Conduct pairwise score on reviewer pairs
+# scores = []
+# for _i, _ci in enumerate(df_class.columns):
+#     for _j, _cj in enumerate(df_class.columns):
+#         if _i < _j:
+#             idf = df_cfac[(df_class[_ci].notna()) & (df_class[_cj].notna())]
+#             print(len(idf))
             
 
-            line = [
-                _ci,
-                _cj,
-                len(idf),
-                adjusted_mutual_info_score(idf[_ci].values, idf[_cj].values)
-            ]
+#             line = [
+#                 _ci,
+#                 _cj,
+#                 len(idf),
+#                 adjusted_mutual_info_score(idf[_ci].values, idf[_cj].values)
+#             ]
 
-            scores.append(line)
+#             scores.append(line)
 
 
 # breakpoint()
