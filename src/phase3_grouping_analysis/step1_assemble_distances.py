@@ -5,9 +5,7 @@ import numpy as np
 import pandas as pd
 
 from obsplus import EventBank
-from obspy import UTCDateTime
 from obspy.geodetics import locations2degrees, degrees2kilometers
-from eqcorrscan.utils.clustering import handle_distmat_nans
 
 from eqcutil import ClusteringTribe
 from eqcutil.util.logging import setup_terminal_logger
@@ -17,11 +15,11 @@ Logger = setup_terminal_logger(name=__name__, level=logging.INFO)
 # Absolute path to repo root directory
 ROOT = Path(__file__).parent.parent.parent
 # Preclustered single-station clusters
-CTRD = ROOT / 'results' / 'cluster' / 'single_station'
+CTRD = ROOT / 'processed_data' / 'cluster' / 'tribes'
 # Base Path for Event Bank
 EBBP = ROOT / 'processed_data' / 'catalog' / 'AUGMENTED_BANK'
 # Save Path
-SAVEPATH = ROOT / 'results' / 'tables'
+SAVEPATH = ROOT / 'processed_data' / 'cluster' / 'tables'
 
 EBANK = EventBank(EBBP)
 
@@ -39,18 +37,21 @@ evid_etype = {}
 for _t, _ctr in ctrd.items():
     Logger.info(_t)
     # Get coherence and shift upper triangles
-    coh = 1. - _ctr.dist_mat.ravel()#[np.triu_indices(len(_ctr), k=1)]
-    shi = _ctr.shift_mat.ravel()#[np.triu_indices(len(_ctr), k=1)]
-    # Get a vector of trace labels
+    coh = 1. - _ctr.dist_mat[np.triu_indices(len(_ctr), k=1)]
+    shi = _ctr.shift_mat[np.triu_indices(len(_ctr), k=1)]
+    # coh = 1. - _ctr.dist_mat.ravel()#[np.triu_indices(len(_ctr), k=1)]
+    # shi = _ctr.shift_mat.ravel()#[np.triu_indices(len(_ctr), k=1)]
+    # # Get a vector of trace labels
     labels = [_t]*len(shi)
     event_i, event_j = [], []
     # Create the combination of upper triangle
-    for evid_i in _ctr._c.index:
-        for evid_j in _ctr._c.index:
-            event_i.append(evid_i)
-            event_j.append(evid_j)
-            evid_etype.update({evid_i: _ctr._c.loc[evid_i, 'etype']})
-
+    for ii, evid_i in enumerate(_ctr._c.index):
+        evid_etype.update({evid_i: _ctr._c.loc[evid_i, 'etype']})
+        for jj, evid_j in enumerate(_ctr._c.index):
+            if ii < jj:
+                event_i.append(evid_i)
+                event_j.append(evid_j)
+            
     df_hold = pd.DataFrame({'trace': labels, 'event_i':event_i, 'event_j': event_j, 'coh': coh, 'shift': shi})
     df_coh = pd.concat([df_coh, df_hold], axis=0, ignore_index=True)
 
@@ -70,6 +71,7 @@ df_eb = df_eb.join(df_evid, how='left')
 
 df_del = pd.DataFrame()
 
+# THIS CREATES THE UPPER TRIANGLE OF DISTANCE MATRICES
 for ii, (evid_i, row_i) in enumerate(df_eb.iterrows()):
     Logger.info(f'{ii + 1} / {len(df_eb) - 1}')
     if ii + 1 < len(df_eb):
@@ -78,23 +80,21 @@ for ii, (evid_i, row_i) in enumerate(df_eb.iterrows()):
         times = df_eb.time[ii+1:]
         etype_j = df_eb.etype[ii+1:]
         dx = degrees2kilometers(locations2degrees(row_i.latitude, row_i.longitude, lats, lons))
-        deltime = times - row_i.time
+        dz = (row_i.depth - df_eb.depth[ii+1:])*1e-3
+        deltime = row_i.time - times
         event_j = deltime.index.values
         dt = [x.total_seconds() for _, x in deltime.items()]
-        event_i = [evid_i]*len(dx)
-        etype_i = [row_i.etype]*len(dx)
         df_hold = pd.DataFrame({'event_i': event_i,
                                 'event_j': event_j,
-                                'delij_sec': dt,
-                                'delij_km': dx,
-                                'etype_i': etype_i,
-                                'etype_j': etype_j})
+                                'delt_ij_sec': dt,
+                                'delh_ij_km': dx,
+                                'delz_ij_km': dz})
         df_del = pd.concat([df_del, df_hold], axis=0, ignore_index=True)
 
-
+breakpoint()
 # Write tables to disk
-df_coh.to_csv(str(SAVEPATH/'coherence_table.csv'), header=True, index=False)
-df_del.to_csv(str(SAVEPATH/'event_table.csv'), header=True, index=False)
+df_coh.to_csv(str(SAVEPATH/'coherence_distance_table.csv'), header=True, index=False)
+df_del.to_csv(str(SAVEPATH/'event_distance_table.csv'), header=True, index=False)
     # for jj, (evid_j, row_j) in enumerate(df_eb.iterrows()):
     #     if ii < jj:
     #         dist_x = degrees2kilometers(
