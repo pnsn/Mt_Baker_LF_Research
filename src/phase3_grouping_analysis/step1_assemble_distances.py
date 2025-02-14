@@ -21,7 +21,7 @@ CTRD = ROOT / 'results' / 'cluster' / 'single_station'
 # Base Path for Event Bank
 EBBP = ROOT / 'processed_data' / 'catalog' / 'AUGMENTED_BANK'
 # Save Path
-SAVEPATH = ROOT / 'results' / 'cluster'
+SAVEPATH = ROOT / 'results' / 'tables'
 
 EBANK = EventBank(EBBP)
 
