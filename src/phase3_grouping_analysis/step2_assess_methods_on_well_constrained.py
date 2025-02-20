@@ -50,17 +50,18 @@ from eqcorrscan.utils.clustering import handle_distmat_nans
 
 import pandas as pd
 from sklearn.metrics import normalized_mutual_info_score, adjusted_mutual_info_score, rand_score, adjusted_rand_score
+from sklearn.cluster import AgglomerativeClustering
 from eqcutil.util.logging import setup_terminal_logger
 from hypothesis_utils import *
 
 # Absolute path to repository root directory
 ROOT = Path(__file__).parent.parent.parent
 # Reviewer / AQMS classes
-REVD = ROOT / 'processed_data' / 'survey' / 'S1_extracted_reviewer_classes.csv'
+REVD = ROOT / 'results' / 'survey' / 'S1_extracted_reviewer_classes.csv'
 # Event Space/Time cluster table
-XTCD = ROOT / 'processed_data' / 'cluster' / 'tables' / 'event_distance_table.csv'
+XTCD = ROOT / 'results' / 'tables' / 'event_distance_table.csv'
 # Coherence distance table
-COHD = ROOT / 'processed_data' / 'cluster' / 'tables' / 'coherence_distance_table.csv'
+COHD = ROOT / 'results' / 'tables' / 'coherence_distance_table.csv'
 
 Logger = setup_terminal_logger(name=__name__, level=logging.INFO)
 
@@ -131,4 +132,34 @@ for _r in range(3):
         testscores = assess_labeling(df_rev, rname, sname)
         df_H1 = pd.concat([df_H1, pd.DataFrame(testscores, index=[0])], ignore_index=True, axis=0)
 
-print(df_H1[['exact','flexible','']])
+# print(df_H1[['exact','flexible','']])
+
+
+# CLUSTERING TESTING
+"""
+I want to ascertain if there is a distinct distance threshold and correlation threshold pair
+that optimizes location based groupings S.T. we can isolate
+"""
+# Iterate across agglomeration method
+for lnkg in ['single','average','complete']:
+    # Iterate across coarse range of clustering distances
+    for hthr in np.arange(500, 10000, 500):
+        # Iterate across coarse range of correlation thresholds
+        for cthr in np.arange(0.1,0.8, 0.05):
+            # Iterate across stations
+            for _k, _v in coh_dict.items():
+                # Subset event_distances
+                _dfh = dist_dict['delh_ij_m']
+                _dfh = _dfh.loc[_v.index, _v.index]
+                _dfz = dist_dict['delz_ij_m']
+                _dfz = _dfz.loc[_v.index, _v.index]
+                _dfd = (_dfh**2 + _dfz**2)**0.5
+                dmodel = AgglomerativeClustering(distance_threshold=hthr, n_clusters=None, metric='precomputed', linkage=lnkg)
+                dmodel = dmodel.fit(_dfd.values)
+                _dgrp = pd.Series(dmodel.labels_, index=_dfd.index)
+                cmodel = AgglomerativeClustering(distance_threshold=cthr, n_clusters=None, metric='precomputed', linkage=lnkg)
+                cmodel = cmodel.fit(_v.values)
+                _cgrp = pd.Series(cmodel.labels_, index=_v.index)
+                _df_grp = pd.concat([_dgrp, _cgrp], axis=1, ignore_index=False)
+                breakpoint()
+                # TODO: Run testsuite and update best score iteratively

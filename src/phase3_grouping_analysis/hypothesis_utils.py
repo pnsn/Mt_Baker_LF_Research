@@ -136,3 +136,18 @@ def assess_labeling(df, labeling1, labeling2):
         'right': labeling2
     }
     return out
+
+
+def get_linkage_matrix(model):
+    counts = np.zeros(model.children_.shape[0])
+    n_samples = len(model.labels_)
+    for _e, merge in enumerate(model.children_):
+        cc = 0
+        for child_idx in merge:
+            if child_idx < n_samples:
+                cc += 1
+            else:
+                cc += counts[child_idx - n_samples]
+        counts[_e] = cc
+    Z = np.column_stack([model.children_, model.distances_, counts]).astype(float)
+    return Z
