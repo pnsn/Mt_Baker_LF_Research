@@ -107,6 +107,18 @@ for _k in df_coh.trace.unique():
     coh_dict[_k] = get_symmetric(_df, k_field='coh', trace_value=1.)
     shift_dict[_k] = get_symmetric(_df, k_field='shift', trace_value=0.)
 
+coh_merge = pd.DataFrame()
+for _v in coh_dict.values():
+    coh_merge = join_cov_df(coh_merge, _v)
+
+coh_merge = pd.DataFrame(
+    data = handle_distmat_nans(coh_merge.values, replace_nan_distances_with='mean'),
+    index=coh_merge.index,
+    columns=coh_merge.columns)                     
+
+
+# breakpoint()
+
 # Process distance tables into distance matrices for each metric
 dist_dict = {}
 for _k in df_dxt.columns:
@@ -140,26 +152,48 @@ for _r in range(3):
 I want to ascertain if there is a distinct distance threshold and correlation threshold pair
 that optimizes location based groupings S.T. we can isolate
 """
+bestscores = {}
 # Iterate across agglomeration method
 for lnkg in ['single','average','complete']:
+    Logger.info(lnkg)
     # Iterate across coarse range of clustering distances
     for hthr in np.arange(500, 10000, 500):
+        # Logger.info(hthr)
         # Iterate across coarse range of correlation thresholds
         for cthr in np.arange(0.1,0.8, 0.05):
-            # Iterate across stations
-            for _k, _v in coh_dict.items():
-                # Subset event_distances
-                _dfh = dist_dict['delh_ij_m']
-                _dfh = _dfh.loc[_v.index, _v.index]
-                _dfz = dist_dict['delz_ij_m']
-                _dfz = _dfz.loc[_v.index, _v.index]
-                _dfd = (_dfh**2 + _dfz**2)**0.5
-                dmodel = AgglomerativeClustering(distance_threshold=hthr, n_clusters=None, metric='precomputed', linkage=lnkg)
-                dmodel = dmodel.fit(_dfd.values)
-                _dgrp = pd.Series(dmodel.labels_, index=_dfd.index)
-                cmodel = AgglomerativeClustering(distance_threshold=cthr, n_clusters=None, metric='precomputed', linkage=lnkg)
-                cmodel = cmodel.fit(_v.values)
-                _cgrp = pd.Series(cmodel.labels_, index=_v.index)
-                _df_grp = pd.concat([_dgrp, _cgrp], axis=1, ignore_index=False)
-                breakpoint()
+            # Logger.info(cthr)
+            _v = coh_merge
+            # # Iterate across stations
+            # for _k, _v in coh_dict.items():
+            #     # Subset event_distances
+            _dfh = dist_dict['delh_ij_m']
+            _dfh = _dfh.loc[_v.index, _v.index]
+            _dfz = dist_dict['delz_ij_m']
+            _dfz = _dfz.loc[_v.index, _v.index]
+            _dfd = (_dfh**2 + _dfz**2)**0.5
+            dmodel = AgglomerativeClustering(distance_threshold=hthr, n_clusters=None, metric='precomputed', linkage=lnkg)
+            dmodel = dmodel.fit(_dfd.values)
+            _dgrp = pd.Series(dmodel.labels_, index=_dfd.index, name='distance')
+            cmodel = AgglomerativeClustering(distance_threshold=cthr, n_clusters=None, metric='precomputed', linkage=lnkg)
+            cmodel = cmodel.fit(1. - _v.values)
+            _cgrp = pd.Series(cmodel.labels_, index=_v.index, name='correlation')
+            _df_grp = pd.concat([_dgrp, _cgrp], axis=1, ignore_index=False)
+            testscores = assess_labeling(_df_grp, 'distance','correlation')
+            if _k not in bestscores.keys():
+                bestscores[_k] = {}
+            idx = bestscores[_k]
+            for _l, _w in testscores.items():
+                if _l in ['exact','flexible','VM','RI','ARI','MI','AMI','NMI']:
+                    pass
+                else:
+                    continue
+                if _l not in idx.keys():
+                    idx[_l] = [_w, lnkg, hthr, cthr]
+                elif idx[_l][0] < _w:
+                    Logger.info(f'New improvement: {_k}, {_l}, {_w}, {lnkg}, {hthr}, {cthr}')
+                    idx[_l] = [_w, lnkg, hthr, cthr]
+                else:
+                    continue
+
+    breakpoint()
                 # TODO: Run testsuite and update best score iteratively

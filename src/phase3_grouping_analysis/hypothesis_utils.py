@@ -62,7 +62,7 @@ def join_cov_df(df1, df2, aggfunc=np.nanmean, fill_value=np.nan):
     # Convert back to dataframe
     cov_joined = pd.DataFrame(covjoin, index=fullset, columns=fullset)
     # Ensure symmetry
-    cov_joined = cov_joined.combine_first(cov_joined.t)
+    cov_joined = cov_joined.combine_first(cov_joined.T)
     return cov_joined
 
 def exact_match_score(labeling1, labeling2):
