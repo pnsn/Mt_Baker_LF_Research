@@ -42,10 +42,10 @@ df_class.index = [f"uw{_ind.split('[')[-1][:-1]}" for _ind in df_class.index]
 df_class.index.name = 'EVID'
 
 # Generate random sequence for reviewer shuffle
-new_order = sample(range(4),4)
-df_class = df_class.rename(columns={_k: new_order[_k] for _k in range(len(df_class.columns))})
-# # Update reviewer numbers to "REVIEWER#" format
-df_class = df_class.rename(columns={_k: f'REVIEWER{_k}' for _k in df_class.columns})
+# new_order = sample(range(4),4)
+# df_class = df_class.rename(columns={_k: new_order[_k] for _k in range(len(df_class.columns))})
+# # Update reviewer numbers to "R#" format
+df_class = df_class.rename(columns={_k: f'R{_k}' for _k in df_class.columns})
 
 # Load AQMS etype/evid pairs
 df_aqms = pd.read_csv(AQMS, index_col='uw_evid')

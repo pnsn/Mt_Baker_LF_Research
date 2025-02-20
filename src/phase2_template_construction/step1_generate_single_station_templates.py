@@ -3,7 +3,6 @@ from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
-from scipy.signal import iirfilter
 
 from obspy import Stream
 from obspy.clients.fdsn.client import Client, FDSNNoDataException
