@@ -26,6 +26,7 @@ dependencies:
 #  - jupyterlab
 # Visualization
  - matplotlib
+ - cartopy
 #  - pyqt
 #  - pyqtwebengine
 # Run PIP installs of major tools
