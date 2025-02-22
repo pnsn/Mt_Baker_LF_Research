@@ -79,6 +79,8 @@ def mount_baker_basemap(
         ax.add_image(aws, zoom, **aws_add_image_kwargs)
         # print('added AWS')
     
+    
+
     if len(attrib) > 0:
         return (ax, attrib)
     else:
