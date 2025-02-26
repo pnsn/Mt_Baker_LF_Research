@@ -1,4 +1,4 @@
-import os, random
+import os, random, copy
 from pathlib import Path
 
 import pandas as pd
@@ -250,32 +250,54 @@ axm, mapattr = mount_baker_basemap(fig=fig, sps=gs[0,0],
 add_rings(axm, rads_km = [10,20,30], rads_colors=['k']*3)
 # Get df_eb clusters in leaf sort order
 _df = df_eb.loc[dmerge.index].iloc[dend_out['leaves']]
+# Attach color information
+_df = _df.assign(ecolor=dend_out['leaves_color_list'])
 # Scatter with colors
-axm.scatter(_df.longitude, _df.latitude, c=dend_out['leaves_color_list'], s=9, alpha=0.667, transform=ccrs.PlateCarree())
+axm.scatter(_df.longitude, _df.latitude, c=_df.ecolor, s=9, alpha=0.667, transform=ccrs.PlateCarree())
 
 axe = fig.add_subplot(gs[0,1])
-axe.scatter(_df.latitude, _df.depth*-1e-3, c=dend_out['leaves_color_list'], s=9, alpha=0.667)
+axe.scatter(_df.latitude, _df.depth*-1e-3, c=_df.ecolor, s=9, alpha=0.667)
 
 
 axd = fig.add_subplot(gs[1,0])
-axd.scatter(_df.longitude, _df.depth*-1e-3, c=dend_out['leaves_color_list'], s=9, alpha=0.667)
+axd.scatter(_df.longitude, _df.depth*-1e-3, c=_df.ecolor, s=9, alpha=0.667)
 
 axz = fig.add_subplot(gs[1,1])
-axz.scatter(_df.time, _df.depth*-1e-3, c=dend_out['leaves_color_list'], s=9, alpha=0.667)
+axz.scatter(_df.time, _df.depth*-1e-3, c=_df.ecolor, s=9, alpha=0.667)
 
 emark = {'eq': 'ro', 'su': 'c^', 'lf': 'bs', 'px': 'm*'}
 
-for _gn, _ct in _df.aggc.value_counts().items():
+
+## INDIVIDUAL GROUP COMPOUND PLOTS
+for _e, (_gn, _ct) in enumerate(_df.aggc.value_counts().items()):
     if _ct > 5:
         fig = plt.figure(figsize=(8,8))
-        gs = fig.add_gridspec(ncols=2, nrows=4, wspace=0, hspace=0)
+        gs = fig.add_gridspec(ncols=2, nrows=6, wspace=0, hspace=0)
+        # In zone, in-group subset metadata
         _idf = _df[_df.aggc == _gn]
+        # Items not in this 
         _xdf = _df[_df.aggc != _gn]
-        axm, mapattr = mount_baker_basemap(fig=fig, sps=gs[:2,0],
+        # Dendrogram subplot
+        axd = fig.add_subplot(gs[0,0])
+        _linkmat = linkmat[]
+        _colors = ['grey']*len(colors)
+        _colors[_e] = colors[_e]
+        
+
+
+        set_link_color_palette(_colors)
+        dendrogram(linkmat, color_threshold=1 - CCT, above_threshold_color='grey', ax=axd)
+
+
+        # Map subplot
+        axm, mapattr = mount_baker_basemap(fig=fig, sps=gs[1:4,0],
                                 open_street_map=False, radius_km=33.)
-        axz = fig.add_subplot(gs[2,0])
-        # axd = fig.add_subplot(gs[0,1])
-        axt = fig.add_subplot(gs[3,0])
+        # Longitude/depth subplot
+        axz = fig.add_subplot(gs[4,0])
+        # Timeline subplot
+        axt = fig.add_subplot(gs[5,0])
+        # Waveform subplot
+        axwf = fig.add_subplot(gs[:, 1])
 
         axm.plot(_xdf.longitude, _xdf.latitude, 'xk', ms=2, alpha=0.15, transform=ccrs.PlateCarree())
         axz.plot(_xdf.longitude, _xdf.depth*-1e-3, 'xk', ms=2, alpha=0.15)
