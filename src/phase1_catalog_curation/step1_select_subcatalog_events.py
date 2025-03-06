@@ -50,7 +50,7 @@ ROOT = Path(__file__).parent.parent.parent
 # Absolute path to pre-generated eventbank
 EBBP = ROOT / "data" / "XML" / "QUAKE" / "BANK"
 # Get event type metadata
-ETDATA = ROOT / "data" / "Events" / "Mount_Baker_evids_etypes_10_JAN_2025.csv"
+ETDATA = ROOT / "data" / "Events" / "MtBaker_EVID_ETYPE.csv"
 # Aboslute path to processed data / catalog directory
 PDDIR = ROOT / "processed_data" 
 # Catalog Membership Output
