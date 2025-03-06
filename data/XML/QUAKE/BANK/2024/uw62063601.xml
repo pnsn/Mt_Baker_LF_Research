@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <q:quakeml xmlns="http://quakeml.org/xmlns/bed/1.2" xmlns:q="http://quakeml.org/xmlns/quakeml/1.2" xmlns:ns0="http://anss.org/xmlns/catalog/0.1">
-  <eventParameters publicID="smi:local/8f067590-8b7b-4806-b02b-511a178d731d">
+  <eventParameters publicID="smi:local/0eb06d83-48a4-49ff-b0c9-9901b4217fa4">
     <event publicID="quakeml:uw.anss.org/Event/UW/62063601" ns0:datasource="uw" ns0:dataid="uw62063601" ns0:eventsource="uw" ns0:eventid="62063601">
       <preferredOriginID>quakeml:uw.anss.org/Origin/UW/3299688</preferredOriginID>
       <preferredMagnitudeID>quakeml:uw.anss.org/Netmag/UW/3324448</preferredMagnitudeID>
