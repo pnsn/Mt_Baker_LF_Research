@@ -135,5 +135,49 @@ if issave:
     plt.savefig(str(SAVENAME), format=FMT, dpi=DPI)
 
 
+## PLOT DIFFERENT CATALOGS
+fig = plt.figure(figsize=(8,8))
+ax, attr = mount_baker_basemap(fig=fig, radius_km = 100, zoom=8, latnudge=0, lonnudge=0)
+add_rings(ax, rads_km=[10, 30, 50, 70, 90], rads_colors=['k','k','k','k','k'])
+mark_mount_baker(ax, labeled=False)
+
+# CAT0 - 30km
+df = df_eb[df_eb.CAT0]
+# CAT2 - CAT1 + generates template
+df = df[df.hastemplate]
+ax.plot(df.longitude, df.latitude, '.', ms=3, color='firebrick', transform=ccrs.PlateCarree(), label=f'& has waveforms ({len(df)})')
+
+# ax.legend(loc='upper right')
+
+from obspy.clients.fdsn import Client
+client = Client('IRIS')
+
+pts = np.abs(pt)
+pts= pt.sum(axis=1)
+for ind, val in pts.items():
+    inv= client.get_stations(network=ind[0], station=ind[1], location='*', channel='*', level='station')
+    for net in inv.networks:
+        for sta in net.stations:
+            ax.scatter(sta.longitude, sta.latitude, c='c', s=val**0.8, marker='v', edgecolor='k', cmap='inferno_r', vmin=0, vmax=550,
+                       transform=ccrs.PlateCarree(), zorder=20)
+            ax.text(sta.longitude - 0.02, sta.latitude + 0.02, '.'.join(ind), ha='right', va='bottom', transform=ccrs.PlateCarree())
+
+
+gl = ax.gridlines(draw_labels=True, zorder=1)
+gl.top_labels = False
+gl.left_labels = False
+gl.xlines = False
+gl.ylines = False
+
+if issave:
+    try:
+        os.makedirs(str(SAVEPATH), exist_ok=False)
+    except:
+        pass
+
+    SAVENAME = SAVEPATH / f'prefstaeve_{DPI}dpi.{FMT}'
+    plt.savefig(str(SAVENAME), format=FMT, dpi=DPI)
+
+
 if isshow:
     plt.show()

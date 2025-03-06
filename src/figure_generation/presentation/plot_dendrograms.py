@@ -1,17 +1,17 @@
-import os, random, copy
+import os
+from collections import defaultdict
+from glob import glob
 from pathlib import Path
 
 import pandas as pd
-
+from obspy.clients.fdsn import Client
 from obsplus import EventBank
-
+from eqcorrscan import Tribe
+from eqcorrscan.utils.stacking import align_traces
 import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
 from scipy.cluster.hierarchy import dendrogram, set_link_color_palette
 from sklearn.cluster import AgglomerativeClustering
 
-import shapely.geometry as sgeom
-import cartopy.feature as cfeature
 import cartopy.crs as ccrs
 from map_util import *
 
@@ -27,7 +27,8 @@ CATD = ROOT / 'processed_data' / 'catalog' / 'P1S1_Event_ID_Catalog_Membership.c
 PESD = ROOT / 'processed_data' / 'catalog' / 'P1S2_Preferred_Sta_Event_Picks.csv'
 # Coherence distance table
 COHD = ROOT / 'results' / 'tables' / 'coherence_distance_table.csv'
-
+# Template directory
+TMPD = ROOT / 'processed_data' / 'template' / 'single_station'
 
 
 def get_symmetric(df, i_field='event_i', j_field='event_j', k_field='coh', trace_value=1., aggfunc='mean'):
@@ -99,7 +100,25 @@ FMT = 'png'
 DPI = 200
 
 ### PROCESSING SECTION ###
+client = Client('IRIS')
+# Iterate across templates to confirm if they had waveform data
+tlist = glob(str(TMPD/'*'/'*'/'*'/'*.tgz'))
+evid_sets = {'automatic': set(), 'manual': set()}
+holder = []
+rmap = {'manual': 1, 'automatic': -1}
+for _f in tlist:
+    parts = _f.split('/')
+    evid = parts[-1].split('.')[0]
+    year = int(parts[-2])
+    revstat = parts[-3]
+    stachan = parts[-4]
+    evid_sets[revstat].add(evid)
+    line = stachan.split('.') + [year, revstat, evid, rmap[revstat], _f]
+    holder.append(line)
 
+df_tpk = pd.DataFrame(holder, columns=['net','sta','loc','chan','year','revstat','evid','ohe','file'])
+
+# Read Coherence Sparse Matrix
 df_coh = pd.read_csv(COHD)
 
 # Process individual coherence and shift matrices
@@ -155,8 +174,11 @@ df_eb = pd.concat([df_eb, pd.Series(model.labels_, index=dmerge.index, name='agg
 
 ngrps = sum(df_eb.aggc.value_counts() > 1)
 
+
+
+
 ## DENDROGRAM ALONE
-fig = plt.figure(figsize=(10,10))
+
 # dcmap = plt.cm.get_cmap('nipy_spectral_r', ngrps)
 # # Stagger colors
 # colors = []
@@ -232,88 +254,223 @@ colors = [
 # # colors = [mcolors.to_hex(dcmap(_e)) for _e in ]
 # colors = [mcolors.to_hex(dcmap(_e)) for _e in range(ngrps)]
 # random.shuffle(colors)
+fig = plt.figure(figsize=(12,5))
+
 set_link_color_palette(colors)
 gs = fig.add_gridspec(ncols=1, nrows=1)
-axes = {'dend': fig.add_subplot(gs[0,:])}
+ax = fig.add_subplot(gs[0])
 labels = df_eb.loc[dmerge.index][['etype','depth']]
 labels = [f'{x.depth*1e-3:.0f} | {x.etype}' for _, x in labels.iterrows()]
 # labels = dmerge.index
-dend_out = dendrogram(linkmat,ax=axes['dend'], color_threshold=1-CCT,
+dend_out = dendrogram(linkmat,ax=ax, color_threshold=1-CCT,
                       labels=labels , distance_sort=True, above_threshold_color='gray')#,
                     #   no_labels=True)
+ax.set_ylabel('Correlation Distance (1 - mean correlation coefficient)')
+ax.set_xlabel('Depths [km] | Event Types')
+
+
+
 
 ## GROUPS MAP
-fig = plt.figure(figsize=(8,8))
+fig = plt.figure(figsize=(9.54,9.3))
 gs = fig.add_gridspec(ncols=2, nrows=2, wspace=0, hspace=0)
+
+## MAP PLOT
 axm, mapattr = mount_baker_basemap(fig=fig, sps=gs[0,0],
                           open_street_map=False, radius_km=33.)
-add_rings(axm, rads_km = [10,20,30], rads_colors=['k']*3)
+add_rings(axm, rads_km = [10,20,30], rads_colors=['k']*3, label_pt=10)
 # Get df_eb clusters in leaf sort order
 _df = df_eb.loc[dmerge.index].iloc[dend_out['leaves']]
 # Attach color information
 _df = _df.assign(ecolor=dend_out['leaves_color_list'])
-# Scatter with colors
+# Scatter groups on map with colors
 axm.scatter(_df.longitude, _df.latitude, c=_df.ecolor, s=9, alpha=0.667, transform=ccrs.PlateCarree())
+# Add Gridlines
+gl = axm.gridlines(draw_labels=True, zorder=1)
+gl.bottom_labels = False
+gl.right_labels = False
+gl.xlines = False
+gl.ylines = False
 
+## Scatter lat/time in upper right
 axe = fig.add_subplot(gs[0,1])
-axe.scatter(_df.latitude, _df.depth*-1e-3, c=_df.ecolor, s=9, alpha=0.667)
-
-
+# axe.scatter(_df.depth*1e-3, _df.latitude, c=_df.ecolor, s=9, alpha=0.667)
+axe.scatter(_df.time, _df.latitude, c=_df.ecolor, s=9, alpha=0.667)
+# axe.set_xlim([-3, 40])
+axe.yaxis.set_ticks_position('right')
+axe.yaxis.set_label_position('right')
+axe.xaxis.set_ticks_position('top')
+axe.xaxis.set_label_position('top')
+axe.set_xlabel('Year')
+axe.set_ylabel('Latitude [$^o$E]', rotation=270, labelpad=15)
+## Scatter  lon/depth in lower left
 axd = fig.add_subplot(gs[1,0])
-axd.scatter(_df.longitude, _df.depth*-1e-3, c=_df.ecolor, s=9, alpha=0.667)
+axd.scatter(_df.longitude, _df.depth*1e-3, c=_df.ecolor, s=9, alpha=0.667)
+axd.set_ylim([40, -3])
+axd.set_ylabel('Depth [km]')
+axd.set_xlabel('Longitude [$^o$E]')
 
+## Scatter time depth
 axz = fig.add_subplot(gs[1,1])
-axz.scatter(_df.time, _df.depth*-1e-3, c=_df.ecolor, s=9, alpha=0.667)
+axz.scatter(_df.time, _df.depth*1e-3, c=_df.ecolor, s=9, alpha=0.667)
+axz.set_ylim([40, -3])
+axz.yaxis.set_ticks_position('right')
+axz.yaxis.set_label_position('right')
+axz.set_ylabel('Depth [km]', rotation=270, labelpad=15)
+axz.set_xlabel('Year')
+# axz.axes.set(fontsize=8)
+# axz.xaxis.set_ticks([pd.Timestamp(f'{x}-01-01') for x in [1980, 1990, 2000, 2010, 2020, 2030]])
 
-emark = {'eq': 'ro', 'su': 'c^', 'lf': 'bs', 'px': 'm*'}
+# breakpoint()
+# plt.show()
+
+emark = {'eq': 'ro', 'su': 'kd', 'lf': 'bs', 'px': 'm*'}
 
 
 ## INDIVIDUAL GROUP COMPOUND PLOTS
 for _e, (_gn, _ct) in enumerate(_df.aggc.value_counts().items()):
-    if _ct > 5:
-        fig = plt.figure(figsize=(8,8))
-        gs = fig.add_gridspec(ncols=2, nrows=6, wspace=0, hspace=0)
-        # In zone, in-group subset metadata
-        _idf = _df[_df.aggc == _gn]
-        # Items not in this 
-        _xdf = _df[_df.aggc != _gn]
-        # Dendrogram subplot
-        axd = fig.add_subplot(gs[0,0])
-        _linkmat = linkmat[]
-        _colors = ['grey']*len(colors)
-        _colors[_e] = colors[_e]
-        
+    if _ct < 5:
+        continue
+    fig = plt.figure(figsize=(12,9))
+    gs = fig.add_gridspec(ncols=2, nrows=4)#, wspace=0, hspace=0)
+    # In zone, in-group subset metadata
+    _idf = _df[_df.aggc == _gn]
+    # All other events not in this subset
+    _xdf = _df[_df.aggc != _gn]
+
+    # # Dendrogram subplot
+    # axd = fig.add_subplot(gs[0,0])
+    # _dend = dendrogram(linkmat, color_threshold=1 - CCT, ax=axd)
 
 
-        set_link_color_palette(_colors)
-        dendrogram(linkmat, color_threshold=1 - CCT, above_threshold_color='grey', ax=axd)
+    # Map subplot
+    axm, mapattr = mount_baker_basemap(fig=fig, sps=gs[:2,0],
+                            open_street_map=False, radius_km=50.)
+    # Longitude/depth subplot
+    axz = fig.add_subplot(gs[0,1])
+    # Timeline subplot
+    axt = fig.add_subplot(gs[1,1])
+    # Waveform subplot
+    axwf = fig.add_subplot(gs[2:, :])
 
-
-        # Map subplot
-        axm, mapattr = mount_baker_basemap(fig=fig, sps=gs[1:4,0],
-                                open_street_map=False, radius_km=33.)
-        # Longitude/depth subplot
-        axz = fig.add_subplot(gs[4,0])
-        # Timeline subplot
-        axt = fig.add_subplot(gs[5,0])
-        # Waveform subplot
-        axwf = fig.add_subplot(gs[:, 1])
-
-        axm.plot(_xdf.longitude, _xdf.latitude, 'xk', ms=2, alpha=0.15, transform=ccrs.PlateCarree())
-        axz.plot(_xdf.longitude, _xdf.depth*-1e-3, 'xk', ms=2, alpha=0.15)
-        axt.plot(_xdf.time, _xdf.depth*-1e-3, 'xk', ms=2, alpha=0.15)
-        add_rings(axm, rads_km = [10,20,30], rads_colors=['k']*3)
-        for _etype in _idf.etype.unique():
-            __idf = _idf[_idf.etype == _etype]
-            axm.plot(__idf.longitude, __idf.latitude, emark[_etype], ms=4, alpha=0.85, transform=ccrs.PlateCarree())
-            axz.plot(__idf.longitude, __idf.depth*-1e-3, emark[_etype], ms=4, alpha=0.85)
-            # axd.plot(__idf.latitude, __idf.depth*-1e-3, emark[_etype], ms=4, alpha=0.85)
-            axt.plot(__idf.time, __idf.depth*-1e-3, emark[_etype], ms=4, alpha=0.85)
+    axm.plot(_xdf.longitude, _xdf.latitude, 'xk', ms=2, alpha=0.15, transform=ccrs.PlateCarree())
+    axz.plot(_xdf.longitude, _xdf.depth*1e-3, 'xk', ms=2, alpha=0.15)
+    axt.plot(_xdf.time, _xdf.depth*1e-3, 'xk', ms=2, alpha=0.15)
+    add_rings(axm, rads_km = [10,30,50], rads_colors=['k']*3)
+    for _etype in _idf.etype.value_counts().index:
+        __idf = _idf[_idf.etype == _etype]
+        axm.plot(__idf.longitude, __idf.latitude, emark[_etype], ms=4, alpha=0.85,
+                    transform=ccrs.PlateCarree(), label=f'{_etype.upper()} ({len(__idf)})')
+        axz.plot(__idf.longitude, __idf.depth*1e-3, emark[_etype], ms=4, alpha=0.85)
+        # axd.plot(__idf.latitude, __idf.depth*-1e-3, emark[_etype], ms=4, alpha=0.85)
+        axt.plot(__idf.time, __idf.depth*1e-3, emark[_etype], ms=4, alpha=0.85)
 
     #TODO: swap out one or two of these plots for waveform plots
-            
+    evidset = set(_idf.index)
+    trace_df = pd.DataFrame()
+    index = []
+    data = []
+    _tpk = df_tpk[df_tpk.evid.isin(evidset)]
+    rep_order = list(_tpk.sta.value_counts().index.values)
+    __r = 0
+    while evidset != set():
+        # Get subset of template file metadata
+        _tpk = df_tpk[df_tpk.evid.isin(evidset)]
+        _to_load = _tpk[_tpk.sta == rep_order[__r]]
+        # _topnetsta = '.'.join(_tpk[['net','sta']].value_counts().index[0])
+        # rep_order.append(_topnetsta)
+        # # Get file names for most present station
+        # _to_load = _tpk[_tpk.sta == _topnetsta.split('.')[1]]
+        # Load templates
+        for _f in _to_load.file:
+            tmp = Tribe().read(_f)[0]
+            # Get trace
+            tr = tmp.st[0]
+            # attach trace to list
+            # trace_lists[_topsta].append(tr)
+            # Get EVID from template name
+            _tevid = tmp.name
+            index.append(_tevid)
+            data.append([tr, tr.stats.network, tr.stats.station])
+
+            # Remove EVID from evidset
+            evidset.remove(_tevid)
+        __r += 1
+        if __r == len(rep_order):
+            break
+    # Append traces and net/sta metadata to temporary dataframe
+    _idf = pd.concat([_idf, pd.DataFrame(data, index=index, columns=['trace', 'net','sta'])], axis=1, ignore_index=False)
+    # breakpoint()
+    # Iterate across topsta
+    _offset = 2*len(_idf)
+    _initial_offset = _offset
+    ylims = [30, -5]
+    for _sta in rep_order:
+        # if len(_idf.sta.unique()) > 1:
+        __idf = _idf[_idf.sta == _sta]
+        tr_list = list(__idf.trace)
+        if len(tr_list) < 2:
+            continue
+        shifts_corrs = align_traces(tr_list, 50)
+        for _t, _tr in enumerate(tr_list):
+            __tr = _tr.copy()
+            __tr.detrend('linear')
+            __tr.normalize()
+            __tr.normalize(norm=__tr.std()*3)
+            _ccsign = np.sign(shifts_corrs[1][_t])
+            _yv = __tr.times() + shifts_corrs[0][_t] - tmp.prepick
+            _xv = _ccsign*__tr.data/1. + _offset
+            _offset -= 2
+            # Plot waveform
+            axwf.plot(_xv, _yv, color=emark[__idf.etype[_t]][0], lw=0.5)
+
+        # axwf.fill_between(xlims, [_initial_offset]*2, [_offset]*2, alpha=0.25)
+        _netsta = f'{_tr.stats.network}.{_tr.stats.station}'
+        axwf.text(0.5*(_initial_offset + _offset),ylims[0] + 1, _netsta, ha='center', va='top')
+        _initial_offset = _offset
+
+        # Plot station location on map
+        kw = dict(zip(['network','station','location','channel'], __tr.id.split('.')))
+        kw.update({'level': 'station'})
+        _inv = client.get_stations(**kw)
+        for net in _inv.networks:
+            for sta in net.stations:
+                axm.plot(sta.longitude, sta.latitude, 'wv', mec='k', linewidth=0.5, ms=4, transform=ccrs.PlateCarree())
+                axm.text(sta.longitude - 0.02, sta.latitude + 0.01, _netsta, transform=ccrs.PlateCarree(),
+                         color='black', fontsize=8, ha='right', va='bottom')
 
 
+    
+    
+    # Figure Formatting
+    # Map
+    axm.legend(loc='upper right', fontsize=10)
+    gl = axm.gridlines(draw_labels=True, zorder=1)
+    gl.bottom_labels = False
+    gl.right_labels = False
+    gl.xlines = False
+    gl.ylines = False
+    # Londepth
+    axz.set_ylabel('Depth [km]')
+    axz.set_ylim([40, -3])
+    # Timedepth
+    axt.set_ylim([40, -3])
+    axt.set_ylabel('Depth [km]')
+    axt.set_xlabel('Year')
+    # axt.xaxis.set_ticks_position()
+    # Waveforms
+    axwf.set_ylim(ylims)
+    axwf.xaxis.set_ticks([])
+    axwf.set_xlim([0, 2*len(_idf) + 2])
+    axwf.set_ylabel('Time Relative to Aligned Onset [sec]')
+    # axwf.set_xlabel('')
+    #     _df_tpk
+    # _df_tpk = df_tpk[df_tpk.evid.isin(_idf.index)]
+    # breakpoint()
+    # _v1 = _df_tpk.sta.value_counts()
+    # _to_load = _df_tpk[_df_tpk.sta==_v1.index[0]]
+    # files_to_load = 
+    # breakpoint()
 
 
 plt.show()
