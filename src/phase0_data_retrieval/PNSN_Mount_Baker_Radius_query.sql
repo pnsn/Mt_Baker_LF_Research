@@ -1,4 +1,4 @@
-\copy SELECT e.evid
+SELECT e.evid, e.etype, "uw"e.evid
     FROM event e
         INNER JOIN origin o ON e.prefor = o.orid
     WHERE (
@@ -7,6 +7,6 @@
             cos(radians(o.lon) - radians(-121.8172)) + 
             sin(radians(48.7745)) * sin(radians(o.lat))
             )
-        ) <= :radius
-        AND e.selectflag = 1 AND e.evid > :levid
-    ORDER BY o.datetime TO :ocsv CSV HEADER;
+        ) <= 50.
+        AND e.selectflag = 1 AND e.evid > 62061782
+    ORDER BY o.datetime; TO :ocsv CSV HEADER;
