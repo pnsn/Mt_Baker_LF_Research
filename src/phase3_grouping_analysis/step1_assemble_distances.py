@@ -15,7 +15,7 @@ Logger = setup_terminal_logger(name=__name__, level=logging.INFO)
 # Absolute path to repo root directory
 ROOT = Path(__file__).parent.parent.parent
 # Preclustered single-station clusters
-CTRD = ROOT / 'processed_data' / 'cluster' / 'tribes'
+CTRD = ROOT / 'processed_data' / 'cluster' / 'single_station'
 # Base Path for Event Bank
 EBBP = ROOT / 'processed_data' / 'catalog' / 'AUGMENTED_BANK'
 # Save Path
@@ -42,7 +42,7 @@ for _t, _ctr in ctrd.items():
     # coh = 1. - _ctr.dist_mat.ravel()#[np.triu_indices(len(_ctr), k=1)]
     # shi = _ctr.shift_mat.ravel()#[np.triu_indices(len(_ctr), k=1)]
     # # Get a vector of trace labels
-    labels = [_t]*len(shi)
+    labels = [_t.split('_')[0]]*len(shi)
     event_i, event_j = [], []
     # Create the combination of upper triangle
     for ii, evid_i in enumerate(_ctr._c.index):
@@ -106,8 +106,8 @@ for ii, (evid_i, row_i) in enumerate(df_eb.iterrows()):
 
 
 # Write tables to disk
-df_coh.to_csv(str(SAVEPATH/'coherence_distance_table.csv'), header=True, index=False)
-df_del.to_csv(str(SAVEPATH/'event_distance_table.csv'), header=True, index=False)
+df_coh.to_csv(str(SAVEPATH/'coh_shift_table.csv'), header=True, index=False)
+df_del.to_csv(str(SAVEPATH/'dist_table.csv'), header=True, index=False)
     # for jj, (evid_j, row_j) in enumerate(df_eb.iterrows()):
     #     if ii < jj:
     #         dist_x = degrees2kilometers(
