@@ -46,7 +46,7 @@ for _t, _ctr in ctrd.items():
     event_i, event_j = [], []
     # Create the combination of upper triangle
     for ii, evid_i in enumerate(_ctr._c.index):
-        evid_etype.update({evid_i: _ctr._c.loc[evid_i, 'etype']})
+        # evid_etype.update({evid_i: _ctr._c.loc[evid_i, 'etype']})
         for jj, evid_j in enumerate(_ctr._c.index):
             if ii < jj:
                 event_i.append(evid_i)
@@ -56,7 +56,7 @@ for _t, _ctr in ctrd.items():
     df_coh = pd.concat([df_coh, df_hold], axis=0, ignore_index=True)
 
 
-df_evid = pd.DataFrame(evid_etype, index=['etype']).T
+# df_evid = pd.DataFrame(evid_etype, index=['etype']).T
 # Get Time/distance table from events
 df_eb = EBANK.read_index()
 # Assign shorthand event IDs
@@ -67,7 +67,7 @@ included = df_coh.event_i.unique()
 df_eb = df_eb[df_eb.evid.isin(included)]
 df_eb.index = df_eb.evid
 
-df_eb = df_eb.join(df_evid, how='left')
+# df_eb = df_eb.join(df_evid, how='left')
 
 df_del = pd.DataFrame()
 
@@ -80,7 +80,7 @@ for ii, (evid_i, row_i) in enumerate(df_eb.iterrows()):
         zerr = df_eb.vertical_uncertainty[ii+1:]
         lons = df_eb.longitude[ii+1:]
         times = df_eb.time[ii+1:]
-        etype_j = df_eb.etype[ii+1:]
+        # etype_j = df_eb.etype[ii+1:]
         dx = degrees2kilometers(locations2degrees(row_i.latitude, row_i.longitude, lats, lons))*1e3
         dz = (row_i.depth - df_eb.depth[ii+1:])
         if np.isfinite(row_i.horizontal_uncertainty):

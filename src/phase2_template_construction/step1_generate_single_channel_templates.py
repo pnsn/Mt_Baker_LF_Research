@@ -29,10 +29,16 @@ WBNS = '{network}.{station}.{location}.{channel}_{year}{julday}_{hour}{minute}{s
 SAVEPATH = ROOT / 'processed_data' / 'template' / 'single_station'
 # Template Construction Logging File
 CONST_LOG = ROOT / 'processed_data' / 'template' / 'single_station' / 'construct.log'
-
+LASTFILE = SAVEPATH / 'last_complete_evid.csv'
 update_wavebank = False
 write_protect = True
 last_event_id = None #'quakeml:uw.anss.org/Event/UW/10679373'
+
+if os.path.isfile(str(LASTFILE)):
+    with open(str(LASTFILE), 'r') as _lf:
+        last_event_id = _lf.readline()
+
+
 
 # Trace Retrieval Parameters
 PREPICK = 5.
@@ -254,7 +260,11 @@ def main():
 
             # Run Pre-Processing with consideration of instrument type
             ikw = IKW[tr.stats.channel[1]]
-            tr = pre_processing.multi_process(tr, starttime=t1 + DATA_PAD, endtime=t2 - DATA_PAD, **ikw)
+            try:
+                tr = pre_processing.multi_process(tr, starttime=t1 + DATA_PAD, endtime=t2 - DATA_PAD, **ikw)
+            except:
+                Logger.warning('Preprocessing failed - skipping')
+                continue
                 # tr, _lowcut, HIGHCUT, FILT_ORDER, SAMP_RATE,
                 # starttime=t1 + DATA_PAD, endtime=t2 - DATA_PAD)
 
@@ -316,6 +326,8 @@ def main():
                 pass
             temp.write(str(full_savepath/name), format='tar')
 
+        with open(str(LASTFILE),'w') as _lf:
+            _lf.write(event_id)
 
                 # # Apply EQCorrscan preprocessing pipeline - TODO Check if starttime and endtime are needed..
                 # tr = pre_processing.multi_process(

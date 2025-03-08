@@ -58,8 +58,8 @@ def main():
         ctr.cluster(**ccckwargs)
         Logger.info('...complete...')
 
-        Logger.info('...assembling metadata...')
-        ctr.populate_event_metadata()
+        # Logger.info('...assembling metadata...')
+        # ctr.populate_event_metadata()
         
         ctr_dict.update({nslc: ctr})
         Logger.info("...writing to disk.")
