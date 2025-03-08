@@ -12,7 +12,8 @@ from eqcorrscan.utils import pre_processing
 
 from eqcutil.core.clusteringtribe import ClusteringTribe
 from eqcutil.util.logging import setup_terminal_logger, CriticalExitHandler
-
+from pyrocko import obspy_compat
+obspy_compat.plant()
 
 # Repository root absolute path
 ROOT = Path(__file__).parent.parent.parent
@@ -37,22 +38,28 @@ last_event_id = None #'quakeml:uw.anss.org/Event/UW/10679373'
 PREPICK = 5.
 DATA_PAD = 15.
 PROCESS_LEN = 90.
-HIGHCUT = 20.
-LOWCUT = 0.5
-SAMP_RATE = 50.
-FILT_ORDER = 4
 LENGTH = 50.
 DELAYED = True
 
+IKW = {'H': {'highcut': 20.,
+             'lowcut': 0.5,
+             'filt_order': 4,
+             'samp_rate': 50.},
+       'N': {'highcut': None,
+             'lowcut': 1.1,
+             'filt_order': 4,
+             'samp_rate': 50.}}
+
 # Post Generation Pick SNR QC - Used for noise trace detection/QC
-PERCENT_COVERAGE = 75  # Fraction of window that needs viable data
-MIN_SNR = 1.2            # Minimum SNR using EQcorrscan's QC method (max amplitude / pre-pick noise RMS)
-MIN_DATA_RMS = 3        # Minimum RMS amplitude for the whole trace
-MIN_PICK_SNR = 1.2      # Minimum SNR calculated using pick-bounding windows
+PERCENT_COVERAGE = 75   # Fraction of window that needs viable data
+MIN_UNIQUE_VALUES = 100 # Minimum unique number of raw sample values - used for bit noise trace detection
+MIN_SNR = 1.2           # Minimum SNR using EQcorrscan's QC method (max amplitude / pre-pick noise RMS)
+# MIN_DATA_RMS = 3        # Minimum RMS amplitude for the whole trace
+MIN_PICK_SNR = 3        # Minimum SNR calculated using pick-bounding windows
 PICK_SNR_WINDOW = 5.    # [sec] length of pick-bounding windows for SNR calculation
 
 # Post Generation Location Code Aliasing
-LOC_ALIASES = {'01':''}
+# LOC_ALIASES = {'01':''}
 
 def _rms(array):
     """
@@ -99,6 +106,7 @@ def main():
     hit_last = False
     if last_event_id is None:
         hit_last = True
+    index = index.sort_values(by='time', ascending=False)
     for event_id, row in index.iterrows():
         _e += 1
         Logger.info(f'processing {event_id} ({_e}/{len(index)})')
@@ -237,7 +245,21 @@ def main():
                 Logger.info(f'{event_id} {tr.id} is mostly zeros - skipping')
                 continue
             
-            # Test RMS/SNR values
+            # Run bit noise check
+            _nu = len(np.unique(tr.data))
+            if _nu < MIN_UNIQUE_VALUES:
+                # if _nu > 30:
+                #     breakpoint()
+                Logger.warning(f'{event_id} {tr.id} has {_nu} < {MIN_UNIQUE_VALUES} unique values - likely bit noise')
+
+            # Run Pre-Processing with consideration of instrument type
+            ikw = IKW[tr.stats.channel[1]]
+            tr = pre_processing.multi_process(tr, starttime=t1 + DATA_PAD, endtime=t2 - DATA_PAD, **ikw)
+                # tr, _lowcut, HIGHCUT, FILT_ORDER, SAMP_RATE,
+                # starttime=t1 + DATA_PAD, endtime=t2 - DATA_PAD)
+
+            # Run tests on signal quality
+            # Get RMS/SNR values
             rms_trace = _rms(tr.copy().data)
             rms_noise = _rms(tr.copy().trim(
                 starttime = _p.time - PICK_SNR_WINDOW,
@@ -247,47 +269,43 @@ def main():
                 endtime = _p.time + PICK_SNR_WINDOW).data)
             eqc_snr = max(tr.data) / rms_noise
             pick_snr = rms_onset/rms_noise
+
             # Run EQcorrscan's SNR QC check for all candidate traces
             if eqc_snr < MIN_SNR:
+                breakpoint()
                 Logger.info(f'{event_id} {tr.id} EQcorrscan SNR {eqc_snr} < {MIN_SNR}')
                 continue
             else:
                 pass
-            # Run additional checks on auto-picks
+
+            # Run additional checks on auto-picks to see if pick SNR is reasonable
             if _rstatus == 'automatic':
                 # Then new Trace RMS check on whole trace, mostly for byte-noise detection
-                if rms_trace < MIN_DATA_RMS:
-                    Logger.info(f'{event_id} {tr.id} whole trace RMS amplitude too low ({rms_trace} < {MIN_DATA_RMS})')
-                    continue
+                # if rms_trace < MIN_DATA_RMS:
+                #     Logger.info(f'{event_id} {tr.id} whole trace RMS amplitude too low ({rms_trace} < {MIN_DATA_RMS})')
+                #     continue
+
                 # Then new Pick SNR on pick-bounded SNR calculations
-                elif pick_snr < MIN_PICK_SNR:
+                if pick_snr < MIN_PICK_SNR:
                     Logger.info(f'{event_id} {tr.id} pick-centered SNR {pick_snr} < {MIN_PICK_SNR}')
                     continue
                 # Passing everything, propagate trace
                 else:
                     pass
-            # Apply EQCorrscan preprocessing pipeline - TODO Check if starttime and endtime are needed..
-            tr = pre_processing.multi_process(
-                tr, LOWCUT, HIGHCUT, FILT_ORDER, SAMP_RATE,
-                starttime=t1 + DATA_PAD, endtime=t2 - DATA_PAD)
-            
-            # Alias locations if applicable
-            if tr.stats.location in LOC_ALIASES.keys():
-                tr.stats.location = LOC_ALIASES[tr.stats.location]
-                Logger.warning(f'{event_id} Aliasing location code for {tr.id}')
 
             # Construct template
-
             temp = Template(
                 name=name,
                 st=Stream([tr]),
-                lowcut=LOWCUT,
-                highcut=HIGHCUT,
-                samp_rate=SAMP_RATE,
-                filt_order=FILT_ORDER,
-                process_length=PROCESS_LEN,
-                prepick=PREPICK,
-                event=event)
+                event=event,
+                **ikw)
+                # lowcut=_lowcut,
+                # highcut=HIGHCUT,
+                # samp_rate=SAMP_RATE,
+                # filt_order=FILT_ORDER,
+                # process_length=PROCESS_LEN,
+                # prepick=PREPICK,
+                # event=event)
             Logger.info(f"TEMPLATE BUILD SUCCESS - {name} {chanid} {_rstatus} ({_f} / {len(cat[0].picks)})")
             Logger.debug(f'Writing to disk')
             # full_savepath = SAVEPATH / chanid / _rstatus / _year
@@ -297,6 +315,60 @@ def main():
             except FileExistsError:
                 pass
             temp.write(str(full_savepath/name), format='tar')
+
+
+                # # Apply EQCorrscan preprocessing pipeline - TODO Check if starttime and endtime are needed..
+                # tr = pre_processing.multi_process(
+                #     tr, _lowcut, HIGHCUT, FILT_ORDER, SAMP_RATE,
+                #     starttime=t1 + DATA_PAD, endtime=t2 - DATA_PAD)
+
+            # else:
+            #     _lowcut = LOWCUT['N']
+            #     # Precheck accelerometers for bit noise traces
+            #     if len(np.unique(tr.data)) < 100:
+            #         Logger.warning(f'{event_id} {tr.id} has less than 100 unique values - likely bit noise')
+            #         continue
+                
+            #     # Run preprocessing first
+
+            #     breakpoint()
+            #     # THEN Test signal
+            #     # Test RMS/SNR values
+            #     rms_trace = _rms(trp.copy().data)
+            #     rms_noise = _rms(trp.copy().trim(
+            #         starttime = _p.time - PICK_SNR_WINDOW,
+            #         endtime = _p.time).data)
+            #     rms_onset = _rms(trp.copy().trim(
+            #         starttime = _p.time,
+            #         endtime = _p.time + PICK_SNR_WINDOW).data)
+            #     eqc_snr = max(trp.data) / rms_noise
+            #     pick_snr = rms_onset/rms_noise
+            #     # Run EQcorrscan's SNR QC check for all candidate traces
+            #     if eqc_snr < MIN_SNR:
+            #         breakpoint()
+            #         Logger.info(f'{event_id} {trp.id} EQcorrscan SNR {eqc_snr} < {MIN_SNR}')
+            #         continue
+            #     else:
+            #         pass
+            #     # Run additional checks on auto-picks
+            #     if _rstatus == 'automatic':
+            #         # Then new Trace RMS check on whole trace, mostly for byte-noise detection
+            #         if rms_trace < MIN_DATA_RMS:
+            #             Logger.info(f'{event_id} {trp.id} whole trace RMS amplitude too low ({rms_trace} < {MIN_DATA_RMS})')
+            #             continue
+            #         # Then new Pick SNR on pick-bounded SNR calculations
+            #         elif pick_snr < MIN_PICK_SNR:
+            #             Logger.info(f'{event_id} {trp.id} pick-centered SNR {pick_snr} < {MIN_PICK_SNR}')
+            #             continue
+            #         # Passing everything, propagate trace
+            #         else:
+            #             pass
+            # Alias locations if applicable
+            # if tr.stats.location in LOC_ALIASES.keys():
+            #     tr.stats.location = LOC_ALIASES[tr.stats.location]
+            #     Logger.warning(f'{event_id} Aliasing location code for {tr.id}')
+
+            
             # grouper[nslc[1]] += temp
             # breakpoint()
 
@@ -317,7 +389,14 @@ if __name__ == '__main__':
     # Set up to-file logger
     # CLOG =
 
-    main()           
+    main()      
+
+
+
+
+
+
+
     #         # Replicate eqcorrscan.util.pre_processing.multi_process in serial
     #         # 0. Enforce double-precision dtype
     #         if not tr.data.dtype == np.float64:

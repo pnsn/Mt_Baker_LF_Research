@@ -87,6 +87,49 @@ def flex_label_score(labeling1, labeling2, delimiter=' '):
     val = matches/len(labeling1)
     return val
 
+def intragroup_homogeneity(labeling_group, labeling_cross, ignore_singletons=True):
+    # Convert to Numpy representations
+    lg = np.array(labeling_group)
+    lc = np.array(labeling_cross)
+    raw_scores = []
+    counts = []
+    for _lg in set(labeling_group):
+        # Subset cross-reference labels to a single group
+        _x = lc[lg==_lg]
+        # Get group membership count
+        _ngrp = sum(lg==_lg)
+        # Continue if ignoring singletons
+        if ignore_singletons and _ngrp == 1:
+            continue 
+        # Get counts of all unique cross labels
+        _, _lcc = np.unique(_x, return_counts=True)
+        _raw = _ngrp
+        # Iterate across cross labels
+        dom_adj = False
+        for __lcc in _lcc:
+            # If this is the dominant label, continue
+            if __lcc == np.max(__lcc) and not dom_adj:
+                dom_adj = True
+                continue
+            # Otherwise subtract count from number of elements
+            else:
+                _raw -= __lcc
+        raw_scores.append(_raw)
+        counts.append(len(_x))
+    # If everything was singletons, return NaN
+    if len(raw_scores) == 0:
+        return np.nan
+    # Convert to arrays
+    raw_scores = np.array(raw_scores)
+    counts = np.array(counts)
+    # Get weigted scores
+    num = sum(raw_scores)
+    # Get weighted counts
+    den = sum(counts)
+    
+    return num/den
+
+
 
 def assess_labeling(df, labeling1, labeling2):
     """Apply a series of labeling assessments on two labelings of the same data

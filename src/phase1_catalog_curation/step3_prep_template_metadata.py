@@ -1,3 +1,10 @@
+"""
+
+TODO:
+Update this method to populate a pick for all valid channels per INV metadata
+"""
+
+
 import os, logging, warnings
 from pathlib import Path
 from collections import defaultdict
@@ -40,7 +47,7 @@ SHIFTS = {'N': 'Z',
 MODPHZ = ['P','p']
 VMOD = 'P4'
 MODCHAN = '??Z'
-ITYPE_PRIORITY = ['HH','BH','EH','HN','EN']
+ITYPE_PRIORITY = ['HH','BH','HN','EH','EN']
 
 
 def main():
@@ -95,8 +102,8 @@ def main():
             stations=list(unique_nslc['station']))
         
         event = cat[0]
-        # Get picked channels and apply channel shifts
-        picksta = set()
+        # Get picked channels (and apply component shift if applicable)
+        # picksta = set()
         for _p in event.picks:
             _sta = _p.waveform_id.station_code
             _cha = _p.waveform_id.channel_code
@@ -104,17 +111,19 @@ def main():
                 newcode = _cha[:-1] + SHIFTS[_cha[-1]]
                 _p.waveform_id.channel_code = newcode
                 Logger.warning(f'Shifted {_p.waveform_id.id} channel to {newcode}')
-            picksta.add(_sta)
+            # picksta.add(_sta)
 
         # Insert ETYPE as comment on event
         event.comments.append(Comment(text=etype))
         # Get metadata from retained picks & apply channel shifts
         picksta = set([])
+        picknslc = set([])
         kprid = []
         Logger.debug(f'Filtering preserved {len(event.picks)} picks')
         for _p in event.picks:
             kprid.append(_p.resource_id)
             picksta.add(_p.waveform_id.station_code)
+            picknslc.add(_p.waveform_id.id)
             ccode = _p.waveform_id.channel_code
             # Apply component shifts as needed
             if ccode[-1] in SHIFTS.keys():
@@ -153,36 +162,52 @@ def main():
         # MODEL ARRIVAL TIMES
         # Get active station list
         inv = INV.select(time=prefor.time, channel=MODCHAN)
+        # Get list of active NSLC codes at the time of this event
         active = inv.get_contents()['channels']
-        astas = set([_c.split('.')[1] for _c in active])
-        # Get stations to model for
-        modsta = list(set(astas).difference(picksta))
-        # Announce stations being modeled
-        msg = 'Modelling arrival times for station(s):'
-        for ms in modsta:
-            msg += f' {ms},'
+        # # Create a set of station codes to model using set logic
+        # astas = set([_c.split('.')[1] for _c in active])
+        # # Get stations to model for
+        # modsta = list(set(astas).difference(picksta))
+        # # Announce stations being modeled
+        # msg = 'Modelling arrival times for station(s):'
+        # for ms in modsta:
+        #     msg += f' {ms},'
+        # msg = msg[:-1]
+        # Logger.debug(msg)
+
+        modnslc = list(set(active).difference(picknslc))
+        msg = 'Modelling arrival times for channel(s):'
+        for mi in modnslc:
+            msg += f' {mi},'
         msg = msg[:-1]
         Logger.debug(msg)
+        
 
         modeled_first_arrivals = []
         # Iterate across each active station that is not picked
-        for sta in modsta:
+        # for sta in modsta:
+        for nslc in modnslc:
+            n,s,l,c = nslc.split('.')
             # Get the subset inventory for that station
-            sinv = inv.select(station=sta)
-            # Iterate across instrument/band priorities
-            for itype in ITYPE_PRIORITY:
-                # Check sub-sub-inventory
-                sbinv = sinv.select(channel=f'{itype}?')
-                # If we find a component that has one represented channel
-                # Break and continue to modeling
-                if len(sbinv.get_contents()['channels']) == 1:
-                    break
-            # If we've gone across all instrument types and get nothing
-            if len(sbinv.get_contents()['channels']) != 1:
-                # Continue to next station
-                continue
-            
-            # Model picks
+            # sinv = inv.select(station=sta)
+            # # Iterate across instrument/band priorities
+            # for itype in ITYPE_PRIORITY:
+            #     # Check sub-sub-inventory
+            #     sbinv = sinv.select(channel=f'{itype}?')
+            #     # If we find a component that has one represented channel
+            #     # Break and continue to modeling
+            #     if len(sbinv.get_contents()['channels']) == 1:
+            #         break
+            # # If we've gone across all instrument types and get nothing
+            # if len(sbinv.get_contents()['channels']) != 1:
+            #     # Continue to next station
+            #     continue
+
+            # Subset inventory to this active channel
+            sbinv = inv.select(network=n, station=s, location=l, channel=c)
+
+            # Model picks 
+            # TODO: this can be updated to run for all NSLC to pick with recent update to eqcutil
             picks_hat = model_picks(
                 prefor,
                 sbinv,

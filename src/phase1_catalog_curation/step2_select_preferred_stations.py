@@ -21,7 +21,11 @@ PDDIR = ROOT / "processed_data"
 # Catalog Membership CSV File (From phase1 step1)
 CAT_MEMBERSHIP = PDDIR / "catalog" / "P1S1_Event_ID_Catalog_Membership.csv"
 # 
-SAVEFILE = PDDIR / "catalog" / "P1S2_Preferred_Sta_Event_Picks.csv"
+SAVEPATH = PDDIR / "catalog" 
+# Save file for station-event-pick lines
+SAVESEP = SAVEPATH / "P1S2_Preferred_Sta_Event_Picks.csv"
+# Save file for preferred station codes
+SAVESTAPREF = SAVEPATH / 'P1S2_Preferred_Stations.csv'
 # STATION SELECTION PARAMETERS
 # Network Code(s) to include
 NETS = ['UW','CN','TA','PB','CC','UO']
@@ -139,7 +143,7 @@ def main():
         (df_picks.phase=='P')&\
         (df_picks.station.isin(include))&\
         (df_picks.event_id.isin(df_cat1.index))]
-    df_out.to_csv(SAVEFILE, header=True, index=False)
+    df_out.to_csv(SAVESEP, header=True, index=False)
     return df_out
 
 
@@ -150,6 +154,8 @@ if __name__ == '__main__':
 
     # RUN MAIN 
     df_out = main()
+    ser_cts = df_out[['network','station']].value_counts()
+    ser_cts.to_csv(SAVESTAPREF)
 
 
 
