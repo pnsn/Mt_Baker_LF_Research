@@ -29,15 +29,22 @@ WBNS = '{network}.{station}.{location}.{channel}_{year}{julday}_{hour}{minute}{s
 SAVEPATH = ROOT / 'processed_data' / 'template' / 'single_station'
 # Template Construction Logging File
 CONST_LOG = ROOT / 'processed_data' / 'template' / 'single_station' / 'construct.log'
-LASTFILE = SAVEPATH / 'last_complete_evid.csv'
 update_wavebank = False
 write_protect = True
 last_event_id = None #'quakeml:uw.anss.org/Event/UW/10679373'
 
+
+# Reprocess Station 
+RERUN_STACODE = 'VDEB'
+
+if isinstance(RERUN_STACODE, str):
+    LASTFILE = SAVEPATH / f'{RERUN_STACODE}_last_complete_evid.csv'
+elif RERUN_STACODE is None:
+    LASTFILE = SAVEPATH / 'last_complete_evid.csv'
+
 if os.path.isfile(str(LASTFILE)):
     with open(str(LASTFILE), 'r') as _lf:
         last_event_id = _lf.readline()
-
 
 
 # Trace Retrieval Parameters
@@ -61,7 +68,7 @@ PERCENT_COVERAGE = 75   # Fraction of window that needs viable data
 MIN_UNIQUE_VALUES = 100 # Minimum unique number of raw sample values - used for bit noise trace detection
 MIN_SNR = 1.2           # Minimum SNR using EQcorrscan's QC method (max amplitude / pre-pick noise RMS)
 # MIN_DATA_RMS = 3        # Minimum RMS amplitude for the whole trace
-MIN_PICK_SNR = 3        # Minimum SNR calculated using pick-bounding windows
+MIN_PICK_SNR = 1.1        # Minimum SNR calculated using pick-bounding windows
 PICK_SNR_WINDOW = 5.    # [sec] length of pick-bounding windows for SNR calculation
 
 # Post Generation Location Code Aliasing
@@ -115,11 +122,11 @@ def main():
     index = index.sort_values(by='time', ascending=False)
     for event_id, row in index.iterrows():
         _e += 1
-        Logger.info(f'processing {event_id} ({_e}/{len(index)})')
+        Logger.debug(f'processing {event_id} ({_e}/{len(index)})')
         if event_id == last_event_id:
             hit_last = True
         if not hit_last:
-            Logger.info(f'yet to hit {last_event_id} - skipping ({_e}/{len(index)})')
+            Logger.debug(f'yet to hit {last_event_id} - skipping ({_e}/{len(index)})')
             continue
         # Read event
         cat = AEBANK.get_events(event_id=event_id)
@@ -129,6 +136,12 @@ def main():
         # Iterate across picks
         _f = 0
         for _p in cat[0].picks:
+            if RERUN_STACODE is None:
+                pass
+            elif _p.waveform_id.station_code == RERUN_STACODE:
+                pass
+            else:
+                continue
             _f += 1
             # Get station code
             chanid = _p.waveform_id.id
@@ -142,10 +155,10 @@ def main():
 
             if os.path.isfile(str(full_savepath/f'{name}.tgz')):
                 if write_protect:
-                    Logger.warning(f'{full_savepath}/{name}.tgz already exits - skipping to next')
+                    Logger.debug(f'{full_savepath}/{name}.tgz already exits - skipping to next')
                     continue
                 else:
-                    Logger.warning(f'{full_savepath}/{name}.tgz already exits - may overwrite')
+                    Logger.debug(f'{full_savepath}/{name}.tgz already exits - may overwrite')
 
             # Create single-pick event
             event = cat[0].copy()
@@ -193,7 +206,7 @@ def main():
                 # If no data, continue & log result to file
                 except FDSNNoDataException:
                     # CLOG.info(f'{event_id}, FDSNNoDataError')
-                    Logger.warning(f'{event_id} {chanid} - Wavebank & IRIS retrievals failed - skipping to next pick')
+                    Logger.info(f'{event_id} {chanid} - Wavebank & IRIS retrievals failed')
                     continue
                 # Provide option to save IRIS-fetched waveforms locally
                 # if update_wavebank and len(st) > 0:
@@ -215,7 +228,7 @@ def main():
                 # Iterate across traces and resample to the rounded mean sampling rate
                 for tr in st:
                     if tr.stats.sampling_rate != mean_srate:
-                        Logger.warning(f'Resampling {tr.id} ({tr.stats.sampling_rate} -> {mean_srate})')
+                        Logger.debug(f'Resampling {tr.id} ({tr.stats.sampling_rate} -> {mean_srate})')
                         tr.resample(mean_srate)
             # If there is a single, non-integer sampling rate, resample
             elif list(srates)[0] != np.round(list(srates)[0]):
@@ -256,34 +269,35 @@ def main():
             if _nu < MIN_UNIQUE_VALUES:
                 # if _nu > 30:
                 #     breakpoint()
-                Logger.warning(f'{event_id} {tr.id} has {_nu} < {MIN_UNIQUE_VALUES} unique values - likely bit noise')
+                Logger.info(f'{event_id} {tr.id} has {_nu} < {MIN_UNIQUE_VALUES} unique values - likely bit noise')
 
             # Run Pre-Processing with consideration of instrument type
             ikw = IKW[tr.stats.channel[1]]
             try:
-                tr = pre_processing.multi_process(tr, starttime=t1 + DATA_PAD, endtime=t2 - DATA_PAD, **ikw)
-            except:
-                Logger.warning('Preprocessing failed - skipping')
+                tr_pp = pre_processing.multi_process(tr, starttime=t1 + DATA_PAD, endtime=t2 - DATA_PAD, **ikw)
+            except Exception as e:
+                breakpoint()
+                Logger.info('Preprocessing failed - skipping')
                 continue
                 # tr, _lowcut, HIGHCUT, FILT_ORDER, SAMP_RATE,
                 # starttime=t1 + DATA_PAD, endtime=t2 - DATA_PAD)
 
             # Run tests on signal quality
             # Get RMS/SNR values
-            rms_trace = _rms(tr.copy().data)
-            rms_noise = _rms(tr.copy().trim(
+            rms_trace = _rms(tr_pp.copy().data)
+            rms_noise = _rms(tr_pp.copy().trim(
                 starttime = _p.time - PICK_SNR_WINDOW,
                 endtime = _p.time).data)
-            rms_onset = _rms(tr.copy().trim(
+            rms_onset = _rms(tr_pp.copy().trim(
                 starttime = _p.time,
                 endtime = _p.time + PICK_SNR_WINDOW).data)
-            eqc_snr = max(tr.data) / rms_noise
+            eqc_snr = max(tr_pp.data) / rms_noise
             pick_snr = rms_onset/rms_noise
 
             # Run EQcorrscan's SNR QC check for all candidate traces
             if eqc_snr < MIN_SNR:
-                breakpoint()
-                Logger.info(f'{event_id} {tr.id} EQcorrscan SNR {eqc_snr} < {MIN_SNR}')
+                # breakpoint()
+                Logger.info(f'{event_id} {tr_pp.id} EQcorrscan SNR {eqc_snr} < {MIN_SNR}')
                 continue
             else:
                 pass
@@ -292,12 +306,13 @@ def main():
             if _rstatus == 'automatic':
                 # Then new Trace RMS check on whole trace, mostly for byte-noise detection
                 # if rms_trace < MIN_DATA_RMS:
-                #     Logger.info(f'{event_id} {tr.id} whole trace RMS amplitude too low ({rms_trace} < {MIN_DATA_RMS})')
+                #     Logger.info(f'{event_id} {tr_pp.id} whole trace RMS amplitude too low ({rms_trace} < {MIN_DATA_RMS})')
                 #     continue
 
                 # Then new Pick SNR on pick-bounded SNR calculations
                 if pick_snr < MIN_PICK_SNR:
-                    Logger.info(f'{event_id} {tr.id} pick-centered SNR {pick_snr} < {MIN_PICK_SNR}')
+                    # breakpoint()
+                    Logger.info(f'{event_id} {tr_pp.id} pick-centered SNR {pick_snr} < {MIN_PICK_SNR}')
                     continue
                 # Passing everything, propagate trace
                 else:
@@ -306,8 +321,10 @@ def main():
             # Construct template
             temp = Template(
                 name=name,
-                st=Stream([tr]),
+                st=Stream([tr_pp]),
                 event=event,
+                prepick=PREPICK,
+                process_length=PROCESS_LEN,
                 **ikw)
                 # lowcut=_lowcut,
                 # highcut=HIGHCUT,

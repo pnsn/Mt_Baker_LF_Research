@@ -17,7 +17,7 @@ WRITE_PROTECT = True
 ccckwargs = {'method': 'xcc',
             'replace_nan_distances_with': 'mean',
             'shift_len': 10,
-            'corr_thresh': 0.5,
+            'corr_thresh': 0.45,
             'allow_individual_trace_shifts': True,
             'cores': 'all'}
 
@@ -30,6 +30,9 @@ def main():
         pass
     dir_list = glob.glob(str(TDIR/'*'))
     for _dir in dir_list:
+        # Ignore CSV last complete evid files
+        if _dir[-3:] == 'csv':
+            continue
         Logger.info(f'Reading templates from {_dir}')
         # NSLC_DIR/eval_mode/year/uwEVID.tgz
         ipath = Path(_dir) / '*' / '*' / '*.tgz'
@@ -52,14 +55,18 @@ def main():
             continue
         Logger.info(f'...assembling {len(f_list)} templates...')
         for _f in f_list:
-            tmp = Tribe().read(_f)
+            tmp = Tribe().read(_f)[0]
+            if tmp.process_length is None:
+                tmp.process_length = 90.
+            if tmp.prepick is None:
+                tmp.prepick = 5.
             ctr += tmp
         Logger.info('...clustering...')
         ctr.cluster(**ccckwargs)
         Logger.info('...complete...')
 
-        # Logger.info('...assembling metadata...')
-        # ctr.populate_event_metadata()
+        Logger.info('...assembling metadata...')
+        ctr.populate_event_metadata()
         
         ctr_dict.update({nslc: ctr})
         Logger.info("...writing to disk.")

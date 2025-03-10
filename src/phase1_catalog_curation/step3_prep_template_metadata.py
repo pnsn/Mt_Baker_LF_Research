@@ -49,6 +49,7 @@ VMOD = 'P4'
 MODCHAN = '??Z'
 ITYPE_PRIORITY = ['HH','BH','HN','EH','EN']
 
+EXTRA_STAS = set(['SMSH','MBKE','PUBD','PLBD','VDEB','HOPB'])
 
 def main():
     # Make sure augmented bank base path directory exists
@@ -76,6 +77,9 @@ def main():
             unique_nslc[_f].add(row[_f])
 
     STAS = unique_nslc['station']
+    # breakpoint()
+    STAS = STAS.union(EXTRA_STAS)
+    unique_nslc.update({'station': STAS})
     # Compile key-word arguments for Inventory query
     qkwargs = {_k: ','.join(list(_v)) for _k, _v in unique_nslc.items()}
     qkwargs.update({'longitude': LON_REF,
@@ -84,6 +88,7 @@ def main():
                     'level':INV_LEVEL})
     # Query webservice for metadata
     INV = IRIS.get_stations(**qkwargs)
+    breakpoint()
 
     for event_id, etype in df_pref[['event_id','etype']].value_counts().index:
         # Load event
@@ -247,7 +252,7 @@ def main():
     
 if __name__ == '__main__':
     # Setup Logging
-    Logger = setup_terminal_logger(os.path.split(__file__)[-1], level=logging.DEBUG)
+    Logger = setup_terminal_logger(os.path.split(__file__)[-1], level=logging.INFO)
     Logger.addHandler(CriticalExitHandler(exit_code=1))
 
     # RUN MAIN 
