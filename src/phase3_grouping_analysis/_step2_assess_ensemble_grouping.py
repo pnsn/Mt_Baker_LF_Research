@@ -59,6 +59,19 @@ EVETD = ROOT / 'data' / 'Events' / 'MtBaker_EVID_ETYPE.csv'
 # Save Directory
 SAVEDIR = ROOT / 'results' / 'tables'
 
+# Define preferred / well-performing NSLC's
+PREFNSLC = ['UW.JCW..EHZ',
+            'UW.MBW..EHZ','UW.MBW.01.EHZ','UW.MBW2..HHZ','UW.MBW2..ENZ',
+            'UW.RPW..EHZ','UW.RPW.01.EHZ','UW.RPW2..HHZ',
+            'UW.CMW..EHZ',
+            'UW.SHUK..BHZ','UW.SHUK..HHZ',
+            'UW.PASS..BHZ','UW.PASS..HHZ',
+            'CN.VDB..EHZ','CN.VDEB..HHZ',
+            ]
+
+CCT_PREF = 0.425
+
+MIN_SRN = 2.
 
 # Read precomputed AQMS hypocenter distance table
 df_dxt = pd.read_csv(XTCD)
@@ -72,7 +85,7 @@ df_ee = pd.read_csv(EVETD, index_col=['uw_evid'])
 coh_dict = {}
 shift_dict = {}
 
-# Reconstitute in descending event count order
+# Reconstitute individual matrices in descending event-count order
 for _k in df_coh.trace.value_counts().index:
     Logger.info(f'reconstituting {_k}')
     _df = df_coh[df_coh.trace==_k]
@@ -80,15 +93,20 @@ for _k in df_coh.trace.value_counts().index:
     shift_dict[_k] = get_symmetric(_df, k_field='shift', trace_value=0.)
 
 # Compose total merge of coh matrices
-coh_merge = pd.DataFrame()
-for _v in coh_dict.values():
-    coh_merge = join_cov_df(coh_merge, _v)
+coh_full = pd.DataFrame()
+coh_pref = pd.DataFrame()
+for _k, _v in coh_dict.items():
+    coh_full = join_cov_df(coh_full, _v)
+    if _k in PREFNSLC:
+        coh_pref = join_cov_df(coh_pref, _v)
+
 # Fill unpopulated values
-coh_merge.fillna(0, inplace=True)
+coh_full.fillna(0, inplace=True)
+coh_pref.fillna(0, inplace=True)
 
 # Convert to distances
-X = 1. - coh_merge.values
-
+X = 1. - coh_full.values
+XP = 1. - coh_pref.values
 
 adkw = {'n_clusters': None,
                 'linkage': 'single',
@@ -96,71 +114,87 @@ adkw = {'n_clusters': None,
 
 ## GROUPING 0: "By Eye" Manual Correlation Threshold Grouping
 # Run manaual preferred clustering threshold grouping
-cct_pref_manual = 0.45
-model_manual = AgglomerativeClustering(
+cct_pref_manual = CCT_PREF
+model_full = AgglomerativeClustering(
     **adkw,
     distance_threshold=1. - cct_pref_manual).fit(X)
 
-# Initialize group labeling dataframe starting with manually assigned 
-df_pref = pd.DataFrame(data=model_manual.labels_, index=coh_merge.index, columns=['manual'])
+model_pref = AgglomerativeClustering(
+    **adkw, distance_threshold=1. - cct_pref_manual).fit(XP)
+
+# Initialize group labeling dataframe starting with manually assigned threshold
+df_full = pd.DataFrame(data=model_full.labels_, index=coh_full.index, columns=['manual_full'])
+df_pref = pd.DataFrame(data=model_pref.labels_, index=coh_pref.index, columns=['manual_pref'])
 
 ## GROUPING 1: Multi-Metric Optimized Threshold Grouping
 SEARCH_RANGE = 0.1
 SEARCH_STEP = 0.001
-# Run "group label homogeneity" optimizing sweep"
-best_scores = dict(zip(['nmi','ari','ami','igh','mean'],[0]*5))
-best_scores_cct = best_scores.copy()
-etypes = df_ee.loc[coh_merge.index].etype
-cct_search = np.arange(
-    cct_pref_manual - SEARCH_RANGE,
-    cct_pref_manual + SEARCH_RANGE + SEARCH_STEP,
-    SEARCH_STEP
-)
 
-for _cct in cct_search:
-    # Fit to new threshold
-    _fit = AgglomerativeClustering(**adkw, distance_threshold=1. - _cct).fit(X)
-    # Check by a selection of metrics
-    nmi = normalized_mutual_info_score(_fit.labels_, etypes)
-    ari = adjusted_rand_score(_fit.labels_, etypes)
-    ami = adjusted_mutual_info_score(_fit.labels_, etypes)
-    igh = intragroup_homogeneity(_fit.labels_, etypes)
-    mean = np.mean([nmi, ari, ami, igh])
-    # Update best-fit scores individually by metric
-    for _k, _v in zip(best_scores.keys(),[nmi,ari,ami,igh,mean]):
-        if _v > best_scores[_k]:
-            best_scores[_k] = _v
-            best_scores_cct[_k] = _cct
+working_dict = {'full': dict(zip(
+                    ['df','coh','model'],
+                    [df_full, coh_full, model_full])),
+                'pref': dict(zip(
+                    ['df','coh','model'],
+                    [df_pref, coh_pref, model_pref]
+                ))}
+
+for _K, wd in working_dict.items():
+    _X = 1. - wd['coh'].values
+    # Run "group label homogeneity" optimizing sweep"
+    best_scores = dict(zip(['nmi','ari','ami','igh','mean'],[0]*5))
+    best_scores_cct = best_scores.copy()
+    etypes = df_ee.loc[wd['coh'].index].etype
+    cct_search = np.arange(
+        cct_pref_manual - SEARCH_RANGE,
+        cct_pref_manual + SEARCH_RANGE + SEARCH_STEP,
+        SEARCH_STEP
+    )
+
+    for _cct in cct_search:
+        # Fit to new threshold
+        _fit = AgglomerativeClustering(**adkw, distance_threshold=1. - _cct).fit(_X)
+        # Check by a selection of metrics
+        nmi = normalized_mutual_info_score(_fit.labels_, etypes)
+        ari = adjusted_rand_score(_fit.labels_, etypes)
+        ami = adjusted_mutual_info_score(_fit.labels_, etypes)
+        igh = intragroup_homogeneity(_fit.labels_, etypes)
+        mean = np.mean([nmi, ari, ami, igh])
+        # Update best-fit scores individually by metric
+        for _k, _v in zip(best_scores.keys(),[nmi,ari,ami,igh,mean]):
+            if _v > best_scores[_k]:
+                best_scores[_k] = _v
+                best_scores_cct[_k] = _cct
 
 
 
-# Take mean of best score correlation thresholds
-cct_post_mean = 0
-for _k in ['nmi','ari','ami','igh']:
-    cct_post_mean += best_scores_cct[_k]
-cct_post_mean /= 4.
-mod_pref = AgglomerativeClustering(
-    **adkw, distance_threshold=1. - cct_post_mean).fit(X)
+    # Take mean of best score correlation thresholds
+    cct_post_mean = 0
+    for _k in ['nmi','ari','ami','igh']:
+        cct_post_mean += best_scores_cct[_k]
+    cct_post_mean /= 4.
+    mod_pref = AgglomerativeClustering(
+        **adkw, distance_threshold=1. - cct_post_mean).fit(_X)
 
-_ser = pd.Series(mod_pref.labels_, index=coh_merge.index, name='post_mean')
-df_pref = pd.concat([df_pref, _ser], axis=1, ignore_index=False)
+    _ser = pd.Series(mod_pref.labels_, index=coh_full.index, name='post_mean')
+    wd['df'] = pd.concat([wd['df'], _ser], axis=1, ignore_index=False)
 
-# Iterate across individual metric's "optimal" grouping and save grouping
-for _k, _v in best_scores_cct.items():
-    _fit = AgglomerativeClustering(
-        **adkw, distance_threshold=1. - _v).fit(X)
-    _ser = pd.Series(index=coh_merge.index, data=_fit.labels_, name=_k)
-    df_pref = pd.concat([df_pref, _ser], axis=1, ignore_index=False)
+    # Iterate across individual metric's "optimal" grouping and save grouping
+    for _k, _v in best_scores_cct.items():
+        _fit = AgglomerativeClustering(
+            **adkw, distance_threshold=1. - _v).fit(X)
+        _ser = pd.Series(index=coh_full.index, data=_fit.labels_, name=_k)
+        wd['df'] = pd.concat([wd['df'], _ser], axis=1, ignore_index=False)
     
+    best_scores_cct.update({'post_mean': cct_post_mean})
 
 
-
-## OUTPUT SECTION
-#  attach mean and manual values to best_scores_cct
-best_scores_cct.update({'post_mean': cct_post_mean, 'manual': cct_pref_manual})
-# Attach cct values to labelings
-df_out = pd.concat([df_pref.T, pd.Series(best_scores_cct, name='cct')], axis=1).T.sort_index()
-df_out.to_csv(str(SAVEDIR/'ensemble_cct_groupings.csv'), header=True, index=True)
+breakpoint()
+# ## OUTPUT SECTION
+# #  attach mean and manual values to best_scores_cct
+# best_scores_cct.update({'post_mean': cct_post_mean, 'manual': cct_pref_manual})
+# # Attach cct values to labelings
+# df_out = pd.concat([df_pref.T, pd.Series(best_scores_cct, name='cct')], axis=1).T.sort_index()
+# df_out.to_csv(str(SAVEDIR/'ensemble_cct_groupings.csv'), header=True, index=True)
 
 
 
@@ -168,7 +202,7 @@ df_out.to_csv(str(SAVEDIR/'ensemble_cct_groupings.csv'), header=True, index=True
     
     
 # # Make a series of ensemble labels
-# ser_e = pd.Series(model_manual.labels_, index=coh_merge.index, name='ensemble')
+# ser_e = pd.Series(model_manual.labels_, index=coh_full.index, name='ensemble')
 # cct_ind = np.arange(0.3, 0.8, 0.025)
 
 # # Iterate across individual channels
@@ -206,11 +240,11 @@ df_out.to_csv(str(SAVEDIR/'ensemble_cct_groupings.csv'), header=True, index=True
 # #         n_clusters=None,
 # #         metric='precomputed',
 # #         linkage='single').fit(X)
-# #     _ser_ct = pd.Series(cmod.labels_, index=coh_merge.index, name=f'cc{cthr:.2f}')
+# #     _ser_ct = pd.Series(cmod.labels_, index=coh_full.index, name=f'cc{cthr:.2f}')
 # Z = get_linkage_matrix(mod_pref)
 # fig = plt.figure(figsize=(6,6))
 # ax = fig.add_subplot(111)
-# outs = dendrogram(Z, color_threshold=1. - cct_pref, labels=df_ee.loc[coh_merge.index.values].etype.values)
+# outs = dendrogram(Z, color_threshold=1. - cct_pref, labels=df_ee.loc[coh_full.index.values].etype.values)
 
 
 # plt.show()
