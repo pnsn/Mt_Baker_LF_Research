@@ -51,6 +51,8 @@ df_eb.index = [_e.split('/')[-1].split('.')[0] for _e in df_eb.path]
 
 # Read precomputed correlation coherence event-event-station table
 df_coh = pd.read_csv(COHD)
+# Subset by analyzed evids
+df_eb = df_eb.loc[list(set(df_coh.event_i.values))]
 
 # Read evid to etype mapping table
 df_ee = pd.read_csv(EVETD, index_col=['uw_evid'])
@@ -68,7 +70,6 @@ for _, row in df_eb.iterrows():
             aetypes.append(f'i{row.etype}')
     else:
         aetypes.append(f'q{row.etype}')
-
 df_eb = df_eb.assign(aetype=aetypes)
 
 
@@ -76,6 +77,7 @@ breakpoint()
 # Iterate across NSLC and reconstitute an array for each
 coh_dict = {}
 shift_dict = {}
+
 
 # Reconstitute individual matrices in descending event-count order
 for _k in df_coh.trace.value_counts().index:
@@ -87,3 +89,17 @@ for _k in df_coh.trace.value_counts().index:
 
 
 # DIMENSION 0: NSLC Catalog Labeling Subsetting
+for ispref in [False, True]:
+    # Assemble joined coherence matrix
+    coh = pd.DataFrame()
+    for _k, _v in coh_dict.items():
+        if _k in PREFNSLC:
+            coh = join_cov_df(coh, _v)
+        elif not ispref:
+            coh = join_cov_df(coh, _v)
+        else:
+            continue
+    for efld in ['etype','aetype']:
+
+        
+        
