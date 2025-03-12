@@ -28,21 +28,32 @@ ctrd = {}
 # Load all single-station, pre-clustered templates
 for _c in clist:
     name = os.path.splitext(_c.split('/')[-1])[0]
-    Logger.info(f'Loading {name}')
-    ctrd.update({name: ClusteringTribe().read(_c)})
+    nslc = name.split('_')[0]
+    Logger.info(f'Loading {nslc}')
+    ctrd.update({nslc: ClusteringTribe().read(_c)})
 
 # Compose distance / corrmax / shift / timedelta dataframe
 df_coh = pd.DataFrame()
+df_snr = pd.DataFrame()
+df_eval = pd.DataFrame()
+df_closest = pd.DataFrame()
 evid_etype = {}
-for _t, _ctr in ctrd.items():
-    Logger.info(_t)
+for _nslc, _ctr in ctrd.items():
+    Logger.info(_nslc)
+    # Gather template SNR from clusters table
+    _ser_snr = _ctr._c.mean_snr_dB
+    _ser_snr.name = _nslc
+    df_snr = pd.concat([df_snr, _ser_snr], axis=1, ignore_index=False)
+    _ser_eval = _ctr._c.pick_status
+    _ser_eval.name = _nslc
+    df_eval = pd.concat([df_eval, _ser_eval], axis=1, ignore_index=False)
     # Get coherence and shift upper triangles
     coh = 1. - _ctr.dist_mat[np.triu_indices(len(_ctr), k=1)]
-    shi = _ctr.shift_mat[np.triu_indices(len(_ctr), k=1)]
+    shift = _ctr.shift_mat[np.triu_indices(len(_ctr), k=1)]
     # coh = 1. - _ctr.dist_mat.ravel()#[np.triu_indices(len(_ctr), k=1)]
     # shi = _ctr.shift_mat.ravel()#[np.triu_indices(len(_ctr), k=1)]
     # # Get a vector of trace labels
-    labels = [_t.split('_')[0]]*len(shi)
+    labels = [_nslc]*len(shift)
     event_i, event_j = [], []
     # Create the combination of upper triangle
     for ii, evid_i in enumerate(_ctr._c.index):
@@ -52,7 +63,7 @@ for _t, _ctr in ctrd.items():
                 event_i.append(evid_i)
                 event_j.append(evid_j)
             
-    df_hold = pd.DataFrame({'trace': labels, 'event_i':event_i, 'event_j': event_j, 'coh': coh, 'shift': shi})
+    df_hold = pd.DataFrame({'trace': labels, 'event_i':event_i, 'event_j': event_j, 'coh': coh, 'shift': shift})
     df_coh = pd.concat([df_coh, df_hold], axis=0, ignore_index=True)
 
 
@@ -104,10 +115,15 @@ for ii, (evid_i, row_i) in enumerate(df_eb.iterrows()):
                                 'sigz_ij_m2': dzs})
         df_del = pd.concat([df_del, df_hold], axis=0, ignore_index=True)
 
+# Apply sorting
+df_snr = df_snr.sort_index().T.sort_index().T
+df_eval = df_eval.sort_index().T.sort_index().T
 
 # Write tables to disk
 df_coh.to_csv(str(SAVEPATH/'coh_shift_table.csv'), header=True, index=False)
 df_del.to_csv(str(SAVEPATH/'dist_table.csv'), header=True, index=False)
+df_snr.to_csv(str(SAVEPATH/'snr_table.csv'), header=True, index=True)
+df_eval.to_csv(str(SAVEPATH/'eval_table.csv'), header=True, index=True)
     # for jj, (evid_j, row_j) in enumerate(df_eb.iterrows()):
     #     if ii < jj:
     #         dist_x = degrees2kilometers(
