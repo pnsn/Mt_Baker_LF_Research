@@ -13,6 +13,8 @@ EBANK = EventBank(EBBP)
 
 LAT, LON, ELE = 48.7745,-121.8172, 3286
 
+_styles = pd.read_csv(Path(__file__).parent / 'etype_styles.csv')
+breakpoint()
 # Get IRIS webservice client
 IRIS = Client("IRIS")
 # Get stations within 1 degree of Mount Baker

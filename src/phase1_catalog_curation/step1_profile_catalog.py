@@ -54,7 +54,7 @@ ETDATA = ROOT / "data" / "Events" / "MtBaker_EVID_ETYPE.csv"
 # Aboslute path to processed data / catalog directory
 PDDIR = ROOT / "processed_data" 
 # Catalog Membership Output
-SAVENAME = PDDIR / "catalog" / "P1S1_Event_ID_Catalog_Membership.csv"
+SAVENAME = PDDIR / "catalog" / "P1S1_Catalog_Profile.csv"
 
 # Catalog filtering parameters
 LAT_REF = 48.7745   # [deg N] Reference point latitude
@@ -107,8 +107,22 @@ def main():
         catalog_status['event_id'].append(event_id)
         # Get event type
         catalog_status['etype'].append(row.etype)
+        # Get latitude
+        catalog_status['lat'].append(row.latitude)
+        # Get longitude
+        catalog_status['lon'].append(row.longitude)
+        # Get depth
+        catalog_status['depth'].append(row.depth)
+        # Get depth uncertainty (if available)
+        catalog_status['zerr'].append(row.vertical_uncertainty)
+        # Get horizontal uncertainty (if available)
+        catalog_status['herr'].append(row.horizontal_uncertainty)
         # Get preferred origin time (used for filtering)
         catalog_status['prefor_time'].append(row.time)
+        # Get magnitue
+        catalog_status['mag'].append(row.magnitude)
+        # Get magnitude type
+        catalog_status['magtype'].append(row.magnitude_type)
         # Get radius (derived value used for filtering)
         catalog_status['offset_km'].append(row.radius_offset_km)
         # CAT0 Membership (within 30 km of Mount Baker)
