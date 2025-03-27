@@ -22,9 +22,9 @@ from map_util import *
 
 ### PATH DEFS SECTION ###
 ROOT = Path(__file__).parent.parent.parent.parent
-CPCSV = ROOT / 'processed_data' / 'catalog' / 'P1S1_Catalog_Profile.csv'
-STYLE_FILE = Path(__file__).parent / 'etype_styles.csv'
-SPATH = ROOT / 'results' / 'figures' / 'SSA2025' / 'pnsn_catalog_frames_lo_zoom'
+# CPCSV = ROOT / 'processed_data' / 'catalog' / 'P1S1_Catalog_Profile.csv'
+# STYLE_FILE = Path(__file__).parent / 'etype_styles.csv'
+SPATH = ROOT / 'results' / 'figures' / 'SSA2025' / 'network_evolution_frames'
 SFNAME = 'frame_{fnumber:05d}_{dpi}dpi.{fmt}'
 
 
@@ -40,17 +40,14 @@ isshow = False
 # Reference Location - Mount Baker Summit
 LAT, LON, ELE = 48.7745,-121.8172, 3286
 # Network codes to include
-NETS = 'UW,CN,TA'
+NETS = 'UW,CN'
 # Radius limit for station query around Reference Location
 INV_RADIUS = 100 # [km] Maximum station offset radius
-netcolors = {'UW':'purple','CN':'firebrick','TA':'darkgoldenrod'}
+netcolors = {'UW':'violet','CN':'firebrick','TA':'darkgoldenrod'}
 stasize = 36 # Station marker size (used in plt.scatter)
 smec = 'w'   # Station marker edge color (used in plt.scatter)
 smlw = 0.5   # Station marker line width (used in plt.scatter)
 
-### CATALOG SELECTION VALUES ###
-CAT_RADIUS = 30. # [km] Maximum radius from 
-ETYPES = ['eq','lf','su','px']
 
 ### TIME WINDOWING PARAMETER SECTION ###
 T0 = pd.Timestamp('1979-01-01')
@@ -69,64 +66,37 @@ def title_fmt(t0, t1):
     return f"{t1.strftime('%b %d %Y')}"
 
 
-### EVENT RENDERING HELPER FUNCTIONS ###
-def alpha_decay(timestamp, t1, hl, hldelay=1):
-    """Set time-dependent function for fading out marker opacity
-    decay the "alpha" plotting parameter!
-    """
-    # Age since leading edge of window
-    dt = t1 - timestamp
-    # Number of halflives
-    nhl = dt/hl
-    if nhl < hldelay:
-        return 1
-    else:
-        return np.exp(-1*(nhl - hldelay))
-
-def magscale(mag, base=2.3, offset=9):
-    """Magnitude scaling function
-
-    scale = offset + base**mag
-
-    :param mag: magnitude measurement
-    :type mag: scalar or array-like
-    :param base: exponential base to use, defaults to 2.3
-    :type base: float, optional
-    :param offset: prefactor, defaults to 9
-    :type offset: int, optional
-    :return: scales
-    :rtype: scalar or array-like (same as **mag**)
-    """    
-    return base**(mag) + offset
-
-
-### PROCESSING SECTION ###
-
-# Get maximum view radius
-MAX_RADIUS = max([CAT_RADIUS, INV_RADIUS])
-
 # Get station inventory
 client = Client("IRIS")
 inv = client.get_stations(
     longitude=LON,
     latitude=LAT,
     maxradius=INV_RADIUS/111.2,
-    level='station',
+    level='channel',
     network=NETS)
 
-# Load catalog profile
-df = pd.read_csv(CPCSV, index_col='prefor_time', parse_dates=['prefor_time'])
+# Form dataframe
+holder = []
+for _n in inv.networks:
+    for _s in _n.stations:
+        if _s.end_date is None:
+            endtime = UTCDateTime(T1.timestamp())
 
-# Subset catalog profile by min-max time
-df = df[(df.index >= T0) & (df.index <= T1)]
-# Subset to inside and outside CAT_RADIUS
-df_in = df[df.offset_km <= CAT_RADIUS]
-df_out = df[df.offset_km > CAT_RADIUS]
+        else:
+            endtime = _s.end_date
+        dt = (endtime - _s.start_date)/(3600*24*365.24)
 
-# Load event type style file
-_styles = pd.read_csv(STYLE_FILE, index_col=[0]).T
+        if _n.code in netcolors.keys():
+            color = netcolors[_n.code]
+        else:
+            color = 'k'
+        line = [_n.code, _s.code, _s.longitude, _s.latitude,
+                pd.Timestamp(_s.start_date.timestamp, unit='s'), 
+                pd.Timestamp(endtime.timestamp, unit='s'),
+                dt, color]
+        holder.append(line)
 
-
+df_inv = pd.DataFrame(holder, columns=['net','sta','lon','lat','start','end','dt','color'])
 
 ### PLOTTING SECTION ###
 # Initialize Figure
@@ -140,7 +110,7 @@ t1 = T0
 ### SUBPLOT A ###
 # Render basemap once
 # Initial basemap
-axm, map_attrib = mount_baker_basemap(fig=fig, sps=gs[:2], radius_km=55,
+axm, map_attrib = mount_baker_basemap(fig=fig, sps=gs[:2], radius_km=INV_RADIUS + 5,
                                         open_street_map=False, zoom=10)
 # Add coordinate frames
 gl = axm.gridlines(draw_labels=True, zorder=1)
@@ -148,18 +118,12 @@ gl.bottom_labels = False
 gl.right_labels=False
 
 # Add distance reticles
-# add_rings(axm, 
-#           rads_km=[int(CAT_RADIUS), 50, int(INV_RADIUS)],
-#           rads_colors=['royalblue','dodgerblue', 'cornflowerblue'],
-#           label_pt=13,
-#           annotations=['Study Events','Nearby Events','Study\nStations'])
-add_rings(axm, 
-          rads_km=[int(CAT_RADIUS), 50],
-          rads_colors=['royalblue','dodgerblue'],
-          label_pt=14,
-          annotations=['Study Events','Nearby Events'])
-# Annotate distances
 
+add_rings(axm, 
+          rads_km=[30, 50, 100],
+          rads_colors=['royalblue','dodgerblue', 'cornflowerblue'],
+          label_pt=14,
+          annotations=[None, None, None])
 
 # Get axis limits
 xlims = axm.get_xlim()
@@ -175,7 +139,7 @@ def plot_baker(geoaxis, zorder=2):
         transform=ccrs.PlateCarree())
     return handle
 
-_ = plot_baker(axm)
+_ = plot_baker(axm, zorder=3)
 
 # Spoof network markers
 for net in NETS.split(','):
@@ -195,67 +159,31 @@ axm.text(xlims[1] - 500, ylims[0] + 500,
 
 
 
-### SUBPLOT B ####
-# Plot Time-Depth-Mag-Etype Figure Once
-axf = fig.add_subplot(gs[-1])
-axt = axf.twinx()
-
-for _etype in ETYPES:
-    _df = df_in[df_in.etype == _etype]
-    axt.scatter(_df.index, _df.depth*1e-3, c=_styles[_etype].color, s=magscale(_df.mag),
-                marker=_styles[_etype].marker, zorder=_styles[_etype].zorder, alpha=0.5,
-                label=_etype.upper())
-axt.legend(ncols=4, loc='upper center')
-# Format axes
-ylims = list(axt.get_ylim())
-ylims[0] -= 6
-axt.set_ylim([ylims[1], ylims[0]])
-axt.set_xlim([T0, T1])
-axt.set_ylabel('Depth [km]', rotation=270, labelpad=15)
-axt.set_xlabel('Time')
-
-axf.set_ylim([-1, 150])
-if WLEN > 1:
-    modifier = 's'
-else:
-    modifier = ''
-axf.set_ylabel(f'Event Frequency\n[Ct./{WLEN} {WUNIT}{modifier}]', labelpad=-5)
-
 
 ### THEN DO SUMMARY FIGURE 0th FRAME LAST FRAME
-handles = {}
-ilon, ilat, inet, ista, icolor= [], [], [], [], []
-for _n in inv.networks:
-    for _s in _n.stations:
-        ilon.append(_s.longitude)
-        ilat.append(_s.latitude)
-        ista.append(_s.code)
-        inet.append(_n.code)
-        icolor.append(netcolors[_n.code])
-    
-# Plot all nearby events
-neh = axm.scatter(df_out.lon, df_out.lat, c='k', s=magscale(df_out.mag),
-            zorder=2, marker='+', alpha=0.25, linewidths=0.5, transform=ccrs.PlateCarree())
-handles.update({'nearby': neh})
+handles = []
 # Plot all stations
-ssh = axm.scatter(ilon, ilat, c=icolor, s=stasize, zorder=3, marker='v',
-            edgecolors=smec, linewidths=smlw, transform=ccrs.PlateCarree())
-handles.update({'stations': ssh})
-# Plot all study events by etype
-for _etype in ETYPES:
-    _df_in = df_in[df_in.etype == _etype]
-    seh = axm.scatter(_df_in.lon, _df_in.lat, c=_styles[_etype].color, s=magscale(_df_in.mag),
-                zorder=_styles[_etype].zorder, marker=_styles[_etype].marker,alpha=0.5,
-                transform=ccrs.PlateCarree())
-    handles.update({_etype: seh})
+for _, row in df_inv.iterrows():
+    sshl = axm.plot([row.lon, LON],[row.lat, LAT],':',
+                    color=row.color, zorder=2, 
+                    lw=0.5, alpha=0.5,
+                    transform=ccrs.PlateCarree())
+    handles.append(sshl)
+ssh = axm.scatter(df_inv.lon, df_inv.lat, c=df_inv.color, 
+                  s=stasize, zorder=3, marker='v',
+                  edgecolors=smec, linewidths=smlw, transform=ccrs.PlateCarree())
+handles.append(ssh)
+
 
 # Title
-axm.set_title(f"Mount Baker cataloged seismicity\n{df_in.index.min().strftime('%b %Y')} to {df_in.index.max().strftime('%b %Y')}")
+axm.set_title(f"Mount Baker cataloged seismicity\n{T0.strftime('%b %Y')} to {T1.strftime('%b %Y')}")
+
 
 # Temporary Mount Baker
 bh = plot_baker(axm, zorder=100)
-handles.update({'tmpmb': bh})
-
+handles.append(bh)
+plt.show()
+breakpoint()
 
 # plt.show()
 # breakpoint()
