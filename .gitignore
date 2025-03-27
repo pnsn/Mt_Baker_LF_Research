@@ -7,6 +7,8 @@ processed_data/*
 data/waveforms/pnwstore
 # Rendered figures
 *.png
+# Rendered movies
+*.mov
 # venv files
 mtbaker/
 # Byte-compiled / optimized / DLL files
@@ -179,3 +181,4 @@ data/Processed Datasets/MtBaker_50km_radius_origins_cleaned.csv
 data/WF/BANK/.index.h5
 data/WF/large_query_gist.txt
 data/WF/processing_log.csv
+results/figures/SSA2025/Network_Evolution_120dpi.mov

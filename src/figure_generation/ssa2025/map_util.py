@@ -1,5 +1,7 @@
 import datetime
 import numpy as np
+import pandas as pd
+
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec, SubplotSpec
 import cartopy.crs as ccrs
@@ -150,3 +152,24 @@ def mark_mount_baker(geoaxis, labeled=True, xoffset=0.05, yoffset=0, zorder=1000
     if labeled:
         geoaxis.text(BAKER_LON + xoffset, BAKER_LAT + yoffset, 'Mount\nBaker', va='top', transform=ccrs.PlateCarree())
 
+def plot_baker(geoaxis, zorder=2):
+    handle = geoaxis.scatter(
+        BAKER_LON, BAKER_LAT, marker='^',
+        s=64, c='orange',
+        edgecolors='k', zorder=zorder, 
+        label='Mount Baker',
+        transform=ccrs.PlateCarree())
+    return handle
+
+def pnsn_pallet():
+    pp = {'evergreen': '#107a10',
+          'black': 'k',
+          'mid gray': '#ABABAB',
+          'light gray': '#F5F5F5',
+          'white': 'w',
+          'forest green': '#094309',
+          'mint': '#CAE3CA',
+          'light blue': '#BCE6F8',
+          'lime': '#53D623',
+          'navy': '#00425D'}
+    return pp
