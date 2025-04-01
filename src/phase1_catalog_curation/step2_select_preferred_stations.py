@@ -19,7 +19,7 @@ INVD = ROOT / "data" / "XML" / "RESP"
 # Aboslute path to processed data / catalog directory
 PDDIR = ROOT / "processed_data" 
 # Catalog Membership CSV File (From phase1 step1)
-CAT_MEMBERSHIP = PDDIR / "catalog" / "P1S1_Event_ID_Catalog_Membership.csv"
+CAT_MEMBERSHIP = PDDIR / "catalog" / "P1S1_Catalog_Profile.csv"
 # 
 SAVEPATH = PDDIR / "catalog" 
 # Save file for station-event-pick lines
