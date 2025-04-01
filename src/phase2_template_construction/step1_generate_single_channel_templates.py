@@ -35,7 +35,7 @@ last_event_id = None #'quakeml:uw.anss.org/Event/UW/10679373'
 
 
 # Reprocess Station 
-RERUN_STACODE = 'VDEB'
+RERUN_STACODE = 'HOPB'
 
 if isinstance(RERUN_STACODE, str):
     LASTFILE = SAVEPATH / f'{RERUN_STACODE}_last_complete_evid.csv'
