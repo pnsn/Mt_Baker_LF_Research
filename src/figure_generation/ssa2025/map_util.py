@@ -4,6 +4,7 @@ import pandas as pd
 
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec, SubplotSpec
+import matplotlib.colors as colors
 import cartopy.crs as ccrs
 from cartopy.io.img_tiles import GoogleTiles, OSM
 import cartopy.feature as cfeature
@@ -173,3 +174,18 @@ def pnsn_pallet():
           'lime': '#53D623',
           'navy': '#00425D'}
     return pp
+
+def make_pnsn_cmap(
+        pallet_names=['lime','evergreen','forestgreen'],
+        discretization=None,
+        cmap_handle='pnsn_greens'):
+    color_list = [pnsn_pallet()[_k] for _k in pallet_names]
+    if discretization is None:
+        mycmap = colors.LinearSegmentedColormap.from_list(
+            cmap_handle, color_list)
+        return mycmap
+    elif len(color_list) == len(discretization) - 1:
+        mycmap = colors.ListedColormap(color_list)
+        norm = colors.BoundaryNorm(discretization, mycmap.N)
+        return mycmap, norm
+
