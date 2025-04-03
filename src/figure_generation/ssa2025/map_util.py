@@ -37,7 +37,7 @@ def radiusllsets(rad=50000., npts=101):
     lon = BAKER_LON
     mEo, mNo = UTM10N.transform_point(lon, lat, WGS84)
     dtheta = 2.*np.pi/(npts - 1)
-    theta = np.linspace(0, 2.*np.pi + dtheta, npts)
+    theta = np.linspace(0, 2.*np.pi, npts)
     mE = np.cos(theta)*rad + mEo
     mN = np.sin(theta)*rad + mNo
     return (mE, mN)
@@ -126,6 +126,7 @@ def add_inset_map(fig, extent=[0.725, 0.7, 0.15, 0.15], pad_deg=10, projection=c
 def add_rings(
         geoaxis,
         rads_km=[10, 30, 50, 70, 90],
+        include_units=False,
         rads_colors=['black','firebrick','darkgreen','darkblue','purple'],
         npts=101,
         label_pt=28,
@@ -136,7 +137,15 @@ def add_rings(
         mE, mN = radiusllsets(rad=_r*1e3, npts=npts)
         geoaxis.plot(mE, mN, ':', color=rads_colors[_e], alpha=0.667, transform=UTM10N)
         # Label Radii
-        text = f'{_r:d} km'
+        if not include_units:
+            text = f'{_r:d}'
+        elif isinstance(include_units, list):
+            if include_units[_e]:
+                text = f'{_r:d} km'
+            else:
+                text = f'{_r:d}'
+        else:
+            text = f'{_r:d} km'
         if 'va' not in options.keys():
             options.update({'va':'bottom'})
         if 'ha' not in options.keys():
@@ -153,10 +162,10 @@ def mark_mount_baker(geoaxis, labeled=True, xoffset=0.05, yoffset=0, zorder=1000
     if labeled:
         geoaxis.text(BAKER_LON + xoffset, BAKER_LAT + yoffset, 'Mount\nBaker', va='top', transform=ccrs.PlateCarree())
 
-def plot_baker(geoaxis, zorder=2):
+def plot_baker(geoaxis, zorder=2, color='orange'):
     handle = geoaxis.scatter(
         BAKER_LON, BAKER_LAT, marker='^',
-        s=64, c='orange',
+        s=64, c=color,
         edgecolors='k', zorder=zorder, 
         label='Mount Baker',
         transform=ccrs.PlateCarree())
