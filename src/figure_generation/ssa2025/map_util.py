@@ -5,6 +5,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec, SubplotSpec
 import matplotlib.colors as colors
+
+from obspy import UTCDateTime
+
 import cartopy.crs as ccrs
 from cartopy.io.img_tiles import GoogleTiles, OSM
 import cartopy.feature as cfeature
@@ -198,3 +201,71 @@ def make_pnsn_cmap(
         norm = colors.BoundaryNorm(discretization, mycmap.N)
         return mycmap, norm
 
+
+def magscale(mag, base=4, offset=9):
+    """Magnitude scaling function
+
+    scale = offset + base**mag
+
+    :param mag: magnitude measurement
+    :type mag: scalar or array-like
+    :param base: exponential base to use, defaults to 2.3
+    :type base: float, optional
+    :param offset: prefactor, defaults to 9
+    :type offset: int, optional
+    :return: scales
+    :rtype: scalar or array-like (same as **mag**)
+    """    
+    return base**(mag) + offset
+
+def depth_binner(depths, bins=np.arange(0,40,5)):
+    return np.digitize(depths, bins=bins)
+
+
+def plot_events(geoaxis, df, base_alpha=0.8,
+                marker_map={'su': 'd','px':'*','lf':'s','eq':'o'},
+                mec_map={'eq':'k','lf':'r','su':'b','px':'m'},
+                lw=0.5, dbins=np.arange(0,40,5),
+                depth_cmap='Greens'):
+    handles = []
+    if 'alpha' not in df.columns:
+        df = df.assign(alpha=[base_alpha for _ in range(len(df))])
+    for _k,_v in marker_map.items():
+        _df = df[df.etype==_k]
+        if len(_df) == 0:
+            continue
+
+        _df = _df.sort_values(by='depth', ascending=True)
+        _h = geoaxis.scatter(
+            _df.lon, _df.lat, 
+            c=depth_binner(_df.depth*1e-3),
+            marker=_v, 
+            edgecolors=mec_map[_k],
+            linewidths=lw,
+            s=magscale(_df.mag), 
+            alpha=_df.alpha,
+            vmin=1, vmax=len(dbins),
+            transform=ccrs.PlateCarree(),
+            cmap=depth_cmap)
+        handles.append(_h)
+    return handles
+
+def plot_stations(geoaxis, inv, reference_time=None, label_netsta=False, **options):
+    if isinstance(reference_time, pd.Timestamp):
+        rtime = UTCDateTime(reference_time.timestamp())
+        _inv = inv.select(time=rtime)
+    else:
+        _inv = inv
+    holder = []
+    for net in _inv.networks:
+        for sta in net.stations:
+            line = [net.code, sta.code, sta.longitude, sta.latitude]
+            holder.append(line)
+    df_inv = pd.DataFrame(holder, columns=['net','sta','lon','lat'])
+    hdl = geoaxis.scatter(df_inv.lon, df_inv.lat, s=6**2, c='k',
+        marker='v', edgecolors='k', linewidths=0.5,
+         transform=ccrs.PlateCarree(), **options)
+    if label_netsta:
+        for _, row in df_inv.iterrows():
+            geoaxis.text(row.lon+0.005, row.lat+0.005, f'{row.net}.{row.sta}', ha='left', va='bottom', transform=ccrs.PlateCarree())
+    return hdl

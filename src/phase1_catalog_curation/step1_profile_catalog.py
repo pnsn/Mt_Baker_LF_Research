@@ -200,17 +200,24 @@ def main():
         # Initially set to true, then check if anything fails (a True result for individual tests)
         wc_status = True
         # Iterate across keys
-        for _f in catalog_status.keys():
-            # Ignore non evaluation keys
-            if _f in ['CAT0','CAT1','CAT2','event_id','prefor_time','offset_km','etype']:
-                continue
-                # ['time_fixed','epi_fixed','depth_fixed','herr_large','zerr_large','terr_large','low_phase_count','closest_sta_too_far','too_few_sta']:
-            # If the last entry (this iteration) returns a True (True means fails test)
-            elif catalog_status[_f][-1]:
-                # set Well Constrained Status as False
-                wc_status = False
-                # Break iteration, one failure means total failure
-                break
+        for _k, _l in catalog_status.items():
+            if _k in ['time_fixed','epi_fixed','herr_large','zerr_large','terr_large','low_phase_count','closest_sta_too_far','too_few_sta']:
+                if _l[-1]:
+                    wc_status = False
+                    break           
+        # for _f in catalog_status.keys():
+        #     if _f in ['time_fixed','epi_fixed','herr_large','zerr_large','terr_large','low_phase_count','closest']:
+
+        #     # Ignore non evaluation keys
+        #     if _f in ['CAT0','CAT1','CAT2','event_id','prefor_time','offset_km','etype','lat','lon','depth','zerr','herr','mag','mag_type']:
+        #         continue
+        #         # ['time_fixed','epi_fixed','depth_fixed','herr_large','zerr_large','terr_large','low_phase_count','closest_sta_too_far','too_few_sta']:
+        #     # If the last entry (this iteration) returns a True (True means fails test)
+        #     elif catalog_status[_f][-1]:
+        #         # set Well Constrained Status as False
+        #         wc_status = False
+        #         # Break iteration, one failure means total failure
+        #         break
         # Append result
         catalog_status['WC'].append(wc_status)
 
