@@ -146,36 +146,28 @@ for _k in df_coh.trace.unique():
 
 # Merge for preferred templates
 coh_merge = pd.DataFrame()
-coh_merge_pref = pd.DataFrame()
 for _k, _v in coh_dict.items():
     print(f'merging {_k}')
-    if _k in PREF_NSLC:
-        coh_merge_pref = join_cov_df(coh_merge_pref, _v)
-    coh_merge = join_cov_df(coh_merge, _v)
+    if _k in PREF_NSLC and usepref:
+        coh_merge = join_cov_df(coh_merge, _v)
+    elif usepref:
+        continue
+    else:
+        coh_merge = join_cov_df(coh_merge, _v)
 
 
 # Fill NaN entries with 0
 coh_merge = coh_merge.replace(to_replace={np.nan: 0})
-coh_merge_pref = coh_merge_pref.replace(to_replace={np.nan: 0})
+
 # Convert to distance matrix
 dmerge = 1. - coh_merge
-dmerge_pref = 1. - coh_merge_pref
 
 # Run agglomerative clustering
 model = AgglomerativeClustering(
     linkage=LINKAGE,
     distance_threshold=1-CT,
     n_clusters=None,
-    metric='precomputed')
-
-
-model_all = model.fit(dmerge.values)
-model_pref = model.fit(dmerge_pref.values)
-
-if usepref:
-    model = model_pref
-else:
-    model = model_all
+    metric='precomputed').fit(dmerge.values)
 
 # Form Linkage matrix
 counts = np.zeros(model.children_.shape[0])
@@ -189,7 +181,7 @@ for _e, merge in enumerate(model.children_):
             cc += counts[child_idx - n_samples]
     counts[_e] = cc
 linkmat = np.column_stack([model.children_, model.distances_, counts]).astype(float)
-
+dend_labels = coh_merge.index.values
 
 
 ## EVENT CATALOG METADATA LOAD ##
@@ -199,40 +191,95 @@ df_cat = pd.read_csv(CATP, parse_dates=['prefor_time'])
 # Update index for merging group labels with uw####### evid format
 df_cat.index = [f'{x.split("/")[-2].lower()}{x.split("/")[-1]}' for x in df_cat.event_id]
 
+# Strip high granularity QC columns
+df_cat = df_cat[['etype','lat','lon','depth','prefor_time','zerr','herr','mag','magtype','offset_km','CAT0','CAT1','CAT2','WC']]
 
+# Add CAT3 - events with viable templates based on the linkage work done above
+df_cat = df_cat.assign(CAT3=df_cat.index.isin(coh_merge.index))
+# Conduct concatenation with clustering groups
+df_cat = df_cat.join(
+    pd.Series(model.labels_, index=dmerge.index, name='group'),
+    how='left')
+
+### GENERATE DENDROGAM ELEMENTS WITH COLOR FORMATTING
+ngrps = sum(df_cat.group.value_counts() > 1)
+dcmap = plt.cm.get_cmap('jet_r', ngrps+4)
+colors = [mcolors.to_hex(dcmap(_e)) for _e in range(ngrps)]
+# Create dendrogram outputs & structure
+set_link_color_palette(colors)
+dend = dendrogram(
+    linkmat,
+    labels=dend_labels,
+    distance_sort=False, count_sort='ascending',
+    color_threshold=1-CT, above_threshold_color='k',
+    leaf_rotation=0, no_plot=True,
+    get_leaves=True)
+
+
+# Create tidy_group field
+tidy_group = df_cat.group.copy().values
+_e = 1
+for _grp, _count in df_cat.group.value_counts(ascending=False).items():
+    if _count > 1:
+        tidy_group[df_cat.group == _grp] = _e
+        _e += 1
+    elif _count == 1:
+        tidy_group[df_cat.group == _grp] = -1
+
+df_cat = df_cat.assign(tidy_group=tidy_group)
+
+
+# Get leaf coordinates and colors associated back to df_cat
+df_leaf = pd.DataFrame(data={'leafpos': range(len(dend['leaves'])),'leaf_color':dend['leaves_color_list']}, 
+                    index=dend['ivl'])
+df_cat = df_cat.join(df_leaf, how='left')
+
+
+
+breakpoint()
+
+if isshow:
+    fig = plt.figure()
+    ax = fig.add_subplot()
+    for ic, dc, cc in zip(dend['icoord'], dend['dcoord'], dend['color_list']):
+
+        # Adjust first position to 0
+        rescaled_ic = np.array(ic) - np.min(np.min(dend['icoord']))
+        # scale S.T. maximum value becomes 1
+        rescaled_ic /= (np.max(np.max(dend['icoord'])) - np.min(np.min(dend['icoord'])))
+        # scale S.T. maximum value becomes number of events - 1
+        rescaled_ic *= len(dend['leaves']) - 1
+        # PLOT PRETTY & SCALED LINKS
+        if cc == 'k':
+            ax.plot(rescaled_ic,dc, lw=0.5, color=cc)
+        else:
+            ax.plot(rescaled_ic, dc, lw=0.75, color=cc)
+    plt.title(f'CT: {CT} | METHOD: {LINKAGE} | PREFERRED?: {str(usepref)}')
+
+    ax.set_ylabel('Coherence Linkage Level')
+    ax.set_yticks(np.arange(0,0.9, 0.1), [f'{_e:.1f}' for _e in np.arange(1.0,0.1, -0.1)])
+    ax.set_ylim([0,ax.get_ylim()[1]])
+
+    ticks = []
+    labels = []
+    for _gn, _gc in df_cat.group.value_counts().items():
+        if _gc > 1:
+            _df = df_cat[df_cat.group==_gn]
+            _lx = _df.leafpos.mean()
+            _ll = int(_df.tidy_group.mean())
+            ticks.append(_lx)
+            labels.append(f'{_ll:d}')
+    ax.set_xticks(ticks, labels=labels, fontsize=4)
+
+    ax.set_xlim([-1, len(df_cat[df_cat.CAT3])])
 
 if issave:
     df_tpk.to_csv(ROOT/'results'/'tables'/'SSA2025'/'template_profile.csv', header=True,index=False)
     np.save(ROOT/'results'/'tables'/'SSA2025'/f'linkmat_{LINKAGE}_cct{CT:.3f}.npy', linkmat)
     df_cat.to_csv(ROOT/'results'/'tables'/'SSA2025'/f'catalog_profile.csv')
+    for _k, _v in dend.items():
+        np.save(ROOT/'results'/'tables'/'SSA2025'/f'dend_{_k}_.npy', _v)
 
-
-
-## ALL OF THIS TO JIT
-# Conduct concatenation with clustering groups
-df_cat = df_cat.join(pd.Series(model.labels_, index=dmerge.index, name='group'), how='left')
-
-
-
-# Create "tidy group index" for display purposes
-tidy_group = np.ones(len(df_cat))*-1
-for _e, (_gn, _gc) in enumerate(df_cat.group.value_counts().items()):
-    # # Remove not included
-    # if not np.isfinite(_gn):
-    #     tidy_group[df_cat.group==_gn] = np.nan
-    if _gc > 1:
-        tidy_group[df_cat.group==_gn] = _e + 1
-
-df_cat = df_cat.assign(tidy_group=tidy_group)
-
-if isshow:
-plt.figure()
-_df = df_cat[df_cat.group.notna()]
-dend = dendrogram(linkmat, color_threshold = 1 - CT, orientation='right', 
-                    labels=[f'{row.mag:.1f}|{row.etype}|{row.depth*1e-3:.1f}|{row.tidy_group:.0f}|{idx}' for idx, row in _df.iterrows()],
-                    count_sort='descending',
-                    above_threshold_color='k')
-plt.title(f'CT: {CT} | METHOD: {LINKAGE} | PREFERRED?: {str(usepref)}')
 
 if isshow:
     plt.show()
