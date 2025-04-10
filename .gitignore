@@ -183,3 +183,16 @@ data/WF/large_query_gist.txt
 data/WF/processing_log.csv
 results/figures/SSA2025/Network_Evolution_120dpi.mov
 results/figures/SSA2025/padded_template_emode.csv
+data/SHP/RGI7/RGI2000-v7/README.md
+data/SHP/RGI7/RGI2000-v7/RGI2000-v7.0-G-02_western_canada_usa-attributes_metadata.json
+data/SHP/RGI7/RGI2000-v7/RGI2000-v7.0-G-02_western_canada_usa-attributes.csv
+data/SHP/RGI7/RGI2000-v7/RGI2000-v7.0-G-02_western_canada_usa-hypsometry.csv
+data/SHP/RGI7/RGI2000-v7/RGI2000-v7.0-G-02_western_canada_usa-rgi6_links.csv
+data/SHP/RGI7/RGI2000-v7/RGI2000-v7.0-G-02_western_canada_usa-submission_info_metadata.json
+data/SHP/RGI7/RGI2000-v7/RGI2000-v7.0-G-02_western_canada_usa-submission_info.csv
+data/SHP/RGI7/RGI2000-v7/RGI2000-v7.0-G-02_western_canada_usa.cpg
+data/SHP/RGI7/RGI2000-v7/RGI2000-v7.0-G-02_western_canada_usa.dbf
+data/SHP/RGI7/RGI2000-v7/RGI2000-v7.0-G-02_western_canada_usa.prj
+data/SHP/RGI7/RGI2000-v7/RGI2000-v7.0-G-02_western_canada_usa.shp
+data/SHP/RGI7/RGI2000-v7/RGI2000-v7.0-G-02_western_canada_usa.shx
+src/figure_generation/ssa2025/presentation_map_builder_v5.py
