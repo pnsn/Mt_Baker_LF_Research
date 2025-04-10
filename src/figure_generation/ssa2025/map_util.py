@@ -8,15 +8,23 @@ import matplotlib.colors as colors
 
 from obspy import UTCDateTime
 
+import geopandas as gpd
+
 import cartopy.crs as ccrs
 from cartopy.io.img_tiles import GoogleTiles, OSM
 import cartopy.feature as cfeature
+from cartopy.io.shapereader import Reader
+
 
 WGS84 = ccrs.PlateCarree()
 UTM10N = ccrs.UTM(zone=10, southern_hemisphere=False)
 
 BAKER_LAT = 48.7745
 BAKER_LON = -121.8172
+STWIN_LAT = 48.714525
+STWIN_LON = -121.986753
+SHUKS_LAT, SHUKS_LON = 48.839864965569014, -121.60497771256784
+
 
 def rad2llur(rad=50000., latnudge=0, lonnudge=0):
     # Mount Baker Summit Coordinates
@@ -44,7 +52,6 @@ def radiusllsets(rad=50000., npts=101):
     mE = np.cos(theta)*rad + mEo
     mN = np.sin(theta)*rad + mNo
     return (mE, mN)
-
 
 def mount_baker_basemap(
     fig=None, sps=None,
@@ -108,7 +115,15 @@ def mount_baker_basemap(
         return (ax, attrib)
     else:
         return (ax, None)
-    
+
+
+def add_shp(shp_file, geoaxis, edgecolor='forestgreen', facecolor='none', transform=ccrs.PlateCarree()):
+    # feature = cfeature.ShapelyFeature(Reader(shp_file).geometries(),
+    #                          transform, facecolor=facecolor, edgecolor=edgecolor)
+    hdl = geoaxis.add_geometries(Reader(shp_file).geometries(),transform, facecolor=facecolor, edgecolor=edgecolor)
+    return hdl
+
+
 
 def add_inset_map(fig, extent=[0.725, 0.7, 0.15, 0.15], pad_deg=10, projection=ccrs.PlateCarree()):
     axs = fig.add_axes(extent, projection=projection)
@@ -157,6 +172,21 @@ def add_rings(
             text += f'\n{annotations[_e]}'
         geoaxis.text(mE[label_pt], mN[label_pt]+1e3,text, transform=UTM10N, **options)
 
+
+def plot_gdf_contents(geoaxis, geodataframe, transform=None,
+                      facecolor='none', edgecolor='gray',
+                      linewidth=3, alpha=0.2, zorder=1,
+                      **options):
+    gdf_conv = geodataframe.copy()
+    if transform is None:
+        pass
+    elif transform == 'geoaxis':
+        gdf_conv.to_crs(geoaxis.projection.proj4_init)
+    else:
+        gdf_conv.to_crs(transform)
+    hdl = gdf_conv.plot(ax=geoaxis, facecolor=facecolor, edgecolor=edgecolor, linewidth=linewidth,
+                  alpha=alpha, zorder=zorder, **options)
+    return hdl
 
 
 def mark_mount_baker(geoaxis, labeled=True, xoffset=0.05, yoffset=0, zorder=1000):
