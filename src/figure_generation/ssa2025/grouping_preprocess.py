@@ -226,17 +226,72 @@ for _grp, _count in df_cat.group.value_counts(ascending=False).items():
     elif _count == 1:
         tidy_group[df_cat.group == _grp] = -1
 
+# Assign non-analyzed events as -2?
+tidy_group[df_cat.group.isna()] = -2
+
 df_cat = df_cat.assign(tidy_group=tidy_group)
 
+link_level = []
+leaf_coord = []
+link_end = []
+for ic, dc in zip(dend['icoord'], dend['dcoord']):
+    # If start of U presents as a leaf
+    if ic[0]%5 == 0 and dc[0] == 0:
+        link_level.append(dc[1])
+        leaf_coord.append(ic[0])
+        link_end.append(ic[2])
+    # If end of U presents as a leaf 
+    if ic[-1]%5 == 0 and dc[-1] == 0:
+        link_level.append(dc[2])
+        leaf_coord.append(ic[-1])
+        link_end.append(ic[-3])
 
 # Get leaf coordinates and colors associated back to df_cat
-df_leaf = pd.DataFrame(data={'leafpos': range(len(dend['leaves'])),'leaf_color':dend['leaves_color_list']}, 
+df_leaf = pd.DataFrame(
+    data={'leafpos': range(len(dend['leaves'])),'leaf_color':dend['leaves_color_list'],
+          'link_level': link_level, 'leaf_coord': leaf_coord, 'link_end': link_end}, 
                     index=dend['ivl'])
 df_cat = df_cat.join(df_leaf, how='left')
 
 
 
-breakpoint()
+### A PRIORI RECLASSIFICATION STRUCTURE
+# This must be consistent with input "CPD" file and is based
+# on prior analysis of grouping results. No logical checks are done
+# in this script - strictly for plotting!
+# All group numbers correspond to the "tidy_group" field.
+# "Ungrouped" Group
+UG_set = set([-1])
+# Native all-LF groups
+is_LF_set = set([6, 8, 38, 51])
+# Native all-probable blast group(s)
+is_PX_set = set([57])
+# Group(s) judged to warrant conversion to all-SU
+to_SU_set = set([1, 80])
+# Group(s) judged to warrant conversion to all-EQ
+to_EQ_set = (set([26]))
+# Groups judged to warrant conversion to all-LF
+to_LF_set = set([20, 63])
+# Groups judged to warrant conversion to all-PX
+to_PX_set = set([52])
+
+# Using interpreted group reassignments, create proposed etype colum (petype)
+# Hard-set group set interpretations (from visual analysis!)
+superset = set(df_cat.tidy_group.unique())
+# Form sets by unions
+PX_set = is_PX_set.union(to_PX_set)
+SU_set = to_SU_set
+LF_set = is_LF_set.union(to_LF_set)
+# Everything else is EQ
+EQ_set = superset.difference(PX_set, SU_set, LF_set, UG_set)
+petype = df_cat.etype.copy()
+petype.name='petype'
+for _ret, _set in zip(['su','eq','lf','px'], [to_SU_set, to_EQ_set, to_LF_set,to_PX_set]):
+    petype[df_cat.tidy_group.isin(_set)] = _ret
+
+df_cat = pd.concat([df_cat, petype], axis=1, ignore_index=False)
+
+
 
 if isshow:
     fig = plt.figure()

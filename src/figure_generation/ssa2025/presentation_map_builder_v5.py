@@ -23,7 +23,8 @@ CPD = ROOT/'results'/'tables'/'SSA2025'/'catalog_profile.csv'
 SHPDIR = ROOT/'data'/'SHP'
 NFSHP = SHPDIR/'USDA'/'Forest_Administrative_Boundaries_(Feature_Layer)'/'Forest_Administrative_Boundaries_(Feature_Layer).shp'
 NWSHP = SHPDIR/'USDA'/'Mount_Baker_Wilderness'/'Mount_Baker.shp'
-NBSHP = SHPDIR/'CENSUS'/'cb_2018_us_nation_20m'/'cb_2018_us_nation_20m.shp'
+RGISHP = SHPDIR/'RGI7'/'RGI2000-v7'/'RGI2000-v7.0-G-02_western_canada_usa.shp'
+# NBSHP = SHPDIR/'CENSUS'/'cb_2018_us_nation_20m'/'cb_2018_us_nation_20m.shp'
 # LMD = ROOT/'results'/'tables'/'SSA2025'/'linkmat_average_cct0.300.npy'
 # TPK = ROOT/'results'/'tables'/'SSA2025'/'template_profile.csv'
 # Save Directory for Figures
@@ -54,6 +55,7 @@ plt.rcParams.update({'font.size': 14})
 marker_map = {'px':'*','su':'d','lf':'s','eq':'o'}
 color_map = {'px':'m','su':'b','lf':'r','eq':'k'}
 ungrouped_color = 'xkcd:ugly brown'
+unanalyzed_color = 'xkcd:gross green'
 
 # Initialize Basemap Figure and Gridspec
 fig = plt.figure(figsize=(15.12,7.4))
@@ -63,26 +65,7 @@ map_sps = gs[:,0] # Left column, full
 tz_sps = gs[0,1]  # Right column, upper
 
 
-### A PRIORI RECLASSIFICATION STRUCTURE TODO: Move this to preprocessing
-# This must be consistent with input "CPD" file and is based
-# on prior analysis of grouping results. No logical checks are done
-# in this script - strictly for plotting!
-# All group numbers correspond to the "tidy_group" field.
-# "Ungrouped" Group
-UG_set = set([-1])
-# Native all-LF groups
-is_LF_set = set([6, 8, 38, 51])
-# Native all-probable blast group(s)
-is_PX_set = set([57])
 
-# Group(s) judged to warrant conversion to all-SU
-to_SU_set = set([1, 80])
-# Group(s) judged to warrant conversion to all-EQ
-to_EQ_set = (set([26]))
-# Groups judged to warrant conversion to all-LF
-to_LF_set = set([20, 63])
-# Groups judged to warrant conversion to all-PX
-to_PX_set = set([52])
 
 
 ### SUPPORT FUNCTIONS ###
@@ -168,16 +151,14 @@ gdf_mbsnf = gdf_mbsnf[gdf_mbsnf.FORESTNAME=='Mt. Baker-Snoqualmie National Fores
 gdf_mbw = mutil.gpd.read_file(NWSHP)
 # Load Census Bureau 2018 national boundaries
 # gdf_cb = mutil.gpd.read_file(NBSHP)
+# Load Randolph Glacier Inventory
+gdf_rgi = mutil.gpd.read_file(RGISHP)
+# Subset to glaciers within 0.2 degrees of Mount Baker & dont include WA grab-bag
+gdf_rgi = gdf_rgi[(abs(gdf_rgi.cenlat - mutil.BAKER_LAT) < 0.2) & 
+                  (abs(gdf_rgi.cenlon - mutil.BAKER_LON) < 0.2)]# &
+                #   (gdf_rgi.glac_name != 'WA')]
+# breakpoint()
 
-### CREATE SETS FOR QUICK INDEXING AGAINST tidy_group
-# Hard-set group set interpretations (from visual analysis!)
-superset = set(df_cat.tidy_group.unique())
-# Form sets by unions
-PX_set = is_PX_set.union(to_PX_set)
-SU_set = to_SU_set
-LF_set = is_LF_set.union(to_LF_set)
-# Everything else is EQ
-EQ_set = superset.difference(PX_set, SU_set, LF_set, UG_set)
 
 
 ########################
@@ -205,7 +186,8 @@ axm.text(-122.21, 48.97, 'WA', fontsize=14, transform=ccrs.PlateCarree())
 
 # # Add Mount Baker-Snoqualmie NF boundary
 hdl = mutil.plot_gdf_contents(axm, gdf_mbsnf, transform=None, alpha=0.1, edgecolor='forestgreen')
-hdl = mutil.plot_gdf_contents(axm, gdf_mbw, transform=None, alpha=0.2, edgecolor='forestgreen')
+# hdl = mutil.plot_gdf_contents(axm, gdf_mbw, transform=None, alpha=0.2, edgecolor='forestgreen')
+# hdl = mutil.plot_gdf_contents(axm, gdf_rgi, transform=gdf_mbsnf.crs, alpha=0.2, facecolor='dodgerblue', linewidth=0.5, edgecolor='white')
 # Add Mount Baker Wilderness border
 # hdl = mutil.add_shp(str(ROOT/'data'/'SHP'/'USDA'/'Mount_Baker_Wilderness'/'Mount_Baker.shp'),
 #                     axm, facecolor='k')
@@ -277,7 +259,10 @@ hdl = axm.text(-121.96, 48.61, 'Contributing Seismic Stations\n1980-2025 Composi
                transform=ccrs.PlateCarree(), ha='center', va='center',
                color='k', fontweight='extra bold')
 hdls.append(hdl)
-
+hdl = axm.text(-121.8133, 48.905, 'Mount Baker-\nSnoqualmie\nNational\nForest',
+               transform=ccrs.PlateCarree(), ha='center', va='center',
+               color='forestgreen', fontweight='extra bold')
+hdls.append(hdl)
 hdl = axt.text(pd.Timestamp('2002-06-15'), 20, 'Event Depths and Origin Times Go Here\nMarkers Scaled by Magnitude (M0-M5)',
                ha='center',va='center', fontsize=16)
 hdls.append(hdl)
@@ -347,10 +332,17 @@ for _et in ['eq','lf','su','px']:
     for _grp in df_cat.tidy_group.value_counts(ascending=True).index:
         _df = df_cat[(df_cat.tidy_group==_grp) & (df_cat.etype==_et)]
         if len(_df) > 0:
+            if _grp == -2:
+                color = unanalyzed_color
+            elif _grp == -1:
+                color = ungrouped_color
+            else:
+                color = _df.leaf_color.iloc[0]
+        
             handles = plotfun(
                 axm, axt, _df,
                 marker_map[_et],
-                _df.leaf_color[0],
+                color,
                 zorder=zo,
             )
             hdls += handles
@@ -368,7 +360,7 @@ hdls = clear_handles(hdls)
 ### SHOW WHAT'S MISSED ###
 # Plot Only Ungrouped Events with catalog etype markings/colors
 zo = 20 # overlie stations, underlie baker
-_df = df_cat[df_cat.tidy_group.isin(UG_set)]
+_df = df_cat[df_cat.tidy_group == -1]
 # Iterate across etype
 for _et in ['su','lf','px','eq']:
     __df = _df[_df.etype==_et] 
@@ -394,89 +386,132 @@ hdls = clear_handles(hdls)
 ### PROPOSE CHANGES ### Include missed events of _ret?
 zo = 20 # Overlie stations, underlie baker
 # Plot each etype (re)classification subset
-for _ret, _ids in zip(['su','lf','px','eq'],[SU_set, LF_set, PX_set, EQ_set]):
-    # Plot ungrouped of target reassignment
-    _df = df_cat[(df_cat.tidy_group == -1) & (df_cat.etype==_ret)]
+for _ret in ['su','lf','px','eq']:
+    # Get subset events based on relabel etype
+    _df = df_cat[df_cat.petype == _ret]
+    # Plot unanalyzed
     handles = plotfun(
-        axm, axt, _df,
+        axm, axt, _df[_df.tidy_group == -2],
         marker_map[_ret],
-        ungrouped_color,
-        zorder=2,label=f'Ungrouped {_ret.upper()}'
+        unanalyzed_color,
+        zorder=zo,label=f'Unanalyzed {_ret.upper()}'
     )
     hdls += handles
-    # Reset z-ordering indexer for each map
-    _zo = zo
-    # Iterate over each event type for shape and labeling
-    for _et in ['eq','lf','su','px']:
-        first = True
-        _df = df_cat[(df_cat.tidy_group.isin(_ids))&(df_cat.etype==_et)]
-    # Iterate over each group for color
-        for _id in _ids:
-            __df = _df[_df.tidy_group==_id]
-            if len(__df) > 0:
-                if first:
-                    if _et == _ret:
-                        label = f'Grouped {_et.upper()}'
-                    else:
-                        label=f'{_et.upper()}➔{_ret.upper()}'
-                    first = False
-                else:
-                    label = None
-                handles = plotfun(
-                    axm, axt, __df,
-                    marker_map[_et],
-                    __df.leaf_color.iloc[0],
-                    zorder=_zo,
-                    label=label)
-                _zo += 1
-                hdls += handles
-    lhdl = axt.legend(loc='lower center', ncols=5)
-    hdls.append(lhdl)
-    # Save
-    savename = SDIR/f'map_{_ret}_proposed_relabeling_{DPI}dpi.{FMT}'
-    if issave:
-        fig.savefig(str(savename), **sfkw)
-    # Cleanup
-    hdls = clear_handles(hdls)
-
-
-### ENACT CHANGES ###
-zo = 20
-# Plot each etype (re)classification subset
-for _ret, _ids in zip(['su','lf','px','eq'],[SU_set, LF_set, PX_set, EQ_set]):
-    # Plot ungrouped of target reassignment
-    _df = df_cat[(df_cat.tidy_group == -1) & (df_cat.etype==_ret)]
+    # Plot ungrouped
     handles = plotfun(
-        axm, axt, _df,
+        axm, axt, _df[_df.tidy_group == -1],
         marker_map[_ret],
         ungrouped_color,
         zorder=zo,label=f'Ungrouped {_ret.upper()}'
     )
     hdls += handles
+    # Plot grouped that are not changed
+    handles = plotfun(
+        axm, axt, _df[(_df.etype==_df.petype)&(_df.tidy_group > 0)],
+        marker_map[_ret],
+        color_map[_ret],
+        zorder=zo,label=f'Grouped {_ret.upper()}'
+    )
+    hdls += handles
+
+    # Reset z-ordering indexer for each map
     _zo = zo + 1
     # Iterate over each event type for shape and labeling
-    for _et in ['eq','lf','su','px']:
-        first = True
-        _df = df_cat[(df_cat.tidy_group.isin(_ids))&(df_cat.etype==_et)]
-    # Iterate over each group for color
-        for _id in _ids:
-            __df = _df[_df.tidy_group==_id]
-            if len(__df) > 0:
-                if first:
-                    label=f'{_et.upper()}➔{_ret.upper()}'
-                    first = False
-                else:
-                    label = None
-                handles = plotfun(
-                    axm, axt, __df,
-                    marker_map[_et],
-                    __df.leaf_color[0],
-                    zorder=_zo,
-                    label=label)
-                _zo += 1
-                hdls += handles
-    lhdl = axt.legend(loc='lower center', ncols=5)
-    hdls.append(lhdl)
+    for _et, _ret in _df[['etype','petype']].value_counts().index:
+        if _et == _ret:
+            continue
+        else:
+            handles = plotfun(
+                axm, axt, _df[(_df.etype==_et) & (_df.petype==_ret)],
+                marker_map[_ret],
+                color_map[_et],
+                zorder=_zo
+            )
+            hdls += handles
+            _zo += 1
+        # first = True
+
+        # _df = df_cat[(df_cat.petype==_ret)&(df_cat.etype != df_cat.petype)&(df_cat.etype==_et)]
+        # if len(_df) > 0:
+        #     handles = plotfun(
+        #         axm, axt, _df,
+        #         marker_map[_ret],
+        #         color_map[_et],
+        #         zorder=_zo,
+        #     )
+        #     _zo += 1
+    # Save
+    savename = SDIR/f'map_{_ret}_proposed_relabeling_{DPI}dpi.{FMT}'
+    if issave:
+        fig.savefig(str(savename), **sfkw)
+    else:
+        breakpoint()
+    # Cleanup
+    hdls = clear_handles(hdls)
+
+
+    # # # Iterate over each group for color
+    # #     for _id in _ids:
+    # #         __df = _df[_df.tidy_group==_id]
+    # #         if len(__df) > 0:
+    # #             if first:
+    # #                 if _et == _ret:
+    # #                     label = f'Grouped {_et.upper()}'
+    # #                 else:
+    # #                     label=f'{_et.upper()}➔{_ret.upper()}'
+    # #                 first = False
+    # #             else:
+    # #                 label = None
+    # #             handles = plotfun(
+    # #                 axm, axt, __df,
+    # #                 marker_map[_et],
+    # #                 __df.leaf_color.iloc[0],
+    # #                 zorder=_zo,
+    # #                 label=label)
+    # #             _zo += 1
+    # #             hdls += handles
+    # # lhdl = axt.legend(loc='lower center', ncols=5)
+    # hdls.append(lhdl)
+
+
+
+# ### ENACT CHANGES ###
+# zo = 20
+# # Plot each etype (re)classification subset
+# for _ret, _ids in zip(['su','lf','px','eq'],[SU_set, LF_set, PX_set, EQ_set]):
+#     # Plot ungrouped of target reassignment
+#     _df = df_cat[(df_cat.tidy_group == -1) & (df_cat.etype==_ret)]
+#     handles = plotfun(
+#         axm, axt, _df,
+#         marker_map[_ret],
+#         ungrouped_color,
+#         zorder=zo,label=f'Ungrouped {_ret.upper()}'
+#     )
+#     hdls += handles
+#     _zo = zo + 1
+#     # Iterate over each event type for shape and labeling
+#     for _et in ['eq','lf','su','px']:
+#         first = True
+#         _df = df_cat[(df_cat.tidy_group.isin(_ids))&(df_cat.etype==_et)]
+#     # Iterate over each group for color
+#         for _id in _ids:
+#             __df = _df[_df.tidy_group==_id]
+#             if len(__df) > 0:
+#                 if first:
+#                     label=f'{_et.upper()}➔{_ret.upper()}'
+#                     first = False
+#                 else:
+#                     label = None
+#                 handles = plotfun(
+#                     axm, axt, __df,
+#                     marker_map[_et],
+#                     __df.leaf_color[0],
+#                     zorder=_zo,
+#                     label=label)
+#                 _zo += 1
+#                 hdls += handles
+#     lhdl = axt.legend(loc='lower center', ncols=5)
+#     hdls.append(lhdl)
     
 #     # Plot each etype (re)classification subset
 # for _ret, _ids in zip(['su','lf','px','eq'],[SU_set, LF_set, PX_set, EQ_set]):
@@ -504,10 +539,10 @@ for _ret, _ids in zip(['su','lf','px','eq'],[SU_set, LF_set, PX_set, EQ_set]):
 #                     zorder=_zo)
 #                 _zo += 1
 #                 hdls += handles
-    savename = SDIR/f'map_{_ret}_applied_relabeling_{DPI}dpi.{FMT}'
-    if issave:
-        fig.savefig(str(savename), **sfkw)
-    hdls = clear_handles(hdls)
+    # savename = SDIR/f'map_{_ret}_applied_relabeling_{DPI}dpi.{FMT}'
+    # if issave:
+    #     fig.savefig(str(savename), **sfkw)
+    # hdls = clear_handles(hdls)
 
 
 ## Create Movie
