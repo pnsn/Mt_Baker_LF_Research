@@ -85,15 +85,25 @@ def plot_group_waveforms(_df_cat, _df_tpk, dend):
 
     # Initialize Figure
     fig = plt.figure(figsize=(15.12,7.4))
-    gs = fig.add_gridspec(ncols=8,nrows=2, hspace=0)
+    gs = fig.add_gridspec(ncols=8,nrows=3, hspace=0)
     # Initialize Subplots
     axd = fig.add_subplot(gs[0,:6])
-    axw = fig.add_subplot(gs[1,:6])
-    axm = fig.add_subplot(gs[:,6:], projection=ccrs.PlateCarree())
+    axw = fig.add_subplot(gs[1:,:6])
+    axm, attr = mutil.mount_baker_basemap(
+        fig=fig, sps=gs[:,6:],
+        latnudge=0, lonnudge=0,
+        open_street_map=False,
+        aws_add_image_kwargs={'cmap':'Greys_r', 'alpha':0.05})
+
     extent = [mutil.BAKER_LON-0.5, mutil.BAKER_LON+0.5,
               mutil.BAKER_LAT-1, mutil.BAKER_LAT+0.4]
     axm.set_extent(extent)
-
+    gl = axm.gridlines(draw_labels=['top','left'], zorder=1,
+                   xlocs=[-122.1, -121.8, -121.5],
+                   ylocs=[48.5, 48.6, 48.7, 48.8, 48.9, 49],
+                   alpha=0)
+    gl.left_labels=False
+    gl.right_labels=True
     # xlims = [float('inf'), 0]
     # _lm = 0
     # Plot base dendrogram for specific group
@@ -160,14 +170,65 @@ def plot_group_waveforms(_df_cat, _df_tpk, dend):
     axw.set_xlabel('Lower Coherence           Relative Position in Cluster          Higher Coherence')
     axw.set_ylabel('Elapsed Time Since Aligned\nP-wave Arrival [sec]')
 
+
+
+    # Add distance Rings
+    mutil.add_rings(axm,
+                    rads_km=[10,30,50,90],
+                    rads_colors=['k']*4,
+                    include_units=[True, True, True, True],
+                    label_pt=-50,ha='left',va='bottom')
+
+    # Add Lat/Lon annotations
+    # axm.set_xticks([-122.2 + _e*0.2 for _e in range(5)])
+    gl = axm.gridlines(draw_labels=['top','left'], zorder=1,
+                    xlocs=[-122.1, -121.8, -121.5],
+                    ylocs=[48.5, 48.6, 48.7, 48.8, 48.9, 49],
+                    alpha=0)
+                    #    xlocs=[-122.2, -122, -121.8, -121.6, -121.4, -121.2],
+                    #    ylocs=[48.5, 48.6, 48.7, 48.8, 48.9, 49],
+                    #    alpha=0)
+
+
+    # Plot Mount Baker
+    axm.scatter([mutil.BAKER_LON, mutil.SHUKS_LON, mutil.STWIN_LON],
+            [mutil.BAKER_LAT, mutil.SHUKS_LAT, mutil.STWIN_LAT],
+            s=[144, 81, 81], 
+            marker='^',
+            facecolor='none',
+            edgecolors='orange',
+            linewidths=[2, 1, 1],
+            zorder=30,
+            transform=ccrs.PlateCarree())
+
     # Populate Map
+    # Plot observing station
+    inv = Client('IRIS').get_stations(network=_df_tpk.net.iloc[0],
+                                      station=_df_tpk.sta.iloc[0],
+                                      level='station')
+    ista = inv.networks[0].stations[0]
+    axm.scatter(
+        ista.longitude, ista.latitude,
+        marker='v', c='w',
+        edgecolors='k',
+        s=36, zorder=10,
+        transform=ccrs.PlateCarree()
+    )
+    axm.text(
+        ista.longitude, ista.latitude,
+        f'UW.{ista.code}',fontsize=14,
+        ha='left',va='bottom',
+        transform=ccrs.PlateCarree()
+    )
+    # Iterate across source ETYPE
     for _et in _df_tpk.etype.unique():
+        # Subset & plot using group color
         _df = _df_tpk[_df_tpk.etype==_et]
         _ = plotmap(axm, _df,
                     marker_map[_et],
                     _df.leaf_color)
 
-    return (fig, axd, axw)
+    return (fig, axd, axw, axm)
 
 
 
@@ -311,8 +372,8 @@ _df_tpk_eq = load_traces_and_cross_corr(_df_tpk_eq, eq_include)
 _df_tpk_px = load_traces_and_cross_corr(_df_tpk_px, px_include)
 
 ### PLOTTING SECTION ###
-fig, axd, axw = plot_group_waveforms(_df_cat_su, _df_tpk_su, dend)
-fig, axd, axw = plot_group_waveforms(_df_cat_lf, _df_tpk_lf, dend)
-fig, axd, axw = plot_group_waveforms(_df_cat_eq, _df_tpk_eq, dend)
-fig, axd, axw = plot_group_waveforms(_df_cat_px, _df_tpk_px, dend)
+su_fig_axes = plot_group_waveforms(_df_cat_su, _df_tpk_su, dend)
+lf_fig_axes = plot_group_waveforms(_df_cat_lf, _df_tpk_lf, dend)
+eq_fig_axes = plot_group_waveforms(_df_cat_eq, _df_tpk_eq, dend)
+px_fig_axes = plot_group_waveforms(_df_cat_px, _df_tpk_px, dend)
 
