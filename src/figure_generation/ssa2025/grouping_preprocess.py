@@ -203,7 +203,7 @@ df_cat = df_cat.join(
 
 ### GENERATE DENDROGAM ELEMENTS WITH COLOR FORMATTING
 ngrps = sum(df_cat.group.value_counts() > 1)
-dcmap = plt.cm.get_cmap('jet_r', ngrps+4)
+dcmap = plt.cm.get_cmap('jet', ngrps+4)
 colors = [mcolors.to_hex(dcmap(_e)) for _e in range(ngrps)]
 # Create dendrogram outputs & structure
 set_link_color_palette(colors)

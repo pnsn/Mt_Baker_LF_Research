@@ -71,5 +71,5 @@ for event_id in tqdm(event_ids):
 
 # Construct dataframe from accumulated metadata
 df = pd.DataFrame(holder, columns=['evid','time','nslc','net','sta','loc','chan','original_inst','original_chan','eval_mode','made_template','emode'])
-df.to_csv(ROOT/'results'/'figures'/'SSA2025'/'padded_template_emode.csv')
+df.to_csv(ROOT/'results'/'tables'/'SSA2025'/'padded_template_emode.csv')
 

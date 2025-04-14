@@ -1,3 +1,9 @@
+"""
+TODO: Use this to plot the main dendrogram
+TODO: Incorporate sidecar showing ungrouped events of etype, in position - use ugly brown
+
+
+"""
 import os
 from pathlib import Path
 from glob import glob
@@ -25,6 +31,13 @@ TPK = TDIR/'template_profile.csv'
 # Save Directory for Figures
 SDIR = ROOT/'results'/'figures'/'SSA2025'
 
+issave = True
+isshow = True
+DPI = 120
+FMT = 'png'
+plt.rcParams.update({'font.size': 14})
+sfkw = {'dpi': DPI, 'format': FMT, 'bbox_inches':'tight'}
+plt.rcParams.update({'font.size': 18})
 
 
 def load_traces_and_cross_corr(_df_tpk, su_include):
@@ -61,16 +74,42 @@ def load_traces_and_cross_corr(_df_tpk, su_include):
 
 ### SUPPORTING FUNCTIONS ###
 
-def plotmap(map_axis, df, marker, colors, alpha=0.6, zorder=1, label=None, **options):
+def plotmap(map_axis, df, marker, colors, alpha=0.6, zorder=1, label=None, base=3.2, offset=25):
     hdl = map_axis.scatter(df.lon, df.lat,
                            marker=marker,
                            c=colors,
-                           s=mutil.magscale(df.mag, **options),
+                           s=mutil.magscale(df.mag, base=base, offset=offset),
                            alpha=alpha,
                            zorder=zorder,
                            label=label,
                            transform=ccrs.PlateCarree())
     return hdl
+
+def plot_dendrogram(dend, df_cat, s=25):
+    marker_map = {'px':'*','su':'d','lf':'s','eq':'o'}
+    color_map = {'px':'m','su':'b','lf':'r','eq':'k'}
+    fig = plt.figure(figsize=(15,7))
+    ax = fig.add_subplot(111)
+    # Plot dendrogram
+    for ic, dc, cc in zip(dend['icoord'],dend['dcoord'],dend['color_list']):
+        if cc == 'k':
+            cc = 'xkcd:ugly brown'
+        else:
+            pass
+        ax.plot(ic, dc, color=cc, linewidth=0.5, zorder=1)
+    # terminate endpoints with event type markers
+    for _et in ['eq','lf','su','px']:
+        _df_cat = df_cat[df_cat.etype==_et]
+        ax.scatter(_df_cat.leafpos*10 + 5, [0]*len(_df_cat),
+                   c=color_map[_et],
+                   marker=marker_map[_et],
+                   s=s, alpha=0.6, zorder=2)
+    
+    ax.set_xlim([-15, df_cat.leafpos.max()*10 + 20])
+    ax.set_ylim([-0.033, 1])
+    ax.set_yticks([0, 0.2, 0.4, 0.6, 0.8, 1.0], labels=[f'{_e/10:.1f}' for _e in range(10, -2, -2)])
+    ax.set_ylabel('Average Coherence [ - ]')
+    return (fig, ax)
 
 
 def plot_group_waveforms(_df_cat, _df_tpk, dend):
@@ -89,21 +128,21 @@ def plot_group_waveforms(_df_cat, _df_tpk, dend):
     # Initialize Subplots
     axd = fig.add_subplot(gs[0,:6])
     axw = fig.add_subplot(gs[1:,:6])
-    axm, attr = mutil.mount_baker_basemap(
-        fig=fig, sps=gs[:,6:],
-        latnudge=0, lonnudge=0,
-        open_street_map=False,
-        aws_add_image_kwargs={'cmap':'Greys_r', 'alpha':0.05})
+    # axm, attr = mutil.mount_baker_basemap(
+    #     fig=fig, sps=gs[:,6:],
+    #     latnudge=0, lonnudge=0,
+    #     open_street_map=False,
+    #     aws_add_image_kwargs={'cmap':'Greys_r', 'alpha':0.05})
 
-    extent = [mutil.BAKER_LON-0.5, mutil.BAKER_LON+0.5,
-              mutil.BAKER_LAT-1, mutil.BAKER_LAT+0.4]
-    axm.set_extent(extent)
-    gl = axm.gridlines(draw_labels=['top','left'], zorder=1,
-                   xlocs=[-122.1, -121.8, -121.5],
-                   ylocs=[48.5, 48.6, 48.7, 48.8, 48.9, 49],
-                   alpha=0)
-    gl.left_labels=False
-    gl.right_labels=True
+    # extent = [mutil.BAKER_LON-0.5, mutil.BAKER_LON+0.5,
+    #           mutil.BAKER_LAT-1, mutil.BAKER_LAT+0.4]
+    # axm.set_extent(extent)
+    # gl = axm.gridlines(draw_labels=['top','left'], zorder=1,
+    #                xlocs=[-122.1, -121.8, -121.5],
+    #                ylocs=[48.5, 48.6, 48.7, 48.8, 48.9, 49],
+    #                alpha=0)
+    # gl.left_labels=False
+    # gl.right_labels=True
     # xlims = [float('inf'), 0]
     # _lm = 0
     # Plot base dendrogram for specific group
@@ -112,7 +151,7 @@ def plot_group_waveforms(_df_cat, _df_tpk, dend):
         if cc in _df_cat.leaf_color.values:
             axd.plot(ic, dc, color=cc, linewidth=0.5, zorder=2)
         else:
-            axd.plot(ic, dc, color='k', linewidth=0.5, zorder=1)
+            axd.plot(ic, dc, color='xkcd:ugly brown', linewidth=0.5, zorder=1)
     # Plot etype markers
     for evid, row in _df_cat.iterrows():
         if evid in _df_tpk.index:
@@ -120,7 +159,7 @@ def plot_group_waveforms(_df_cat, _df_tpk, dend):
         else:
             _y = 0.08
         axd.scatter(row.leafpos*10 + 5, _y,
-                    s=9, 
+                    s=25, 
                     c=color_map[row.etype], 
                     marker=marker_map[row.etype],
                     zorder=3,
@@ -143,20 +182,31 @@ def plot_group_waveforms(_df_cat, _df_tpk, dend):
     axd.set_xlim(xlims)
     axd.set_ylim([-0.033,1])
     axd.set_yticks([0, 0.2, 0.4, 0.6, 0.8, 1.0], labels=[f'{_e/10:.1f}' for _e in range(10, -2, -2)])
-    axd.set_ylabel('Average Coherence Level [ - ]')
+    axd.set_ylabel('Average\nCoherence [ - ]')
+    axd.set_xticks([])
 
     # Plot waveforms with shifts descending
-    # _e = 0
+    _dx = 0
     for _e, (_, row) in enumerate(_df_tpk.iterrows()):
         _y = row.trace.times() + row.shifts - 5
         _x = row.trace.copy().normalize().data
-        axw.plot(_x + _e, _y, color=color_map[row.etype], linewidth=0.5, zorder=1)
-        # Plot the color of this WF's group
-        axw.scatter(_x[0] + _e, -0.5, s=9, c=row.leaf_color,
-                    marker=marker_map[row.petype],
+        axw.plot(_x + _dx, _y, color=color_map[row.etype], linewidth=0.5, zorder=1)
+        # Plot the color of this WF's group, but original shape
+        axw.scatter(_x[0] + _dx, -0.5, s=25, c=row.leaf_color,
+                    marker=marker_map[row.etype],
                     zorder=2,
                     alpha=0.6)
-        # _e += 1
+        # Increment to next position
+        _dx += 1
+        # If there are more traces to plot
+        if _e < len(_df_tpk) - 1:
+            # If the next trace to plot is in another group
+            if row.tidy_group != _df_tpk.tidy_group.iloc[_e+1]:
+                # Plot a dashed vertical line
+                axw.plot([_dx, _dx],[-2,45],':', color='xkcd:ugly brown', alpha=0.5, linewidth=0.75)
+                # Insert Padding
+                _dx += 1
+                # And
         # # If there are more samples
         # if _k < len(_df_tpk) - 1:
         #     # If the next sample has a different etype
@@ -165,70 +215,70 @@ def plot_group_waveforms(_df_cat, _df_tpk, dend):
         #         _e += 2
     # Format axes
     axw.set_ylim([45, -2])
-    axw.set_xlim([-2, _e + 2])
+    axw.set_xlim([-2, _dx + 2])
     axw.set_xticks([])
-    axw.set_xlabel('Lower Coherence           Relative Position in Cluster          Higher Coherence')
-    axw.set_ylabel('Elapsed Time Since Aligned\nP-wave Arrival [sec]')
+    axw.set_xlabel('Less Coherent        Relative Coherence        More Coherent')
+    axw.set_ylabel('Elapsed Time Since\nP-wave Arrival [sec]')
 
 
 
-    # Add distance Rings
-    mutil.add_rings(axm,
-                    rads_km=[10,30,50,90],
-                    rads_colors=['k']*4,
-                    include_units=[True, True, True, True],
-                    label_pt=-50,ha='left',va='bottom')
+    # # Add distance Rings
+    # mutil.add_rings(axm,
+    #                 rads_km=[10,30,50,90],
+    #                 rads_colors=['k']*4,
+    #                 include_units=[True, True, True, True],
+    #                 label_pt=-50,ha='left',va='bottom')
 
-    # Add Lat/Lon annotations
-    # axm.set_xticks([-122.2 + _e*0.2 for _e in range(5)])
-    gl = axm.gridlines(draw_labels=['top','left'], zorder=1,
-                    xlocs=[-122.1, -121.8, -121.5],
-                    ylocs=[48.5, 48.6, 48.7, 48.8, 48.9, 49],
-                    alpha=0)
-                    #    xlocs=[-122.2, -122, -121.8, -121.6, -121.4, -121.2],
-                    #    ylocs=[48.5, 48.6, 48.7, 48.8, 48.9, 49],
-                    #    alpha=0)
+    # # Add Lat/Lon annotations
+    # # axm.set_xticks([-122.2 + _e*0.2 for _e in range(5)])
+    # gl = axm.gridlines(draw_labels=['top','left'], zorder=1,
+    #                 xlocs=[-122.1, -121.8, -121.5],
+    #                 ylocs=[48.5, 48.6, 48.7, 48.8, 48.9, 49],
+    #                 alpha=0)
+    #                 #    xlocs=[-122.2, -122, -121.8, -121.6, -121.4, -121.2],
+    #                 #    ylocs=[48.5, 48.6, 48.7, 48.8, 48.9, 49],
+    #                 #    alpha=0)
 
 
-    # Plot Mount Baker
-    axm.scatter([mutil.BAKER_LON, mutil.SHUKS_LON, mutil.STWIN_LON],
-            [mutil.BAKER_LAT, mutil.SHUKS_LAT, mutil.STWIN_LAT],
-            s=[144, 81, 81], 
-            marker='^',
-            facecolor='none',
-            edgecolors='orange',
-            linewidths=[2, 1, 1],
-            zorder=30,
-            transform=ccrs.PlateCarree())
+    # # Plot Mount Baker
+    # axm.scatter([mutil.BAKER_LON, mutil.SHUKS_LON, mutil.STWIN_LON],
+    #         [mutil.BAKER_LAT, mutil.SHUKS_LAT, mutil.STWIN_LAT],
+    #         s=[144, 81, 81], 
+    #         marker='^',
+    #         facecolor='none',
+    #         edgecolors='orange',
+    #         linewidths=[2, 1, 1],
+    #         zorder=30,
+    #         transform=ccrs.PlateCarree())
 
-    # Populate Map
-    # Plot observing station
-    inv = Client('IRIS').get_stations(network=_df_tpk.net.iloc[0],
-                                      station=_df_tpk.sta.iloc[0],
-                                      level='station')
-    ista = inv.networks[0].stations[0]
-    axm.scatter(
-        ista.longitude, ista.latitude,
-        marker='v', c='w',
-        edgecolors='k',
-        s=36, zorder=10,
-        transform=ccrs.PlateCarree()
-    )
-    axm.text(
-        ista.longitude, ista.latitude,
-        f'UW.{ista.code}',fontsize=14,
-        ha='left',va='bottom',
-        transform=ccrs.PlateCarree()
-    )
-    # Iterate across source ETYPE
-    for _et in _df_tpk.etype.unique():
-        # Subset & plot using group color
-        _df = _df_tpk[_df_tpk.etype==_et]
-        _ = plotmap(axm, _df,
-                    marker_map[_et],
-                    _df.leaf_color)
+    # # Populate Map
+    # # Plot observing station
+    # inv = Client('IRIS').get_stations(network=_df_tpk.net.iloc[0],
+    #                                   station=_df_tpk.sta.iloc[0],
+    #                                   level='station')
+    # ista = inv.networks[0].stations[0]
+    # axm.scatter(
+    #     ista.longitude, ista.latitude,
+    #     marker='v', c='w',
+    #     edgecolors='k',
+    #     s=36, zorder=10,
+    #     transform=ccrs.PlateCarree()
+    # )
+    # axm.text(
+    #     ista.longitude, ista.latitude,
+    #     f'UW.{ista.code}',fontsize=14,
+    #     ha='left',va='bottom',
+    #     transform=ccrs.PlateCarree()
+    # )
+    # # Iterate across source ETYPE
+    # for _et in _df_tpk.etype.unique():
+    #     # Subset & plot using group color
+    #     _df = _df_tpk[_df_tpk.etype==_et]
+    #     _ = plotmap(axm, _df,
+    #                 marker_map[_et],
+    #                 _df.leaf_color)
 
-    return (fig, axd, axw, axm)
+    return (fig, axd, axw) #, axm)
 
 
 
@@ -246,9 +296,6 @@ for _f in glob(str(TDIR/'*_.npy')):
     fname = os.path.splitext(os.path.split(_f)[-1])[0]
     key = '_'.join(fname.split('_')[1:])[:-1]
     dend.update({key:arr}) 
-
-
-
 
 
 
@@ -283,7 +330,6 @@ for _e, (_, row) in enumerate(_df_tpk_su.iterrows()):
         su_include.append(True)
     else:
         su_include.append(False)
-
 
 
 
@@ -372,8 +418,38 @@ _df_tpk_eq = load_traces_and_cross_corr(_df_tpk_eq, eq_include)
 _df_tpk_px = load_traces_and_cross_corr(_df_tpk_px, px_include)
 
 ### PLOTTING SECTION ###
-su_fig_axes = plot_group_waveforms(_df_cat_su, _df_tpk_su, dend)
-lf_fig_axes = plot_group_waveforms(_df_cat_lf, _df_tpk_lf, dend)
-eq_fig_axes = plot_group_waveforms(_df_cat_eq, _df_tpk_eq, dend)
-px_fig_axes = plot_group_waveforms(_df_cat_px, _df_tpk_px, dend)
 
+### PLOT FULL DENDROGRAM WITH CATALOG EVENT LABELS
+dend_handles = plot_dendrogram(dend, df_cat[df_cat.tidy_group > -2])
+ax = dend_handles[1]
+ax.set_xticks([])
+xlims = ax.get_xlim()
+ax.plot(ax.get_xlim(), [0.7, 0.7], ':', color='dodgerblue')
+ax.set_xlim(xlims)
+
+if issave:
+    dend_handles[0].savefig(str(SDIR/f'full_dendrogram_{DPI}dpi.{FMT}'), **sfkw)
+
+### PLOT RECLASSIFICATION FIGURE FOR SU
+su_fig_axes = plot_group_waveforms(_df_cat_su, _df_tpk_su, dend)
+if issave:
+    su_fig_axes[0].savefig(str(SDIR/f'su_reclassified_cluster_waveforms_{DPI}dpi.{FMT}'), **sfkw)
+
+### PLOT RECLASSIFICATION FIGURE FOR LF
+lf_fig_axes = plot_group_waveforms(_df_cat_lf, _df_tpk_lf, dend)
+if issave:
+    lf_fig_axes[0].savefig(str(SDIR/f'lf_reclassified_cluster_waveforms_{DPI}dpi.{FMT}'), **sfkw)
+
+### PLOT RECLASSIFICATION FIGURE FOR EQ
+eq_fig_axes = plot_group_waveforms(_df_cat_eq, _df_tpk_eq, dend)
+if issave:
+    eq_fig_axes[0].savefig(str(SDIR/f'eq_reclassified_cluster_waveforms_{DPI}dpi.{FMT}'), **sfkw)
+
+### PLOT RECLASSIFICATION FIGURE FOR PX
+px_fig_axes = plot_group_waveforms(_df_cat_px, _df_tpk_px, dend)
+if issave:
+    px_fig_axes[0].savefig(str(SDIR/f'px_reclassified_cluster_waveforms_{DPI}dpi.{FMT}'), **sfkw)
+
+
+if isshow:
+    plt.show()

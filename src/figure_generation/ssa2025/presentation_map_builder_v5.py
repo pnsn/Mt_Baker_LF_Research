@@ -34,7 +34,7 @@ SDIR = ROOT/'results'/'figures'/'SSA2025'
 ## OUTPUT CONTROL ##
 # Figure output control
 FMT = 'png'
-issave = False
+issave = True
 DPI = 120
 # Movie frame output control
 makemovie = False
@@ -69,11 +69,11 @@ tz_sps = gs[0,1]  # Right column, upper
 
 
 ### SUPPORT FUNCTIONS ###
-def plotmap(map_axis, df, marker, colors, alpha=0.6, zorder=1, label=None, **options):
+def plotmap(map_axis, df, marker, colors, alpha=0.6, zorder=1, label=None, base=3.2, offset=25):
     hdl = map_axis.scatter(df.lon, df.lat,
                            marker=marker,
                            c=colors,
-                           s=mutil.magscale(df.mag, **options),
+                           s=mutil.magscale(df.mag, base=base, offset=offset),
                            alpha=alpha,
                            zorder=zorder,
                            label=label,
@@ -91,13 +91,13 @@ def plottz(tz_axis, df, marker, colors, alpha=0.6, zorder=1, label=None, **optio
     return hdl
 
 
-def plotfun(map_axis, tz_axis, df, marker, colors, alpha=0.6, zorder=1, label=None, **options):
+def plotfun(map_axis, tz_axis, df, marker, colors, alpha=0.6, zorder=1, label=None, base=3.2, offset=25):
     handles = []
     # Plot events on map
     hdl = map_axis.scatter(df.lon, df.lat,
                       marker=marker,
                       c=colors,
-                      s=mutil.magscale(df.mag, **options),
+                      s=mutil.magscale(df.mag, base=base, offset=offset),
                       alpha=alpha,
                       zorder=zorder,
                       transform=ccrs.PlateCarree())
@@ -105,7 +105,7 @@ def plotfun(map_axis, tz_axis, df, marker, colors, alpha=0.6, zorder=1, label=No
     # Plot events on time-depth chart
     hdl = tz_axis.scatter(df.prefor_time, df.depth*1e-3,
                       c=colors,
-                      s=mutil.magscale(df.mag, **options),
+                      s=mutil.magscale(df.mag, base=base, offset=offset),
                       marker=marker,
                       alpha=alpha,
                       zorder=zorder,
@@ -283,7 +283,7 @@ hdls = []
 for _et in ['px','su','lf','eq']:
     _df = df_cat[df_cat.etype==_et]
     handles = plotfun(axm, axt, _df, marker_map[_et], color_map[_et],
-                      zorder=zo, label=f'{_et.upper()}', base=4,offset=16)
+                      zorder=zo, label=f'{_et.upper()}')#, base=4,offset=16)
                     #   zorder=zo,label=f'{_et.upper()}: {len(_df)}')
     hdls += handles
     zo -= 1
@@ -358,7 +358,25 @@ if issave:
 hdls = clear_handles(hdls)
 
 ### SHOW WHAT'S MISSED ###
-# Plot Only Ungrouped Events with catalog etype markings/colors
+# Plot Only unanalyzed Events with catalot etype markings
+zo = 20
+_df = df_cat[df_cat.tidy_group == -2]
+for _et in ['px','lf','eq']:
+    __df = _df[_df.etype==_et]
+    handles = plotfun(
+        axm, axt, __df,
+        marker_map[_et],
+        unanalyzed_color,
+        zorder=zo, label=f'{_et.upper()}: {len(__df):d}')
+    hdls += handles
+    zo -= 1
+lhdl = axt.legend(handles=hdls[::-1], loc='lower center', ncols=3)
+hdls.append(lhdl)
+
+if issave:
+    fig.savefig(str(SDIR/f'map_unanalyzed_events_{DPI}dpi.{FMT}'), **sfkw)
+hdls = clear_handles(hdls)
+# Plot Only Ungrouped Events with catalog etype markings
 zo = 20 # overlie stations, underlie baker
 _df = df_cat[df_cat.tidy_group == -1]
 # Iterate across etype

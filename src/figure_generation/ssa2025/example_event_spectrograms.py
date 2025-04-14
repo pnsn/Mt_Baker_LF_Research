@@ -9,17 +9,30 @@ from obspy.imaging.spectrogram import spectrogram
 from obspy.clients.fdsn import Client
 
 from obsplus import EventBank
+
+import cartopy.crs as ccrs
+
+import map_util as mutil
+
 # Repository Root Absolute Path
 ROOT = Path(__file__).parent.parent.parent.parent
 # Catalog Event Bank
 EBBP = ROOT / 'data' / 'XML' / 'QUAKE' / 'BANK'
 # Catalog Profile CSV
 CPCSV = ROOT / 'processed_data' / 'catalog' / 'P1S1_Catalog_Profile.csv'
+# Shapefiles for mapping
+SHPDIR = ROOT/'data'/'SHP'
+NFSHP = SHPDIR/'USDA'/'Forest_Administrative_Boundaries_(Feature_Layer)'/'Forest_Administrative_Boundaries_(Feature_Layer).shp'
+NWSHP = SHPDIR/'USDA'/'Mount_Baker_Wilderness'/'Mount_Baker.shp'
+
 # Save Path
 SPATH = ROOT / 'results' / 'figures' / 'SSA2025'
+
+
 # Rendering Settings
 DPI = 120
 FMT = 'png'
+plt.rcParams.update({'font.size':14})
 # Output control
 issave = True
 isshow = True
@@ -66,6 +79,10 @@ client = Client('IRIS')
 
 # Compose bulk waveform request
 picks = {}
+depths = {}
+lats = {}
+lons = {}
+mags = {}
 for _etype, _evid in pref_evid.items():
     cat = ebank.get_events(event_id=event_id_fstr.format(evid=_evid))
     for _p in cat[0].picks:
@@ -74,6 +91,11 @@ for _etype, _evid in pref_evid.items():
                 picks[_etype] = _p
             elif _p.time < picks[_etype].time:
                 picks[_etype] = _p
+    depths[_etype] = cat[0].preferred_origin().depth*1e-3
+    lats[_etype] = cat[0].preferred_origin().latitude
+    lons[_etype] = cat[0].preferred_origin().longitude
+    mags[_etype] = cat[0].preferred_magnitude().mag
+    # zerr[_etype]
 
 bulk = {_e: (_p.waveform_id.id.split('.') + [_p.time - prepick, _p.time + duration]) for _e, _p in picks.items()}
 
@@ -93,7 +115,20 @@ for _etype, pick in picks.items():
 
 
 ### PLOTTING SECTION ###
-            
+# def plot_spect(fig, wf_sps, spect_sps, trace, spect, depth, prepad, duration, evid, color, spect_kw=spect_kw):
+#     axwf = fig.add_subplot(wf_sps)
+#     axsp = fig.add_subplot(spect_sps, sharex=axwf)
+
+#     # Detrend and normalize trace
+#     tr = trace.copy().detrend('linear').normalize()
+#     # Plot trace
+#     axwf.plot(tr.times(reftime=tr.stats.starttime),
+#               tr.data,
+#               color,
+#               lw=0.5)
+#     shdl = spectrogram(tr.data, tr.stats.sampling_rate, axes=axsp, **spect_kw)    
+#     axsp.set_xticks[]     
+
 ### SPECTROGRAMS ###
 figs = {}
 axes = {}
@@ -102,7 +137,7 @@ for _etype, _tr in traces.items():
     __tr = _tr.copy().detrend('linear').normalize()
     evid = pref_evid[_etype]
     pick = picks[_etype]
-    fig = plt.figure(figsize=(5.25,5.25))
+    fig = plt.figure(figsize=(4.8,5.25))
     gs = fig.add_gridspec(ncols=1, nrows=2, hspace=0, wspace=0)
     axs = [fig.add_subplot(gs[0])]
     axs.append(fig.add_subplot(gs[1], sharex=axs[0]))
@@ -129,8 +164,8 @@ for _etype, _tr in traces.items():
     axs[1].set_ylim([0.5,30])
 
     # Add Labels
-    axs[0].set_title(f'uw{evid} | ETYPE: {_etype.upper()}\n{pick.time}')
-    axs[0].set_ylabel('Normalized Amplitude [ - ]')
+    axs[0].set_title(f'uw{evid} | Depth: {depths[_etype]:.1f} km\n{pick.time}')#{_etype.upper()}\n{pick.time}')
+    axs[0].set_ylabel('Norm. Amp. [ - ]')
     axs[0].grid(alpha=0.5, which='major')
     axs[0].text(20, __tr.data.min(), pick.waveform_id.id, fontsize=12, ha='left', va='bottom')
 
@@ -145,4 +180,104 @@ for _etype, _tr in traces.items():
 
 if issave:
     for _etype, _fig in figs.items():
-        _fig.savefig(str(SPATH/f'wave_spect_UW_MBW_{_etype}_uw{pref_evid[_etype]}_v5_{DPI}dpi.{FMT}'), dpi=DPI, format=FMT)    
+        _fig.savefig(str(SPATH/f'wave_spect_UW_MBW_{_etype}_uw{pref_evid[_etype]}_v6_{DPI}dpi.{FMT}'), dpi=DPI, format=FMT)    
+
+
+# Make Maps of pairwise combinations with EQ
+
+# Load National Forest Boundaries
+gdf_mbsnf = mutil.gpd.read_file(NFSHP)
+# Subset to Mount Baker-Snoqualmie National Forest ShapeFile contents
+gdf_mbsnf = gdf_mbsnf[gdf_mbsnf.FORESTNAME=='Mt. Baker-Snoqualmie National Forest']
+# Load Mount Baker Wilderness Shapefile
+gdf_mbw = mutil.gpd.read_file(NWSHP)
+
+# Get stations within 0.5 degrees
+inv = Client('IRIS').get_stations(level='station',
+                                  network='UW',
+                                  station='MBW')
+# Extract station location / net-sta codes
+holder = []
+for net in inv.networks:
+    for sta in net.stations:
+        line = [sta.longitude, sta.latitude, net.code, sta.code]
+        holder.append(line)
+df_inv = pd.DataFrame(holder, columns=['lon','lat','net','sta'])
+
+
+# Load shapefiles into geopandas
+# Load National Forest Boundaries
+gdf_mbsnf = mutil.gpd.read_file(NFSHP)
+# Subset to Mount Baker-Snoqualmie National Forest ShapeFile contents
+gdf_mbsnf = gdf_mbsnf[gdf_mbsnf.FORESTNAME=='Mt. Baker-Snoqualmie National Forest']
+# Load Mount Baker Wilderness Shapefile
+gdf_mbw = mutil.gpd.read_file(NWSHP)
+
+# Initialize Basemap Figure and Gridspec
+fig = plt.figure(figsize=(5,5))
+gs = fig.add_gridspec(ncols=1, nrows=1, hspace=0, wspace=0)
+# Define SpecShape
+map_sps = gs[0] # Left column, full
+
+# Initialize geoaxes and get AWS hillshade basemap (very light)
+axm, attr = mutil.mount_baker_basemap(
+    fig=fig, sps=map_sps, radius_km=15,
+    latnudge=df_inv.lat.iloc[0] - mutil.BAKER_LAT + 0.03, 
+    lonnudge=df_inv.lon.iloc[0] - mutil.BAKER_LON,
+    open_street_map=False,
+    aws_add_image_kwargs={'cmap':'Greys_r', 'alpha':0.05})
+# Add distance Rings
+mutil.add_rings(axm,
+                rads_km=[10,15,20],
+                rads_colors=['k']*3,
+                include_units=[True, True, True],
+                label_pt=55,ha='left',va='bottom', fontsize=12)
+
+gl = axm.gridlines(draw_labels=['top','left'], zorder=1,
+                   xlocs=[-122.0, -121.9, -121.8],
+                   ylocs=[48.7, 48.8, 48.9, 49.],
+                   xlabel_style={'fontsize':14},
+                   ylabel_style={'fontsize':14,'rotation':270},
+                   alpha=0)
+
+
+
+# # Add Mount Baker-Snoqualmie NF boundary
+hdl = mutil.plot_gdf_contents(axm, gdf_mbsnf, transform=None, alpha=0.1, edgecolor='forestgreen')
+
+
+
+# Plot Mount Baker
+axm.scatter([mutil.BAKER_LON, mutil.SHUKS_LON, mutil.STWIN_LON],
+            [mutil.BAKER_LAT, mutil.SHUKS_LAT, mutil.STWIN_LAT],
+            s=[144, 81, 81], 
+            marker='^',
+            facecolor='none',
+            edgecolors='orange',
+            linewidths=[2, 1, 1],
+            zorder=30,
+            transform=ccrs.PlateCarree())
+
+
+# Plot station
+axm.scatter(df_inv.lon, df_inv.lat, marker='v', c='cyan',edgecolors='k', s=7**2,
+            transform=ccrs.PlateCarree(),zorder=5)
+axm.text(df_inv.lon[0]+0.005, df_inv.lat[0]+0.005, 'UW.MBW', fontsize=14, ha='left', va='bottom',
+         transform=ccrs.PlateCarree())
+
+# Plot Events
+for _et in ['eq','lf','su','px']:
+    axm.scatter(lons[_et], lats[_et], s=3.2**mags[_et] + 36, marker=marker_map[_et],
+                c=mec_map[_et], transform=ccrs.PlateCarree(), zorder=6)
+    axm.plot([lons[_et], df_inv.lon[0]], [lats[_et], df_inv.lat[0]],
+             color=mec_map[_et], alpha=0.5, zorder=1, transform=ccrs.PlateCarree())
+
+
+
+if issave:
+    fig.savefig(str(SPATH/f'Example_Event_Map_{DPI}dpi.{FMT}'),
+                format=FMT, dpi=DPI, bbox_inches='tight')
+
+if isshow:
+    plt.show()
+# Plot 
