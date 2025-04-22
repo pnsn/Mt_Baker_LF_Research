@@ -47,7 +47,7 @@ sfkw = {'format': FMT, 'dpi': DPI, 'bbox_inches':'tight'}
 plt.rcParams.update({'font.size': 14})
 
 # Marker Rendering by Event Type
-eveoff = 6**2
+eveoff = 5**2
 evebase = 3.2
 marker_map = {'px':'*','su':'d','lf':'s','eq':'o'}
 color_map = {'px':'m','su':'b','lf':'r','eq':'k'}
@@ -344,7 +344,7 @@ while t1 <= T1:
                               transform=ccrs.PlateCarree())
             hdls.append(hdl)
 
-
+    axm.set_title(f'{t1.strftime("%b-%Y")}')
     # Save frame
     if issave:
         savename = SDIR/'reclassified_movie'/f'frame_{frame_no:05d}_{MDPI:d}dpi.{FMT}'
@@ -358,3 +358,27 @@ while t1 <= T1:
     # breakpoint()
     # Clear temporary items
     hdls = clear_handles(hdls)
+
+# for _pet in ['eq','su','lf','px']:
+#     _df = df_cat[(df_cat.petype==_pet)&(df_cat.tidy_group>-3)]
+#     if len(__df) > 0:
+#         __alphas = [1 - (t1 - row.prefor_time)/DTWIN for _, row in __df.iterrows()]
+#         hdl = axm.scatter(_df.lon, _df.lat,
+#                             marker=marker_map[_pet],
+#                             c=color_map[_pet],
+#                             s=mutil.magscale(__df.mag, base=evebase, offset=eveoff),
+#                             alpha=0.6,
+#                             transform=ccrs.PlateCarree())
+#         hdls.append(hdl)
+
+# # Plot area stations
+# sta_hdl = axm.scatter(
+#     df_inv.lon, df_inv.lat,
+#     marker='v', c='w',
+#     edgecolors='k',
+#     s=7**2, zorder=10,
+#     transform=ccrs.PlateCarree())
+
+# if issave:
+#     savename = SDIR/'reclassified_movie'/f'frame_{frame_no:05d}_{MDPI:d}dpi.{FMT}'
+#     fig.savefig(str(savename), **sfkw)

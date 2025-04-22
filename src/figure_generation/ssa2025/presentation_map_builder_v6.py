@@ -247,14 +247,14 @@ for name, (lon, lat) in mountain_labels:
     hdl = axm.text(lon, lat, name, transform=ccrs.PlateCarree(), ha='left', va='bottom')
     hdls.append(hdl)
 
-hdl = axm.text(-121.96, 48.61, 'Contributing Seismic Stations\n1980-2025 Composite',
-               transform=ccrs.PlateCarree(), ha='center', va='center',
-               color='k', fontweight='extra bold')
-hdls.append(hdl)
-hdl = axm.text(-121.8133, 48.905, 'Mount Baker-\nSnoqualmie\nNational\nForest',
-               transform=ccrs.PlateCarree(), ha='center', va='center',
-               color='forestgreen', fontweight='extra bold')
-hdls.append(hdl)
+# hdl = axm.text(-121.96, 48.61, 'Contributing Seismic Stations\n1980-2025 Composite',
+#                transform=ccrs.PlateCarree(), ha='center', va='center',
+#                color='k', fontweight='extra bold')
+# hdls.append(hdl)
+# hdl = axm.text(-121.8133, 48.905, 'Mount Baker-\nSnoqualmie\nNational\nForest',
+#                transform=ccrs.PlateCarree(), ha='center', va='center',
+#                color='forestgreen', fontweight='extra bold')
+# hdls.append(hdl)
 hdl = axt.text(pd.Timestamp('2002-06-15'), 20, 'Event Depths and Origin Times Go Here\nMarkers Scaled by Magnitude (M0-M5)',
                ha='center',va='center', fontsize=16)
 hdls.append(hdl)
@@ -422,26 +422,28 @@ hdls = clear_handles(hdls)
 
 ### PROPOSED UPDATES (SANS MISSED / UNGROUPED)
 zo = 20
-for _pet in ['su','lf','px','eq']:
-    # Plot events that were grouped as-is
+for _pet in ['lf','eq','su','px']:
+    # Subset to reassignment groups
     _df = df_cat[(df_cat.petype == _pet) & (df_cat.tidy_group > 0)]
-    handles = plotfun(
-        axm, axt, _df,
-        marker_map[_pet],
-        color_map[_pet],
-        zorder=zo,label=f'{_pet.upper()}: {len(__df)}'
-    )
-    hdls += handles
-    # Reset z-ordering indexer for each map
+    # handles = plotfun(
+    #     axm, axt, _df,
+    #     marker_map[_pet],
+    #     color_map[_pet],
+    #     zorder=zo,label=f'{_pet.upper()}: {len(__df)}'
+    # )
+    # hdls += handles
+    # # Reset z-ordering indexer for each map
     _zo = zo + 1
     # Plot events that are proposed for relabeling
-    for _et, _ret in _df[['etype','petype']].value_counts().index:
-        if _et == _ret:
-            continue
-        else:
-            # Place marker as from catalog
+    for _et in ['lf','eq','su','px']:
+        # if _et == _ret:
+        #     continue
+        # else:
+        # Place marker as from catalog
+        __df = _df[_df.etype==_et]
+        if len(__df) > 0:
             handles = plotfun(
-                axm, axt, _df[(_df.etype==_et) & (_df.petype==_ret)],
+                axm, axt, __df,
                 marker_map[_et],
                 color_map[_et],
                 zorder=_zo,label=f'{_et.upper()}: {len(__df)}'

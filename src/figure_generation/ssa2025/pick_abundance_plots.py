@@ -14,6 +14,7 @@ INPUT = ROOT/'results'/'tables'/'SSA2025'/'padded_template_emode.csv'
 CPD = ROOT/'results'/'tables'/'SSA2025'/'catalog_profile.csv'
 SHPDIR = ROOT/'data'/'SHP'
 NFSHP = SHPDIR/'USDA'/'Forest_Administrative_Boundaries_(Feature_Layer)'/'Forest_Administrative_Boundaries_(Feature_Layer).shp'
+NWSHP = SHPDIR/'USDA'/'Mount_Baker_Wilderness'/'Mount_Baker.shp'
 
 
 SDIR = ROOT/'results'/'figures'/'SSA2025'
@@ -45,6 +46,8 @@ prefnslc = ['UW.MBW..EHZ','UW.MBW.01.EHZ','UW.MBW2..HHZ','UW.MBW2..ENZ',
 gdf_mbsnf = mutil.gpd.read_file(NFSHP)
 # Subset to Mount Baker-Snoqualmie National Forest ShapeFile contents
 gdf_mbsnf = gdf_mbsnf[gdf_mbsnf.FORESTNAME=='Mt. Baker-Snoqualmie National Forest']
+# Load Mount Baker Wilderness Shapefile
+gdf_mbw = mutil.gpd.read_file(NWSHP)
 # Load preprocessed catalog CSV
 df_cat = pd.read_csv(CPD, parse_dates=['prefor_time'], index_col=[0])
 
@@ -123,6 +126,9 @@ axem.plot([-123, -121], [49,49], 'k-', transform=ccrs.PlateCarree())
 
 # # Add Mount Baker-Snoqualmie NF boundary
 hdl = mutil.plot_gdf_contents(axem, gdf_mbsnf, transform=None, alpha=0.2, linewidth=2, edgecolor='forestgreen')
+# Add Mount Baker Wilderness boundary
+hdl = mutil.plot_gdf_contents(axem, gdf_mbw, transform=None, alpha=0.2, edgecolor='forestgreen')
+
 
 # Plot Mount Baker & friends
 axem.scatter([mutil.BAKER_LON, mutil.SHUKS_LON, mutil.STWIN_LON],
@@ -142,7 +148,7 @@ for _et in ['eq','lf','su','px']:
     axem.scatter(_dfc.lon, _dfc.lat,
                  marker=marker_map[_et],
                  c=color_map[_et],
-                 s=(3**_dfc.mag) + 6,
+                 s=(3.2**_dfc.mag) + 25,
                  alpha=0.6,
                  zorder=_zo,
                  transform=ccrs.PlateCarree())
