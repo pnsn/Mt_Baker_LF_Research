@@ -17,7 +17,12 @@ def main():
         url = f'{base_url}?tid={sta_id}&start_time={tstr}&end_time={estr}&limit={qlimit:d}'
         
         try:
-            payload = pd.read_csv(url, delimiter='|', parse_dates=['start_time','peak_time','end_time'])
+            if service == 'picks':
+                payload = pd.read_csv(url, delimiter='|', parse_dates=['start_time','peak_time','end_time'])
+            elif service == 'classifies':
+                payload = pd.read_csv(url, delimiter='|', parse_dates=['start_time'])
+            else:
+                raise NotImplementedError(f'service "{service}" not supported')
         except Exception as e:
             print(f'Error fetching {service} data for {sta_id} | {tstr} - {estr} | {e}')
             current_datetime = next_datetime
@@ -36,8 +41,12 @@ def main():
             current_datetime = next_datetime
             next_datetime += datedelta
         else:
-            current_datetime = payload.end_time.max()
-            next_datetime = payload.end_time.max() + datedelta
+            if service == 'picks':
+                current_datetime = payload.end_time.max()
+                next_datetime = payload.end_time.max() + datedelta
+            elif service == 'classifies':
+                current_datetime = payload.start_time.max()
+                next_datetime = payload.start_time.max() + datedelta
         rotator = pd.concat([rotator, payload], ignore_index=True)
         rotator.drop_duplicates(keep='first', ignore_index=True, inplace=True)
         # # Update time window
@@ -45,8 +54,11 @@ def main():
         # next_datetime = rotator.end_time.max() + datedelta
         
         if len(rotator) >= cut_limit:
-            savename = SAVEPATH/f'{sta_id}_{rotator.start_time.min().strftime("%Y-%m-%d")}_{rotator.end_time.max().strftime("%Y-%m-%d")}.csv'
-            print(f'saving to {savename} ({len(rotator)} picks)')
+            if service == 'picks':
+                savename = SAVEPATH/f'{sta_id}_{rotator.start_time.min().strftime("%Y-%m-%d")}_{rotator.end_time.max().strftime("%Y-%m-%d")}.csv'
+            elif service == 'classifies':
+                savename = SAVEPATH/f'{sta_id}_{rotator.start_time.min().strftime("%Y-%m-%d")}_{rotator.start_time.max().strftime("%Y-%m-%d")}.csv'
+            print(f'saving to {savename} ({len(rotator)} {service})')
             rotator.to_csv(savename, header=True, index=False)
             rotator = pd.DataFrame()
         
@@ -54,7 +66,10 @@ def main():
 
     # Do final save
     if len(rotator) > 0:
-        savename = SAVEPATH/f'{sta_id}_{rotator.start_time.min().strftime("%Y-%m-%d")}_{rotator.end_time.max().strftime("%Y-%m-%d")}.csv'
+        if service == 'picks':
+            savename = SAVEPATH/f'{sta_id}_{rotator.start_time.min().strftime("%Y-%m-%d")}_{rotator.end_time.max().strftime("%Y-%m-%d")}.csv'
+        elif service == 'classifies':
+            savename = SAVEPATH/f'{sta_id}_{rotator.start_time.min().strftime("%Y-%m-%d")}_{rotator.start_time.max().strftime("%Y-%m-%d")}.csv'
         print(f'saving to {savename} ({len(rotator)} picks)')
         rotator.to_csv(savename, header=True, index=False)
 
@@ -65,11 +80,11 @@ if __name__ == '__main__':
     logger.setLevel(logging.DEBUG)
     # service = 'picks' # 'classifies'
     services = {'etype': 'classifies','pick':'picks'}
-    service = services['pick']
+    service = services['etype']
 
     # Base query URL
     base_url = f"https://dasway.ess.washington.edu/quakescope/service/{service}/query"
-    sta_id = 'CN.VDB.'
+    sta_id = 'UW.MBW2.'
 
     # Time Domain
     deep_start = pd.Timestamp('1980-01-01')
@@ -89,8 +104,8 @@ if __name__ == '__main__':
     cut_limit = 25000
 
 
-    ROOT = Path(__file__).parent
-    SAVEPATH = ROOT/service.upper()/sta_id
+    ROOT = Path(__file__).parent.parent.parent
+    SAVEPATH = ROOT/'data'/'QuakeScope'/service.upper()/sta_id
     try:
         os.makedirs(str(SAVEPATH), exist_ok=False)
     except:
