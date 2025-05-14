@@ -1,8 +1,9 @@
 # Archived stuff
 arch/*
-# Embargoed stuff
+# Embargoed stuff & waveform data
 data/QuakeScope
 data/WWU
+data/WF/PNW*
 # intermediate data products
 processed_data/*
 # Waveform files
