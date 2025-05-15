@@ -7,20 +7,21 @@ from obspy import read
 
 
 def main():
-    ROOT = Path(__file__).parent.parent
-
+    ROOT = Path(__file__).parent.parent.parent
+    WWU = ROOT/'data'/'WWU'
     NET = 'WW'
     LOC = ''
     CBI = 'HH'
 
     for YEAR in ['2007','2008','2009']:
-        RAW_STA_DIRS = glob(str(ROOT/'RAW'/YEAR/'*'))
+        RAW_STA_DIRS = glob(str(WWU/'RAW'/YEAR/'*'))
+        breakpoint()
         for STA in [os.path.split(_e)[-1] for _e in RAW_STA_DIRS]:
-            RAWZ = ROOT/'RAW'/YEAR/STA/'*z*'/f'{YEAR}*.sac'
-            RAWN = ROOT/'RAW'/YEAR/STA/'*n*'/f'{YEAR}*.sac'
-            RAWE = ROOT/'RAW'/YEAR/STA/'*e*'/f'{YEAR}*.sac'
-            DGPS = ROOT/'DATA'/YEAR/STA/'GPS'/'parsed_clock_data.csv'
-            DATA = ROOT/'DATA'/YEAR/STA/'SAC'
+            RAWZ = WWU/'RAW'/YEAR/STA/'*z*'/f'{YEAR}*.sac'
+            RAWN = WWU/'RAW'/YEAR/STA/'*n*'/f'{YEAR}*.sac'
+            RAWE = WWU/'RAW'/YEAR/STA/'*e*'/f'{YEAR}*.sac'
+            DGPS = WWU/'DATA'/YEAR/STA/'GPS'/'parsed_clock_data.csv'
+            DATA = WWU/'DATA'/YEAR/STA/'SAC'
 
             df = pd.read_csv(DGPS, index_col=[0], parse_dates=['utcdatetime'])
             stla = df.lat.median()
