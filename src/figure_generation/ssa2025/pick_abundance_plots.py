@@ -227,6 +227,9 @@ for _, row in df_inv.iterrows():
     else:    
         axsm.text(row.lon+0.01, row.lat+0.01, f'{row.net}.{row.sta}',
                 fontsize=12, transform=ccrs.PlateCarree())
+
+axem.text(-122.2, 49.01, 'a', fontsize=16, fontweight='extra bold', fontstyle='italic', transform=ccrs.PlateCarree())
+axsm.text(-122.5, 49.06, 'b', fontsize=16, fontweight='extra bold', fontstyle='italic', transform=ccrs.PlateCarree())
 if issave:
     fig.savefig(str(SDIR/f'Selected_Stations_And_Events_{DPI}dpi.{FMT}'), **sfkw)
 
